@@ -1,0 +1,80 @@
+<head>
+    <link rel="stylesheet" href="/stylesheets/detailspage.css">
+</head>
+<div class = "card-wrapper">
+    <div class = "card">
+      <!-- card left -->
+      <div class="product-imgs">
+        <div class="img-display">
+          <div class="img-showcase">
+            <% product.images.forEach(function(image, index) { %>
+              <img src="<%= image %>" alt="Product Image <%= index + 1 %>">
+            <% }); %>
+          </div>
+        </div>
+        <div class="img-select">
+          <% product.images.forEach(function(image, index) { %>
+            <div class="img-item">
+              <a href="#" data-id="<%= index + 1 %>">
+                <img src="<%= image %>" alt="Product Image <%= index + 1 %>">
+              </a>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+      
+      <!-- card right -->
+      <div class = "product-content">
+        <h3 class = "product-title"> <%= product.productName %></h3>
+        <a href = "#" class = "product-link">Visit SkinVogue Store</a>
+
+          
+
+
+        <div class = "product-price">
+          <!-- <p class = "last-price">Old Price: <span>$257.00</span></p> -->
+          <p class = "new-price"> <h2>New Price:</h2> <strong> <%= product.productPrice %> (5%)</strong></p>
+        </div>
+  
+        
+        <div class = "purchase-info">
+          <button type = "button" class = "btn">
+            Add to Cart <i class = "fas fa-shopping-cart"></i>
+          </button>
+          <button type = "button" class = "btn">Compare</button>
+        </div>
+          
+          <ul>
+          
+            <li>Available: <strong style="color: green;">In stock</strong></li>
+            <li>Category: <span><%= product.category %></span></li>
+            <li>Shipping Area: <span>All over the world</span></li>
+            <li>Shipping Fee: <span>Free</span></li>
+          </ul>
+        </div>
+  
+      
+  
+        <!-- <div class = "social-links">
+          <p>Share At: </p>
+          <a href = "#">
+            <i class = "fab fa-facebook-f"></i>
+          </a>
+          <a href = "#">
+            <i class = "fab fa-twitter"></i>
+          </a>
+          <a href = "#">
+            <i class = "fab fa-instagram"></i>
+          </a>
+          <a href = "#">
+            <i class = "fab fa-whatsapp"></i>
+          </a>
+          <a href = "#">
+            <i class = "fab fa-pinterest"></i>
+          </a>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/detailspage.js"> </script>

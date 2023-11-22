@@ -1,0 +1,99 @@
+<!-- add-category.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Category</title>
+
+  <!-- Add your stylesheets and scripts here -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js">
+  <style>
+    body {
+      background-color: #fff; /* White background */
+      color: #333; /* Text color */
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      color: #ff69b4; /* Pink color */
+    }
+
+    .form-container {
+      width: 50%;
+      margin: 50px auto;
+    }
+
+    form {
+      background-color: #ff69b4; /* Pink color for the form background */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow to the form */
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #fff; /* White text color for labels */
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #fff; /* White background for the button */
+      color: #ff69b4; /* Pink text color for the button */
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #f5f5f5; /* Light gray on hover for the button */
+    }
+  </style>
+
+</head>
+<body>
+
+ 
+
+  <div class="form-container">
+
+    <% if(typeof message !== 'undefined') { %>
+      <div id="customPopup" class="custom-popup bg-danger">
+        <div class="popup-content">
+          <p><%= message %></p>
+          <button id="cancelButton">Cancel</button>
+        </div>
+      </div>
+      <script>
+        document.getElementById('customPopup').style.display = 'block'; // Show the popup
+    
+        document.getElementById('cancelButton').addEventListener('click', function() {
+          document.getElementById('customPopup').style.display = 'none'; // Hide the popup when cancel is clicked
+        });
+      </script>
+           <% } %>
+    <h1>Add Category</h1>
+
+    
+    
+    <form action="/admin/categories/add" method="post">
+      <label for="categoryName">Category Name:</label>
+      <input type="text" id="categoryName" name="categoryName" required>
+
+      <button type="submit">Save</button>
+    </form>
+  </div>
+
+  <!-- Add your additional content here -->
+
+</body>
+</html>

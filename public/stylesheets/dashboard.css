@@ -1,0 +1,142 @@
+/* Your existing CSS code */
+
+/* Additional styles for the enhanced design */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #fff3f3; /* Light pink background */
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column; /* Adjust flex direction to column */
+}
+
+header {
+    background-color: #e91e63; /* Darker pink for the header */
+    color: #fff;
+    text-align: center;
+    padding: 1em 0;
+    position: relative;
+    z-index: 2; /* Ensure header is above other elements */
+}
+
+header h1 {
+    margin: 0;
+}
+
+.logout {
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    background-color: #2196f3;
+    transition: background-color 0.3s ease-in-out;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2; /* Ensure logout button is above other elements */
+}
+
+.logout:hover {
+    background-color: #1565c0;
+}
+
+.sidebar {
+    background-color: #e91e63; /* Darker pink for the sidebar */
+    color: #fff;
+    width: 200px;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center align the text */
+    height: 100%; /* Make the sidebar height 100% */
+    position: fixed; /* Fix the sidebar position */
+    display: flex; /* Use flex for centering vertically */
+    flex-direction: column; /* Adjust flex direction to column */
+    z-index: 1; /* Ensure sidebar is behind other elements */
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.2em;
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid #fff; /* Minor line between links */
+    transition: background-color 0.3s ease-in-out;
+}
+
+.sidebar a:last-child {
+    border-bottom: none; /* Remove the line for the last link */
+}
+
+.sidebar a:hover {
+    background-color: #ff80ab; /* Lighter pink color on hover */
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 220px; /* Adjusted margin to accommodate the sidebar */
+    z-index: 1; /* Ensure content is above other elements */
+}
+
+.dashboard-columns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.dashboard-column {
+    flex: 1;
+  padding:20px;
+    margin-right: 20px;
+}
+
+.dashboard-card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    height: 250px; /* Fixed height for all cards */
+}
+
+.dashboard-card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-button {
+    display: block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    background-color: #e91e63; /* Pink color for buttons */
+    color: #fff;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.dashboard-button:hover {
+    background-color: #ff80ab; /* Lighter pink color on hover */
+}
+
+footer {
+    background-color: #e91e63;
+    color: #fff;
+    text-align: center;
+    padding: 1em 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    z-index: 2; /* Ensure footer is above other elements */
+}
+
+/* Your existing CSS code */

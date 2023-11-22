@@ -1,0 +1,97 @@
+<!-- login.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SKINVOGUE</title>
+    <link rel="stylesheet" href="/stylesheets/login.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+      .alert {
+  text-align: center;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.success-alert {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+.error-alert {
+  background-color: #f44336; /* Red */
+  color: white;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+
+        <div class="form-container">
+
+          <% if(typeof message !== 'undefined') { %>
+            <div class="error-alert">
+              <p class="error-alert"><%= message %></p>
+            </div>
+          <% } %>
+          
+
+        <div class="login-form">s
+            <h1 class="login-heading">Login</h1>
+            <h2 class="welcome-message">Welcome to SKINVOGUE</h2>
+            <form id="loginForm" action="/login" method="post" id="loginForm"  onsubmit="return  validateForm()">
+
+                <label for="email"></label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                <label for="password"></label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+                <div class="remember-forgot"> 
+                    <a href="#">Forgot Password?</a>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+document.getElementById('loginForm').addEventListener('submit', validateForm);
+
+        function validateForm() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            // Basic email validation
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email) || /\s/.test(email)) {
+    alert('Please enter a valid email address without spaces.');
+    return false;
+}
+
+
+            // Password should be at least 6 characters long
+            if (password.length < 6 || /\s/.test(password)) {
+    alert('Password should be at least 6 characters long and should not contain spaces.');
+    return false;
+}
+            // Additional validation logic can be added as needed
+
+            return true;
+        }
+    </script>
+
+    <!-- Add these links in the head section of your HTML file -->
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+</body>
+</html>
