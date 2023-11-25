@@ -1,42 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <base href="/">
-    <link rel="stylesheet" href="/stylesheets/detailspage.css">
-    <!-- <link rel="stylesheet" type="text/css" href="/views/magiczoom/magiczoom.css">
-    <script type="application/js" type="application/js" src="/views/magiczoom/magiczoom.js"></script> -->
-  </head>
+<head>
+  <base href="/">
+  <link rel="stylesheet" href="/stylesheets/detailspage.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-zoom/1.7.21/jquery.zoom.js"></script>
+  <style>
+    /* Your styles go here */
+  </style>
+</head>
 <body>
-  <div class = "card-wrapper">
-    <div class = "card">
+  <div class="card-wrapper">
+    <div class="card">
       <!-- card left -->
       <div class="product-imgs">
         <div class="img-display">
           <div class="img-showcase">
             <% product.images.forEach(function(image, index) { %>
-              <img src="<%= image %>" alt="Product Image <%= index + 1 %>">
+                <img src="<%= image %>" alt="Product Image <%= index + 1 %>">
             <% }); %>
           </div>
         </div>
         <div class="img-select">
           <% product.images.forEach(function(image, index) { %>
             <div class="img-item">
-              <a href="#" data-id="<%= index + 1 %>">
-                <img src="<%= image %>" alt="Product Image <%= index + 1 %>">
-              </a>
+              <img src="<%= image %>" alt="Product Image <%= index + 1 %>" data-index="<%= index %>">
             </div>
           <% }); %>
         </div>
       </div>
-      
+
       <!-- card right -->
       <div class = "product-content">
         <h3 class = "product-title"> <%= product.productName %></h3>
         <a href = "#" class = "product-link">Visit SkinVogue Store</a>
 
-          
-
-
+        
         <div class = "product-price">
           <!-- <p class = "last-price">Old Price: <span>$257.00</span></p> -->
           <p class = "new-price"> <h2>New Price:</h2> <strong> <%= product.productPrice %> (5%)</strong></p>
@@ -83,9 +82,25 @@
     </div>
   </div>
 
-  <script src="/js/detailspage.js"> </script>
+  <script>
+    $(document).ready(function () {
+      // Zoom functionality
+      $('.parents').css('width', $('img').width());
+      $('.img-showcase img:first-child').parent().zoom({
+        magnify: 1,
+        target: $('.contain').get(0)
+      });
+
+      // Image selection
+      $('.img-item img').on('click', function() {
+        var index = $(this).data('index');
+        var targetImage = $('.img-showcase img').eq(index);
+        $('.img-showcase img').hide();
+        targetImage.show();
+      });
+    });
+  </script>
+
+  <script src="/js/detailspage.js"></script>
 </body>
 </html>
-
-
-

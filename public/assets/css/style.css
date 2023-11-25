@@ -1176,7 +1176,7 @@ h6 {
 # Error 404
 --------------------------------------------------------------*/
 .error-404 {
-  padding: 30px;
+  padding: 50px;
 }
 
 .error-404 h1 {
@@ -1206,7 +1206,9 @@ h6 {
 
 @media (min-width: 992px) {
   .error-404 img {
-    max-width: 50%;
+   width: 25%;
+   padding-right: 100px;
+    height: 50px;
   }
 }
 

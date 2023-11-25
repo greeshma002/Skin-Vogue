@@ -244,7 +244,8 @@ exports.posteditCategory = async (req, res) => {
     res.redirect("/admin/categories");
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+     //res.status(500).json({ error: "Internal Server Error" });
+    res.render("admin/404error")
   }
 };
 

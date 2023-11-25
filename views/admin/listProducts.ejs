@@ -379,11 +379,11 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
+                    
                     <th>Name</th>
                     <th>Category</th>
                     <th>Price</th>
-                    <th>Description</th>
+                
                     <th>Quantity</th>
                     <th>Images</th>
                     <th> Actions</th>
@@ -392,22 +392,17 @@
             <tbody>
                 <% products.forEach(product => { %>
                     <tr>
-                        <td><%= product._id %></td>
+                        
                         <td><%= product.productName %></td>
                         <td><%= product.category %></td>
                         <td><%= product.productPrice %></td>
-                        <td><%= product.productDescription %></td>
                         <td><%= product.productQuantity %></td>
-                        
-                        
-                        <td><img src="<%= product.images[0] %>" style="height: 5vh;" alt=""></td>
+                        <td><img src="<%= product.images[0] %>" style="height: 10vh;" alt=""></td>
                         <td>
                             <a href="/admin/editProduct/<%= product._id %>">
                                 <button class="edit-btn">EDIT</button>
                             </a>
-                            <a href="/admin/products<%= product._id %>">
-                                <button>ADD</button>
-                            </a>
+                           
     
                             <% if (product.listed) { %>
                                 <a href="/admin/listProduct/<%= product._id %>">
