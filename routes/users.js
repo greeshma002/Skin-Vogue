@@ -11,33 +11,30 @@ const {
   blogpage,
   aboutpage,
   logout,
-  detail
-//   listProducts
+  detail,
 } = require("../controllers/usercontroller");
 
-function checkSession(req,res,next){
-  if (req.session.user) {
-    next()
-  } else {
-    res.render("/login");
-  }
-}
+const { isAuthenticated, isBlocked } = require("../middlewares/authMiddleware");
 
 router.get("/", home);
+
 router.get("/login", login);
+
 router.post("/login", loginpost);
+
 router.get("/signup", signup);
+
 router.post("/signup", signuppost);
-router.get("/shop",shoppage)
-router.get("/blog",blogpage)
-router.get("/about",aboutpage)
-router.get("/logout",logout)
-router.get("/detail/:id",detail)
 
-// router.get("/products", listProducts);
+//User pages
+router.get("/shop", isAuthenticated, isBlocked, shoppage);
 
+router.get("/blog", isAuthenticated, blogpage);
 
+router.get("/about", aboutpage);
 
+router.get("/logout", logout);
 
+router.get("/detail/:id", detail);
 
 module.exports = router;

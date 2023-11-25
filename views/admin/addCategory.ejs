@@ -61,11 +61,7 @@
 
 </head>
 <body>
-
- 
-
   <div class="form-container">
-
     <% if(typeof message !== 'undefined') { %>
       <div id="customPopup" class="custom-popup bg-danger">
         <div class="popup-content">
@@ -80,12 +76,11 @@
           document.getElementById('customPopup').style.display = 'none'; // Hide the popup when cancel is clicked
         });
       </script>
-           <% } %>
+    <% } %>
+
     <h1>Add Category</h1>
 
-    
-    
-    <form action="/admin/categories/add" method="post">
+    <form action="/admin/categories/add" method="post" onsubmit="return validateForm()">
       <label for="categoryName">Category Name:</label>
       <input type="text" id="categoryName" name="categoryName" required>
 
@@ -93,7 +88,22 @@
     </form>
   </div>
 
-  <!-- Add your additional content here -->
+  <script>
+    function validateForm() {
+      var categoryNameInput = document.getElementById('categoryName');
+      var categoryName = categoryNameInput.value;
 
+      // Regular expression to allow only letters
+      var regex = /^[a-zA-Z]+$/;
+
+      if (!regex.test(categoryName)) {
+        alert('Please enter a valid category name with only letters.');
+        return false;
+      }
+
+      return true;
+    }
+  </script>
 </body>
+
 </html>

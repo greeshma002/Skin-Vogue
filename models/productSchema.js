@@ -8,11 +8,10 @@ const productSchema = new mongoose.Schema({
   productDescription: {
     type: String,
   },
-  category: {
-    // type: mongoose.Schema.Types.ObjectId,
-    type:String,
-    unique:true,
-    // required: true,
+   category: {
+    type: String,
+    ref: 'Category',
+    required: true,
   },
   productPrice: {
     type: Number,

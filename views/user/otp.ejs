@@ -80,7 +80,7 @@ button:hover {
         <div class="login-form">
             <h1 class="login-heading">SKINVOGUE OTP Verification</h1>
             <form action="/registerOTP" method="post">
-
+                <input type="hidden" name="email" value="<%=email%>">
                 <label for="otp">OTP:</label>
                 <input name="otp" type="text" class="form-control" id="otp" placeholder="Enter OTP" required>
 
@@ -94,10 +94,83 @@ button:hover {
                     
 
                 <button type="submit"  class="btn btn-primary px-4 float-end mt-4">Verify OTP</button>
+                <!-- Add these elements inside the form -->
+                <div id="timer-container"></div>
+             <button disabled type="button" id="resend-otp" class="btn btn-secondary px-4 mt-2">Resend OTP</button>
+
             </form>
         </div>
     </div>
 
+    <script>
+        // Set the timer duration in seconds
+        const timerDuration = 60;
+        let timer = timerDuration;
+        let timerInterval;
+    
+        // Function to update the timer display
+        function updateTimer() {
+            document.getElementById('timer-container').innerText = `Time remaining: ${timer}s`;
+        }
+    
+        // Function to start the timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timer > 0) {
+                    timer--;
+                    updateTimer();
+                } else {
+                    clearInterval(timerInterval);
+                    document.getElementById('resend-otp').disabled = false;
+                }
+            }, 1000);
+        }
+        
+    document.addEventListener('DOMContentLoaded', () => {
+        // const email = "greeshma242002@gmail.com"
+        const errorMessageElement = document.getElementById('error-message');
+        const resendButton = document.getElementById('resend-otp');
+
+        // Function to resend OTP
+        resendButton.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/resendOTP', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: '<%=email%>',
+                    }),
+                });
+
+                if (response.ok) {
+                    // Reset the timer and start it again
+                    timer = timerDuration;
+                    updateTimer();
+                    startTimer();
+                    resendButton.disabled = true;
+                } else {
+                    // Handle error and display the error message
+                    const errorMessage = await response.text();
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Failed to resend OTP:', error.message);
+                errorMessageElement.textContent = 'Failed to resend OTP. Please try again later.'; // Update the error message
+            }
+        });
+    });
+
+
+
+
+    
+        // Initial setup
+        updateTimer();
+        startTimer();
+    </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
 </body>

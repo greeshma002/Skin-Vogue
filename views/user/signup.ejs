@@ -24,7 +24,24 @@
         border: 2px solid #ff1493;
         border-radius: 25px;
     }
+    .alert {
+  text-align: center;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.success-alert {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+.error-alert {
+  background-color: #f44336; /* Red */
+  color: white;
+}
 </style>
+
+
 
 <section class="vh-100">
     <div class="container h-100">
@@ -37,7 +54,15 @@
 
                                 <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
 
-                                <form class="mx-1 mx-md-4" action="/signup" method="post" id="signupForm" novalidate>
+                                <form class="mx-1 mx-md-4" action="/signup" method="post" id="signupForm" >
+
+                                    <div class="form-container">
+
+                                        <% if(typeof message !== 'undefined') { %>
+                                          <div class="error-alert">
+                                            <p class="error-alert"><%= message %></p>
+                                          </div>
+                                        <% } %>
 
                                     <div class="d-flex flex-row align-items-center mb-4">
                                         <i class="fas fa-user fa-lg me-3 fa-fw"></i>
@@ -94,28 +119,38 @@
         event.preventDefault();
         resetErrors();
 
-        var name = document.getElementById('name').value;
+        var name = document.getElementById('name').value.trim();
         var email = document.getElementById('email').value;
         var password = document.getElementById('password').value;
+    
 
-        if (name.length === 0 || name.trim() !== name || /[0-9-\s]/.test(name) || !/^[a-zA-Z]+$/.test(name) || /^\s*$/.test(name)) {
+        if (name.length === 0) {
     document.getElementById('nameError').innerText = 'Enter a valid name';
     return false;
+        }
+        
+      if (!/^[A-Za-z\s]+$/.test(name)) {
+    document.getElementById('nameError').innerText = 'Name should not contain numbers or special characters';
+    return false;
 }
+
 
         if (!isValidEmail(email)) {
             document.getElementById('emailError').innerText = 'Invalid email address';
             return false;
         }
 
-        // Password validation with space restriction and trim
-        if (password.length < 8 || /\s/.test(password) || password.trim() !== password) {
-            document.getElementById('passwordError').innerText = 'Invalid password';
+        
+        if (password.length < 8 || /\s/.test(password) || password.trim() !== password || !/[!@#$%^&*(),.?":{}|<>]/.test(password) || /\s/.test(password) ||
+    !/[A-Za-z]/.test(password) || !/\d/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+            document.getElementById('passwordError').innerText = 'should atleast contain a character number';
             return false;
         }
 
+            
         document.getElementById('signupForm').submit();
     }
+    
 
     function resetErrors() {
         var errorElements = document.getElementsByClassName('error');

@@ -1,6 +1,6 @@
 const collection = require("../models/mongodb");
 const bcrypt = require("bcrypt");
-const Product = require("../models/Product");
+const Product = require("../models/productSchema");
 const Category = require("../models/CategorySchema");
 const express = require("express");
 const router = express.Router();
@@ -9,11 +9,7 @@ const { log } = require("console");
 
 exports.login = async (req, res) => {
   try {
-    if (req.session.admin) {
-      res.redirect("admin/dashboard");
-    } else {
-      res.render("admin/login");
-    }
+    res.render("admin/login");
   } catch (error) {
     console.log(error.message);
   }
@@ -85,30 +81,19 @@ exports.getAddProduct = async (req, res) => {
 };
 
 exports.postAddProduct = async (req, res) => {
- 
   const data = {
     productName: req.body.productName,
     productDescription: req.body.productDescription,
     category: req.body.productCategory,
     productPrice: req.body.productPrice,
     productQuantity: req.body.productQuantity,
-    images: req.files.map(file => file.path.substring(6))
+    images: req.files.map((file) => file.path.substring(6)),
   };
 
-  // await Product.create({
-  //   productName,
-  //   productDescription,
-  //   category,
-  //   productPrice,
-  //   productQuantity,
-  //   images,
-  // });
   await Product.insertMany([data]).then(() => {
     console.log("inserted", data);
   });
-  // console.log(req.body);
-  // const newProduct = new Product({productName,productDescription,category,productPrice,productQuantity})
-  // await newProduct.save()
+
   res.redirect("/admin/products");
 };
 
@@ -126,38 +111,6 @@ exports.getEditProduct = async (req, res) => {
   }
 };
 
-// exports.postEditProduct = async (req, res) => {
-//   console.log(req.body);
-//   const { productName, productDescription, productPrice, productQuantity, productCategory  } =
-//     req.body;
-
-//   // const { name, description, category, price, quantity } = req.body;
-//   const newdata = {
-//     productName: productName,
-//     productDescription: productDescription,
-//     productPrice: productPrice,
-//     productQuantity: productQuantity,
-//     category: productCategory,
-//   };
-
-//   console.log("new data:", newdata);
-//   const productId = req.params.productId;
-//   console.log(productId);
-//   await Product.findByIdAndUpdate(productId, newdata).then(
-//     (x) => {
-//       console.log("updated " + x);
-//     }
-//   );
-//   // productName = name;
-//   // productDescription = description;
-//   // productCategory = category;
-//   // productPrice = price;
-//   // productQuantity = quantity;
-//   // await product.save();
-//   // console.log(req.body);
-//   res.redirect("/admin/products");
-// };
-
 exports.postEditProduct = async (req, res) => {
   try {
     console.log(req.body);
@@ -171,7 +124,6 @@ exports.postEditProduct = async (req, res) => {
       productCategory,
     } = req.body;
 
-    // const { name, description, category, price, quantity } = req.body;
     const updateProduct = await Product.findByIdAndUpdate(
       productId,
       {
@@ -217,27 +169,12 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-// exports.listProduct = async (req, res) => {
-//   const product = await collection.findById(req.params.userId);
-//   if (product.listed) {
-//     product.listed = false;
-//   } else {
-//     product.listed = true;
-//   }
-//   await product.save();
-//   res.redirect("/admin/products");
-// };
-
 exports.listProduct = async (req, res) => {
   try {
     const id = req.params.id;
     console.log("product id ", id);
     const product = await Product.findById({ _id: id });
     console.log(product);
-
-    // if (!product) {
-    //   return res.status(404).json({ error: 'Product not found' });
-    // }
     product.listed = !product.listed;
     console.log("listed or not", product.listed);
     await product.save();
@@ -269,32 +206,25 @@ exports.postaddCategory = async (req, res) => {
   console.log(req.body);
 
   try {
-    // Check if category with the same name already exists
     const existingCategory = await Category.findOne({ categoryName: name });
-
     if (existingCategory) {
       const errorMessage = "Category already exists.";
-      res.render("admin/addCategory", { message:errorMessage });
-      // console.log(`Category ${name} already exists.`);
-      // res.status(400).json({ error: "Category already exists" });
+      res.render("admin/addCategory", { message: errorMessage });
     } else {
-      // Category does not exist, proceed with insertion
-      const newCategory = await Category.create({ categoryName:name });
-      const errorMessage = "category added successfully"
+      const newCategory = await Category.create({ categoryName: name });
+      const errorMessage = "category added successfully";
       console.log("Category added successfully:", newCategory);
-      res.render("admin/addcategory", { message:errorMessage });
+      res.render("admin/addcategory", { message: errorMessage });
     }
   } catch (error) {
     console.error(error);
     const errorMessage = "Internal Server Error";
-    // res.render("addCategory", { errorMessage:"" });
   }
 };
 
-
 exports.geteditCategory = async (req, res) => {
   console.log("etr the edit");
-  const categoryId = req.params.id; // Assuming you have the category ID in the URL
+  const categoryId = req.params.id;
   const category = await Category.findOne({ _id: categoryId });
   console.log("category is", category);
   res.render("admin/editCategory", { category });
@@ -329,4 +259,14 @@ exports.deleteCategory = async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+exports.adminlogout = async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+    } else {
+      res.redirect("/admin/login");
+    }
+  });
 };

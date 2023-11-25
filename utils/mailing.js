@@ -35,7 +35,7 @@ function sendOTP(email, otp) {
       return console.error(error);
     }
     console.log("✉️ An OTP Email has been sent. (%s)", info.messageId);
-    console.log("OTP was " + otp);
+    console.log("OTP is " + otp);
   });
 }
 

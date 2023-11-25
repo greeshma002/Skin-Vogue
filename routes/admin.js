@@ -21,12 +21,15 @@ const {
   getaddCategory,
   postaddCategory,
   geteditCategory,
-  //  posteditCategory,
   deleteCategory,
   posteditCategory,
+  adminlogout,
 } = require("../controllers/admincontroller");
 
+
+
 const multer = require("multer");
+const { isAdmin, isLogout } = require("../middlewares/authMiddleware");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/uploads");
@@ -39,44 +42,58 @@ const storage = multer.diskStorage({
     );
   },
 });
-const upload = multer({ storage: storage }).array('img',4);
+const upload = multer({ storage: storage }).array('img',5);
 
-function checkSession(req,res,next){
-  if (req.session.admin) {
-    next()
-  } else {
-    res.render("admin/login");
-  }
-}
 
-router.get("/login", login);
+
+router.get("/login",isLogout, login);
+
 router.post("/login", loginpost);
-router.get("/dashboard",dashboard);
-router.get("/users",users);
-router.get("/userdetails", userdetails);
 
-router.get("/blockUser/:userId", blockUser);
+router.get("/dashboard",isAdmin,dashboard);
+
+router.get("/users",isAdmin,users);
+
+router.get("/userdetails",isAdmin, userdetails);
+
+router.get("/adminlogout",isAdmin,adminlogout)
+
+router.get("/blockUser/:userId",isAdmin, blockUser);
+
+
 
 // Product Management
-router.get("/products", listProducts); // render list of products, admin/products.ejs
 
-router.get("/addProduct", getAddProduct); // render add product page, admin/addProduct.ejs
-router.post("/addProduct", upload, postAddProduct);
+router.get("/products", isAdmin,listProducts); 
 
-router.get("/editProduct/:productId", getEditProduct); // render edit product page, admin/editProduct.ejs
-router.post("/editProduct/:id", postEditProduct);
+router.get("/addProduct",isAdmin, getAddProduct); 
 
-router.get("/products/:productId", deleteProduct);
-router.get("/listProduct/:id", listProduct);
+router.post("/addProduct",isAdmin, upload, postAddProduct);
 
-router.get("/categories", getAllCategories);
-router.get("/categories/add", getaddCategory);
-router.post("/categories/add", postaddCategory);
-//router.get("/editCategory", geteditCategory);
- router.get("/categories/edit/:id", geteditCategory);
- router.post("/categories/edit/:id", posteditCategory);
- router.post('/categories/delete/:id', deleteCategory);
+router.get("/editProduct/:productId",isAdmin, getEditProduct); 
 
-//file upload using multer
+router.post("/editProduct/:id",isAdmin, postEditProduct);
+
+router.get("/products/:productId",isAdmin, deleteProduct);
+
+router.get("/listProduct/:id",isAdmin, listProduct);
+
+//Category management
+
+router.get("/categories",isAdmin, getAllCategories);
+
+router.get("/categories/add",isAdmin, getaddCategory);
+
+router.post("/categories/add",isAdmin, postaddCategory);
+
+ router.get("/categories/edit/:id",isAdmin,geteditCategory);
+
+ router.post("/categories/edit/:id",isAdmin, posteditCategory);
+
+ router.post('/categories/delete/:id',isAdmin, deleteCategory);
+
+
+
+
 
 module.exports = router;
