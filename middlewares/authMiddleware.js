@@ -1,4 +1,4 @@
-const userModel = require("../models/mongodb");
+const userModel = require("../models/UserSchema");
 
 function isAuthenticated(req, res, next) {
     if (req.session.user) {

@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const userModel = require("./models/mongodb");
+const userModel = require("./models/UserSchema");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -26,7 +26,7 @@ app.use(nocache());
 
 //ssession secret Key
 const sessionKey = crypto.randomBytes(16).toString("hex");
-console.log(sessionKey);
+//console.log(sessionKey);
 
 app.use(
   session({

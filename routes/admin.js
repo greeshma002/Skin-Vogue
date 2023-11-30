@@ -92,6 +92,10 @@ router.post("/categories/add",isAdmin, postaddCategory);
 
  router.post('/categories/delete/:id',isAdmin, deleteCategory);
 
+ //Cart management
+
+ 
+
 
 
 

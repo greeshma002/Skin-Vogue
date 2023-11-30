@@ -1,6 +1,6 @@
 const { isBlocked } = require("../middlewares/authMiddleware");
 const Product = require("../models/productSchema");
-const collection = require("../models/mongodb");
+const collection = require("../models/UserSchema");
 
 const { sendOTP, generateOTP } = require("../utils/mailing");
 
@@ -52,11 +52,12 @@ exports.loginpost = async (req, res) => {
         res.render("user/login", { message: errorMessage });
       } else if (await bcrypt.compare(req.body.password, check.password)) {
         req.session.user = check.email;
+        req.session.userId = check._id;
         req.session.userDoc = check.isBlocked;
         console.log("session is:", req.session.user);
         res.render("index");
       } else {
-        const errorMessage = "Wrong Password...!!!";
+        const errorMessage = "Wrong Password...!!!"; 
         res.render("user/login", { message: errorMessage });
       }
     } else {
@@ -157,5 +158,12 @@ exports.detail = async (req, res) => {
     res.render("user/detailspage", { product: productDetails });
   } catch (error) {
     console.log(error);
+  }
+};
+exports.userprofile = async (req, res) => {
+  try {
+    res.render("user/userprofile");
+  } catch (error) {
+    console.log(error.message);
   }
 };

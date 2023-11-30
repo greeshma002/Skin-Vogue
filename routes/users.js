@@ -12,8 +12,11 @@ const {
   aboutpage,
   logout,
   detail,
+  userprofile,
+  
+ 
 } = require("../controllers/usercontroller");
-
+const  { cartcontroller,addtocartController,cartdetails } = require("../controllers/cartcontroller")
 const { isAuthenticated, isBlocked } = require("../middlewares/authMiddleware");
 
 router.get("/", home);
@@ -36,5 +39,12 @@ router.get("/about", aboutpage);
 router.get("/logout", logout);
 
 router.get("/detail/:id", detail);
+
+//Cart Management
+router.get("/cartdetails",cartdetails)
+router.get("/cart/:productid",cartcontroller)
+// router.post("/addTocart",addtocartController);
+
+router.get("/userprofile",userprofile)
 
 module.exports = router;

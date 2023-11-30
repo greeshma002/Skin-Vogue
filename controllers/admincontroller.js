@@ -1,4 +1,4 @@
-const collection = require("../models/mongodb");
+const collection = require("../models/UserSchema");
 const bcrypt = require("bcrypt");
 const Product = require("../models/productSchema");
 const Category = require("../models/CategorySchema");
@@ -174,7 +174,7 @@ exports.listProduct = async (req, res) => {
     const id = req.params.id;
     console.log("product id ", id);
     const product = await Product.findById({ _id: id });
-    console.log(product);
+    // console.log(product);
     product.listed = !product.listed;
     console.log("listed or not", product.listed);
     await product.save();

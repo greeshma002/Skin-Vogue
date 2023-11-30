@@ -1,4 +1,4 @@
-const collection = require("../models/mongodb");
+const collection = require("../models/UserSchema");
 const { sendOTP, generateOTP } = require("../utils/mailing");
 exports.verifyOTP = async (req, res) => {
   const userInputOTP = req.body.otp;

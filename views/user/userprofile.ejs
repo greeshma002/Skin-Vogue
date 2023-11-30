@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f7f0f5; /* Light pink background */
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header img {
+            border-radius: 50%;
+            max-width: 100px;
+        }
+
+        h1 {
+            color: #e74682; /* Pink text color */
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            border-bottom: 1px solid #e74682; /* Pink border bottom */
+            padding-bottom: 10px;
+            color: #e74682; /* Pink text color */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #6b6b6b; /* Gray text color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="path/to/profile-image.jpg" alt="User Profile Image">
+            <h1 id="welcomeMessage"></h1>
+        </header>
+
+        <section id="userDetailsSection">
+            <h2>User Details</h2>
+            <ul id="userDetailsList">
+                <!-- User details will be added here using JavaScript -->
+            </ul>
+        </section>
+
+        <section id="orderHistorySection">
+            <h2>Order History</h2>
+            <ul id="orderHistoryList">
+                <!-- Order history will be added here using JavaScript -->
+            </ul>
+        </section>
+
+        <!-- Add more sections for additional user information or features -->
+
+        <footer>
+            <!-- Add your footer content here -->
+        </footer>
+    </div>
+
+    <!-- Add your JavaScript scripts or links here -->
+    <script>
+        // Replace the following sample data with actual user data from your server
+        var user = {
+            name: "John Doe",
+            email: "john.doe@example.com",
+            orders: [
+                { orderId: "12345", date: "2023-01-01" },
+                { orderId: "67890", date: "2023-02-01" }
+                // Add more order details as needed
+            ]
+        };
+
+        // Display welcome message
+        document.getElementById("welcomeMessage").innerText = "Welcome, " + user.name + "!";
+
+        // Display user details
+        var userDetailsList = document.getElementById("userDetailsList");
+        userDetailsList.innerHTML += "<li><strong>Name:</strong> " + user.name + "</li>";
+        userDetailsList.innerHTML += "<li><strong>Email:</strong> " + user.email + "</li>";
+        // Add more user details as needed
+
+        // Display order history
+        var orderHistoryList = document.getElementById("orderHistoryList");
+        if (user.orders.length > 0) {
+            user.orders.forEach(order => {
+                orderHistoryList.innerHTML += "<li><strong>Order ID:</strong> " + order.orderId + "<br>" +
+                                             "<strong>Date:</strong> " + order.date + "<br></li>";
+                // Add more order details as needed
+            });
+        } else {
+            orderHistoryList.innerHTML += "<p>No orders yet.</p>";
+        }
+    </script>
+</body>
+</html>
