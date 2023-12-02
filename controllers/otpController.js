@@ -33,3 +33,4 @@ function sendMailfn(req, res, email) {
   //sendOTP(email, req.session.otp);
   console.log(`${email} got the OTP for ${req.session.otp}`);
 }
+ 

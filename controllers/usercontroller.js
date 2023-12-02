@@ -118,7 +118,7 @@ function sendMailfn(req, res, email) {
 exports.shoppage = async (req, res) => {
   try {
     const productData = await Product.find({ listed: true });
-    console.log(productData);
+    // conso  le.log(productData);
     res.render("shop", { productData });
   } catch (error) {
     console.log(error.message);

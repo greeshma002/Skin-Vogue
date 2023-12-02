@@ -172,11 +172,11 @@ exports.deleteProduct = async (req, res) => {
 exports.listProduct = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("product id ", id);
+    // console.log("product id ", id);
     const product = await Product.findById({ _id: id });
     // console.log(product);
     product.listed = !product.listed;
-    console.log("listed or not", product.listed);
+    // console.log("listed or not", product.listed);
     await product.save();
     res.redirect("/admin/products");
   } catch (error) {
@@ -213,7 +213,7 @@ exports.postaddCategory = async (req, res) => {
     } else {
       const newCategory = await Category.create({ categoryName: name });
       const errorMessage = "category added successfully";
-      console.log("Category added successfully:", newCategory);
+      // console.log("Category added successfully:", newCategory);
       res.render("admin/addcategory", { message: errorMessage });
     }
   } catch (error) {
