@@ -10,91 +10,104 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha512-xyz" crossorigin="anonymous" />
-
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+    
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px;
+                background-color: #ff69b4;
+                color: #fff;
+            }
+    
+            .brand {
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+            }
+    
+            .brand img {
+                margin-right: 10px;
+                height: 30px;
+            }
+    
+            .navbar-links {
+                display: flex;
+                align-items: center;
+            }
+    
+            .link {
+                margin: 0 10px;
+                color: #fff;
+                text-decoration: none;
+            }
+    
+            /* Media query for mobile screens */
+            @media only screen and (max-width: 767px) {
+                .navbar-links {
+                    display: none; /* Hide links on small screens */
+                }
+    
+                .brand {
+                    font-size: 1.5em; /* Adjust the font size for the brand on small screens */
+                }
+    
+                .link {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+    
+    <div class="navbar">
+        <div class="brand">
+            <img src="/assets/img/logo.png" alt="Logo">
+            <div><strong>SKINVOGUE</strong></div>
+        </div>
+        <div class="navbar-links">
+            <a href="#" class="link">Home</a>
+            <a href="#" class="link">Shop</a>
+            <a href="#" class="link">Blog</a>
+            <a href="#" class="link">Wishlist</a>
+            <a href="#" class="link">Contact Us</a>
+            <a href="/cartdetails" class="link"><i class="fas fa-shopping-cart"></i></a>
+            <a href="/userprofile" class="link"><i class="fas fa-user"></i></a>
+            <a href="#" class="link"><i class="fas fa-sign-out-alt"></i></a>
+            <a href="#" class="link"><i class="fas fa-sign-in-alt"></i></a>
+        </div>
+    </div>
 
     
-</head>
-
-<body>
-    <header>
-        <!-- Jumbotron -->
-        <div class="p-3 text-center bg-white border-bottom">
-            <div class="container">
-                <div class="row gy-3">
-                    <!-- Left elements -->
-                    <div class="col-lg-2 col-sm-4 col-4">
-                        <a href="https://mdbootstrap.com/" target="_blank" class="float-start">
-                            <div class="brand">
-                                <img src="/assets/img/logo.png" height="35" />
-                                <p><strong>SKINVOGUE</strong></p>
-                            </div>
-
-                        </a>
-                    </div>
-                    <!-- Left elements -->
-
-                    <!-- Center elements -->
-                    <div class="order-lg-last col-lg-5 col-sm-8 col-8">
-                        <div class="d-flex float-end">
-                            <a href="" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"
-                                target="_blank">
-                                <i class="fas fa-user-alt m-1 me-md-2"></i>
-                                <p class="d-none d-md-block mb-0">Home</p>
-                            </a>
-                            <a href="" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"
-                                target="_blank">
-                                <i class="fas fa-heart m-1 me-md-2"></i>
-                                <p class="d-none d-md-block mb-0">Wishlist</p>
-                            </a>
-                            <a href="" class="border rounded py-1 px-3 nav-link d-flex align-items-center"
-                                target="_blank">
-                                <i class="fas fa-shopping-cart m-1 me-md-2"></i>
-                                <p class="d-none d-md-block mb-0">Profile</p>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Center elements -->
-
-                    <!-- Right elements -->
-                    <div class="col-lg-5 col-md-12 col-12">
-                        <div class="input-group float-center">
-                            <div class="form-outline">
-                                <input type="search" id="form1" class="form-control" placeholder="Search" />
-
-                            </div>
-                            <button type="button" class="btn btn-primary shadow-0">
-                                <i class="fas fa-search" style="color: #000000;"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Right elements -->
+    </body>
+    </html>
+                        <h6 class="ms-5">
+                            <a href="#" class="link">Home</a>
+                            <span class="text-white-50 mx-2"> > </span>
+                            <a href="#" class="link"><u>Shopping cart</u></a>
+                        </h6>
+                    </nav>
+                    <!-- Breadcrumb -->
                 </div>
             </div>
-        </div>
-        <!-- Jumbotron -->
-
-        <!-- Heading -->
-        <div class="bg-primary">
-            <div class="container py-4">
-                <!-- Breadcrumb -->
-                <nav class="d-flex">
-                    <h6 class="mb-0">
-                        <a href="" class="text-white-50">Home</a>
-                        <span class="text-white-50 mx-2"> > </span>
-                        <a href="" class="text-white"><u>Shopping cart</u></a>
-                    </h6>
-                </nav>
-                <!-- Breadcrumb -->
-            </div>
-        </div>
-        <!-- Heading -->
-    </header>
+            <!-- Heading -->
+        </header>
+    </body>
+    </html>
 
 
 
 
-    <div class="container-fluid mt-5">
-        <div class="row">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                
             <table class="table">
                 <thead>
                     <tr>
@@ -120,8 +133,35 @@
                                 </td>
                                 <!-- Quantity -->
                                 <td class="text-center">
-                                    <text class="h6"><%= product.quantity %></text>
-                                </td>
+                                    <div class="quantity-container">
+                                      <button class="quantity-btn" onclick="updateQuantity('<%= product.id %>', -1)">-</button>
+                                      <text id="quantity-<%= product.id %>" class="h6"><%= product.quantity %></text>
+                                      <button class="quantity-btn" onclick="updateQuantity('<%= product.id %>', 1)">+</button>
+                                    </div>
+                                  </td>
+                                 
+                                  <script> 
+                                    function updateQuantity(productId, change) {
+                                      // Make an AJAX request to update the quantity on the server
+                                      fetch(`/updateQuantity/product/${productId}?change=${change}`, { method: 'POST' })
+                                        .then(response => {
+                                          if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                          }
+                                          return response.json();
+                                        })
+                                        .then(data => {
+                                          document.getElementById(`quantity-${productId}`).innerText = data.quantity;
+                                          document.getElementById('total-price').innerText = data.totalPrice;
+                                        })
+                                        .catch(error => {
+                                          console.error('Error updating quantity:', error);
+                                        });
+                                    }
+                                   </script>
+                                   
+                                  
+                                  
                                 <!-- Price -->
                                 <td class="text-center">
                                     <div>
@@ -144,7 +184,9 @@
                     <% } %>
                 </tbody>
             </table>
-        </div>
+    </div>
+</div>
+</div>
         
                         
                     </div>

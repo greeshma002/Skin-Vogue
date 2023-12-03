@@ -17,11 +17,16 @@ const cartItemSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    productName: {
+        type: String,
+    },
     price: {
         type: Number,
         required: true,
     },
-   
+    image: {
+        type:[String]
+    } 
 }]
 });
 const Cart = mongoose.model("cart",cartItemSchema)
