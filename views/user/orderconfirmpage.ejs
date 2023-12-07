@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+}
+
+.container {
+  width: min(70%, 70.5rem);
+  margin-inline: auto;
+}
+
+.card {
+  border: 1px solid rgba(14, 14, 14, 0.25);
+  text-align: center;
+  margin: 2rem;
+  border-top: 8px solid green;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+button {
+  padding: 0.5rem .5rem;
+  border: 0;
+  background: lightgreen;
+  color: #111;
+  font-weight: bold;
+  
+}
+
+
+.img {
+  max-width: 128px;
+}
+    </style>
+</head>
+
+<body>
+    
+
+
+<div class="container">
+    <div class="card">
+      <img class="img" src="https://imgs.search.brave.com/wWLYZESX-7w1ijesjFAdJz2QOC57O5Yd_E-O8t7pyv0/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9jbGlw/YXJ0LWxpYnJhcnku/Y29tL25ld19nYWxs/ZXJ5LzEyMy0xMjM5/NTY3X2NoZWNrLW1h/cmstZ3JlZW4tY2ly/Y2xlLnBuZw" />
+      <h1>Order Confirmed</h1>
+      <p>Your order has been placed successfully.</p>
+      <p>Expect delivery by <strong>January 3rd, 2023</strong></p>
+    <a href="/orderdetail"><button>See Orders</button></a>
+    </div>
+  </div>
+</body>
+</html>

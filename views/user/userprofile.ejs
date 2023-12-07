@@ -1,123 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            background-color: #f7f0f5; /* Light pink background */
+        }
+
+        .navbar {
+            background-color: #e83e8c;
+            padding: 10px;
+            color: #fff;
+            text-align: center;
         }
 
         .container {
-            max-width: 600px;
-            margin: 50px auto;
+            display: flex;
+            max-width: 800px;
             background-color: #fff;
-            padding: 20px;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
         }
 
-        header {
-            text-align: center;
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #ff69b4;
+            color: #fff;
+        }
+
+        .brand {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand img {
+            margin-right: 10px;
+            height: 30px;
+        }
+
+
+        .sidebar {
+            background-color: #ff69b4;
+            color: #fff;
+            padding: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        .sidebar-divider {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-50%);
+        }
+
+        .sidebar h2 {
             margin-bottom: 20px;
         }
 
-        header img {
-            border-radius: 50%;
-            max-width: 100px;
-        }
-
-        h1 {
-            color: #e74682; /* Pink text color */
-        }
-
-        section {
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            border-bottom: 1px solid #e74682; /* Pink border bottom */
-            padding-bottom: 10px;
-            color: #e74682; /* Pink text color */
-        }
-
-        ul {
+        .sidebar ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
-        li {
+        .sidebar li {
             margin-bottom: 10px;
-            color: #6b6b6b; /* Gray text color */
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .left-section,
+        .right-section {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            object-fit: cover;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <img src="path/to/profile-image.jpg" alt="User Profile Image">
-            <h1 id="welcomeMessage"></h1>
-        </header>
-
-        <section id="userDetailsSection">
-            <h2>User Details</h2>
-            <ul id="userDetailsList">
-                <!-- User details will be added here using JavaScript -->
-            </ul>
-        </section>
-
-        <section id="orderHistorySection">
-            <h2>Order History</h2>
-            <ul id="orderHistoryList">
-                <!-- Order history will be added here using JavaScript -->
-            </ul>
-        </section>
-
-        <!-- Add more sections for additional user information or features -->
-
-        <footer>
-            <!-- Add your footer content here -->
-        </footer>
+    <div class="navbar">
+        <div class="brand">
+            <img src="/assets/img/logo.png" alt="Logo">
+            <div><strong>SKINVOGUE</strong></div>
+        </div>
+        
+           
+            
+        
     </div>
 
-    <!-- Add your JavaScript scripts or links here -->
-    <script>
-        // Replace the following sample data with actual user data from your server
-        var user = {
-            name: "John Doe",
-            email: "john.doe@example.com",
-            orders: [
-                { orderId: "12345", date: "2023-01-01" },
-                { orderId: "67890", date: "2023-02-01" }
-                // Add more order details as needed
-            ]
-        };
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Sidebar</h2>
+            
+            <ul>
+                <li><a href="#">Orders</a></li>
+                <hr>
+                <li><a href="#">Addresses</a></li>
+            </ul>
+        </div>
 
-        // Display welcome message
-        document.getElementById("welcomeMessage").innerText = "Welcome, " + user.name + "!";
+        <!-- User details on the left side -->
+        <div class="left-section">
+            <h2>User Details</h2>
+            <p><strong>Username:</strong> username</p>
+            <p><strong>First Name:</strong> Valerie</p>
+            <p><strong>Last Name:</strong> Luna</p>
+            <p><strong>Email:</strong> name@example.com</p>
+            <p><strong>Phone:</strong> 555-123-4567</p>
+            <p><strong>Birthday:</strong> 06/10/1988</p>
+        </div>
 
-        // Display user details
-        var userDetailsList = document.getElementById("userDetailsList");
-        userDetailsList.innerHTML += "<li><strong>Name:</strong> " + user.name + "</li>";
-        userDetailsList.innerHTML += "<li><strong>Email:</strong> " + user.email + "</li>";
-        // Add more user details as needed
+        <!-- User form on the right side -->
+        <div class="right-section">
+            <img class="profile-picture" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile Picture">
 
-        // Display order history
-        var orderHistoryList = document.getElementById("orderHistoryList");
-        if (user.orders.length > 0) {
-            user.orders.forEach(order => {
-                orderHistoryList.innerHTML += "<li><strong>Order ID:</strong> " + order.orderId + "<br>" +
-                                             "<strong>Date:</strong> " + order.date + "<br></li>";
-                // Add more order details as needed
-            });
-        } else {
-            orderHistoryList.innerHTML += "<p>No orders yet.</p>";
-        }
-    </script>
+            <!-- Account details form -->
+            <form>
+                <div class="form-group">
+                    <label for="inputUsername">FullName</label>
+                    <input id="inputUsername" type="text" placeholder="Enter your username" value="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputFirstName">Email Address</label>
+                    <input id="inputFirstName" type="text" placeholder="Enter your first name" value="Valerie">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputLastName">Phone Number</label>
+                    <input id="inputLastName" type="text" placeholder="Enter your last name" value="Luna">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputEmail">s</label>
+                    <input id="inputEmail" type="email" placeholder="Enter your email address" value="name@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPhone">Phone number</label>
+                    <input id="inputPhone" type="tel" placeholder="Enter your phone number" value="555-123-4567">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputBirthday">Birthday</label>
+                    <input id="inputBirthday" type="text" name="birthday" placeholder="Enter your birthday" value="06/10/1988">
+                </div>
+
+                <button type="button">Save changes</button>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>

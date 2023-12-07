@@ -1,35 +1,16 @@
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Checkout Form</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        .navbar {
-            background-color: #ff69b4;
-        }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/checkoutpage.css">
 
-        .navbar-brand,
-        .navbar-nav .nav-link {
-            color: #fff;
-        }
-
-        .container-card {
-            background-color: #fff;
-            border-radius: 15px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-        }
-		.navbar {
+  <style>
+    
+    .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -43,179 +24,227 @@
             display: flex;
             align-items: center;
         }
-    </style>
+
+        .brand img {
+            margin-right: 10px;
+            height: 30px;
+        }
+  </style>
 </head>
-
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div>  
-			<div class="navbar-brand">
-				<img src="/assets/img/logo.png" alt="">
-				<div>SKINVOGUE</div>
-			</div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
 
-    <div class="container container-card">
-        <h4 class="my-4">
-            Billing Address
-        </h4>
-
-		<form>
-			<div class="form-row">
-				<div class="col-md-6 form-group">
-					<label for="firstname">Your Name</label>
-					<input type="text" class="form-control" id="firstname" placeholder="First Name">
-					<div class="invalid-feedback">
-						Valid first name is required.
-					</div>
-				</div>
-		
-				<div class="col-md-6 form-group">
-					<label for="email">Email</label>
-					<input type="email" class="form-control" id="email" placeholder="you@example.com" required>
-				</div>
-			</div>
-		
-			<div class="form-group">
-				<label for="adress">Address</label>
-				<input type="text" class="form-control" id="adress" placeholder="1234 Main Street" required>
-				<div class="invalid-feedback">
-					Please enter your shipping address.
-				</div>
-			</div>
-		
-			<div class="row">
-				<div class="col-md-4 form-group">
-					<label for="country">Country</label>
-					<select type="text" class="form-control" id="country">
-						<option value>Choose...</option>
-						<option>INDIA</option>
-					</select>
-					<div class="invalid-feedback">
-						Please select a valid country.
-					</div>
-				</div>
-		
-				<div class="col-md-4 form-group">
-					<label for="city">City</label>
-					<select type="text" class="form-control" id="city">
-						<option value>Choose...</option>
-						<option>Pathanamthitta</option>
-						<option>Trivandrum</option>
-						<option>Kollam</option>
-					</select>
-					<div class="invalid-feedback">
-						Please provide a valid city.
-					</div>
-				</div>
-		
-				<div class="col-md-4 form-group">
-					<label for="postcode">Postcode</label>
-					<select type="text" class="form-control" id="postcode">
-						<option value>Enter pincode</option>
-						<option></option>
-					</select>
-					<div class="invalid-feedback">
-						Postcode required.
-					</div>
-				</div>
-			</div>
-		
-			<h4 class="mb-4">Payment</h4>
-		
-			<div class="row mt-4">
-				<div class="col-md-4 form-check">
-					<input type="radio" class="form-check-input" id="credit" name="payment-method" checked required>
-					<label for="credit" class="form-check-label">Credit Card</label>
-				</div>
-		
-				<div class="col-md-4 form-check">
-					<input type="radio" class="form-check-input" id="debit" name="payment-method" required>
-					<label for="debit" class="form-check-label">Debit Card</label>
-				</div>
-		
-				<div class="col-md-4 form-check">
-					<input type="radio" class="form-check-input" id="paypal" name="payment-method" required>
-					<label for="paypal" class="form-check-label">Cash ON Delivery</label>
-				</div>
-			</div>
-		
-			<div class="row mt-4">
-				<div class="col-md-6 form-group">
-					<label for="card-name">Name on card</label>
-					<input type="text" class="form-control" id="card-name" placeholder required>
-					<div class="invalid-feedback">
-						Name on card is required
-					</div>
-				</div>
-		
-				<div class="col-md-6 form-group">
-					<label for="card-no">Card Number</label>
-					<input type="text" class="form-control" id="card-no" placeholder required>
-					<div class="invalid-feedback">
-						Credit card number is required
-					</div>
-				</div>
-			</div>
-		
-			<div class="form-row">
-				<div class="col-md-5 form-group">
-					<label for="expiration">Expire Date</label>
-					<input type="text" class="form-control" id="card-name" placeholder required>
-					<div class="invalid-feedback">
-						Expiration date required
-					</div>
-				</div>
-		
-				<div class="col-md-5 form-group">
-					<label for="ccv-no">Security Number</label>
-					<input type="text" class="form-control" id="sec-no" placeholder required>
-					<div class="invalid-feedback">
-						Security code required
-					</div>
-				</div>
-			</div>
-		
-			<hr class="mb-4">
-		
-			<button class="btn btn-primary bt-lg btn-block" type="submit">Continue to Checkout</button>
-		</form>
-		
+  <div class="navbar">
+    <div class="brand">
+        <img src="/assets/img/logo.png" alt="Logo">
+        <div><strong>SKINVOGUE</strong></div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-</body>
-
-</html>
-
-
-
-
-
-
-
-
-
+    <div class="navbar-links">
+        <a href="/" class="link">Home</a>
+        <a href="#" class="link">Shop</a>
+        <a href="#" class="link">Blog</a>
+        <a href="#" class="link">Wishlist</a
+        <a href="#" class="link">Contact Us</a>
+        <a href="/cartdetails" class="link"><i class="fas fa-shopping-cart"></i></a>
+        <a href="/userprofile" class="link"><i class="fas fa-user"></i></a>
+        <a href="/logout" class="link"><i class="fas fa-sign-out-alt"></i></a>
+        <a href="/signup" class="link"><i class="fas fa-sign-in-alt"></i></a>
+    </div>
+</div>
+ <form action="/order" method="post">
+  <section class="h-100 gradient-custom">
+    <div class="container py-5">
+      <div class="row d-flex justify-content-center my-4">
+    <div class="_3efVlV col-md-8">
+        <div class="rvsx1l">
+            <div class="_3E8aIl gGqMBW">
+                <div class="Login">
+                    
+                    <div class="RiK_Dp d-flex justify-content-start">
+                      <h3 class="_2-K-ro">
+                          <span class="_3ENQxz"></span>
+                      </h3>
+                      
+                      <div class="_1aULyb ms-3">
+                        Login
+                        <svg height="10" width="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="_1t8m48">
+                          <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" stroke="#2974f0"></path>
+                        </svg>
+                        <div class="_1QFLA6">
+                          <span class="npYOZI text-black"><%= username.name %></span>
+                        </div>
+                      </div>
+                      
+                       
+                    </div>
+                   
+                </div>
+            </div>
         </div>
-</body>
+        <div class="rvsx1l">
+            <div class="_3E8aIl gGqMBW">
+                <div class="_2uTwDJ">
+                    <h3 class="_2-K-ro">
+                        <span class="_3ENQxz">2</span>
+                    </h3>
+                    <div class="RiK_Dp ms-3">
+                        <div class="_1aULyb">Delivery Address<svg height="10" width="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="_1t8m48">
+                            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" stroke="#2974f0"></path>
+                        </svg></div>
+                        
+                        <div class="_1QFLA6 ">
+                          <% addresses.forEach(address => { %>
+                            <div class="_1QFLA6">
+                              <label>
+                                <input type="radio" id="" name="addressCheckbox" value="<%= address.id %>" required="required">
+                              <span>
+                                <span class="npYOZI"><%= address.name %></span>
+                                <span><%= address.street %>, <%= address.phone %> <%= address.city %>, <%= address.state %> - <span class="_2dQV-8"><%= address.pin %></span></span>
+                              </span>
+                              </label>
+                              </span>
+                            </div>
+                          <a href="/address/<%= address.id %>">  <button class="_32l7f0" onclick="editAddress('<%= address.id %>')">Edit address</button></a>
+                          <% }); %>
+                          
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+        <div class="rvsx1l">
+          <div class="_3E8aIl gGqMBW">
+              <h3 class="_1hUz_t _2-K-ro">
+                  <span class="_3ENQxz">3</span>
+                  <span class="_1aULyb">Order Summary</span>
+              </h3>
+            <div class="cQZ0Lf">
+                <div class="CCwLCA">
+                    <div class="-nohD8">
+                        <div class="d-flex align-items-start">
+                            <!-- Product Image -->
+                            <div class="CXW8mj" style="height: 112px; width: 112px;">
+                            </div>
+                            <!-- Quantity Controls and Product Details -->
+                            <div class="d-flex flex-column justify-content-between ml-3">
+                               
+                                <!-- Product Details -->
+                                <div class="_3fSRat">
+                                  <%console.log(cartdata ); %>
+                                  <% cartdata.product.forEach((prod)=> { %>
+                                  
+                                    
+                                        <div class="_2-uG6-">
+                                          <div class="_2Kn22P"><%= prod.productName %></div>
+                                        </div>
+                                        <div class="_3ZS8sw">
+                                          <img style="height: 10vh;" src="<%= prod.image[0] %>" alt="<%= prod.productName %> Image" class="img-fluid">
+                                        </div>
+                                        <span class="_2-ut7f _2xc6hH">₹<%= prod.price %></span>
+                                
+                                        <!-- Coupon Applied -->
+                                
+                                        <div class="d-flex justify-content-between align-items-center py-3">
+                                          <!-- Quantity Controls -->
+                                          <div class="d-flex me-3">
+                                            <!-- Decrease Quantity Button -->
+                                            <button class="btn btn-outline-secondary"> - </button>
+                                            <!-- Quantity Input Field -->
+                                            <input type="number" class="form-control text-center" value="<%= prod.quantity %>">
+                                            <!-- Increase Quantity Button -->
+                                            <button class="btn btn-outline-secondary"> + </button>
+                                          </div>
+                                          <!-- Remove Button -->
+                                          <button class="btn btn-danger ms-4">Remove</button>
+                                        </div>
+                                        
+                                    
+                               <hr>
+                                  <% }); %>
+                                </div>
+                                
+                            </div>
+                        </div>
+                     
+                    </div>
+                   
+                </div>
+                
+            </div>
+      
+          </div>
+      </div>
 
+            <div class="accordion mb-3" id="paymentAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="upiOptionHeader">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#upiOptions" aria-expanded="true" aria-controls="upiOptions">
+                        Payment Options
+                    </button>
+                </h2>
+                <div id="upiOptions" class="accordion-collapse collapse show" aria-labelledby="upiOptionHeader" data-bs-parent="#paymentAccordion">
+                    <div class="accordion-body d-flex flex-column mb-3">
+                        <!-- UPI Option Content -->
+                        <label for="COD" class="_2Fn-Ln _30jOKh _2KEUG6 _18Z3T6 _3L7Pww">
+                            <input type="radio" class="_3DAmyP" name="paymentOption" value="cod" id="COD" required="required">
+                        Cash on Delivery </label>
+                      <hr>
+                      <label for="Wallet" class="_2Fn-Ln _30jOKh _2KEUG6 _18Z3T6 _3L7Pww py-3">
+                          <input type="radio" class="_3DAmyP" name="paymentOption" value="wallet" id="Wallet" required="required">
+                      Wallet</label>
+                      <hr>
+                      <label for="Card" class="_2Fn-Ln _30jOKh _2KEUG6 _18Z3T6 _3L7Pww">
+                          <input type="radio" class="_3DAmyP" name="paymentOption" value="card" id="Card" required="required">
+                      Credit Card </label>
+                    </div>
+                </div>
+            </div>
+
+          </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <div class="card-header py-3">
+            <h5 class="mb-0">Summary</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                Products
+                <!-- Display the total price for products -->
+                <span>$<%= calculateTotalPrice(cartdata).toFixed(2) %></span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                Shipping
+                <span>Free</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                <div>
+                  <strong>Total amount</strong>
+                  <strong>
+                    <p class="mb-0">(including GST)</p>
+                  </strong>
+                </div>
+                <!-- Display the total amount, including VAT -->
+                <span><strong>$<%= calculateTotalPrice(cartdata).toFixed(2) %></strong></span>
+              </li>
+            </ul>
+      
+            <button style="background-color: green;" type="submit" class="btn btn-primary btn-lg btn-block">
+              Place Order
+            </button>
+
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+</form>
+ 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

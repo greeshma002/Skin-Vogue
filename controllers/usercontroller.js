@@ -167,3 +167,10 @@ exports.userprofile = async (req, res) => {
     console.log(error.message);
   }
 };
+exports.orderdetailpage = async (req,res) => {
+  try{
+    res.render("user/orderdetailpage")
+  }catch(error) {
+  console.log(error.message);
+}
+}; 

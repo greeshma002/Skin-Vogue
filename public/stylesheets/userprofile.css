@@ -1,0 +1,61 @@
+/* Add this CSS to your userprofile.css file or include it in the head of your HTML file */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.container-xl {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-borders {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.nav-link {
+    color: #007bff !important;
+}
+
+.card {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 8px;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.form-control {
+    margin-bottom: 15px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Additional styles for Order Status and Address */
+#inputOrderStatus,
+#inputAddress {
+    height: 38px;
+}
+
+#inputOrderStatus {
+    width: 100%;
+}
+
+#inputAddress {
+    width: 100%;
+    resize: vertical;
+}

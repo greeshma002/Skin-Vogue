@@ -16,8 +16,9 @@ const {
   
  
 } = require("../controllers/usercontroller");
-const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutpage,updQuantity } = require("../controllers/cartcontroller")
+const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage , geteditaddress,posteditaddress, addresses,confirmpage, placeOrder,orderdetailpage} = require("../controllers/cartcontroller")
 const { isAuthenticated, isBlocked } = require("../middlewares/authMiddleware");
+
 
 router.get("/", home);
 
@@ -48,8 +49,21 @@ router.post("/updateQuantity/product/:id", updQuantity)
 
 // router.post("/addTocart",addtocartController);
 
-//router.get("/userprofile",userprofile)
-//router.get("/checkout", checkoutpage)
+router.get("/userprofile",userprofile)
+router.get("/checkout", checkoutpage)
+router.post("/check",checkoutdetails)
+
+router.get("/address/:addressId",geteditaddress)
+router.post("/editaddress/:addressId",posteditaddress)
+
+router.post("/order",placeOrder)
+router.get("/orderdetail",orderdetailpage)
+
+router.get("/confirm",confirmpage)
+
+
+
+
 
 
 
