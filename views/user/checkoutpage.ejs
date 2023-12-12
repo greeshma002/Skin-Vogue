@@ -29,6 +29,9 @@
             margin-right: 10px;
             height: 30px;
         }
+        .btn-outline-primary {
+          margin-right: 20px;
+        }
   </style>
 </head>
 <body>
@@ -38,17 +41,7 @@
         <img src="/assets/img/logo.png" alt="Logo">
         <div><strong>SKINVOGUE</strong></div>
     </div>
-    <div class="navbar-links">
-        <a href="/" class="link">Home</a>
-        <a href="#" class="link">Shop</a>
-        <a href="#" class="link">Blog</a>
-        <a href="#" class="link">Wishlist</a
-        <a href="#" class="link">Contact Us</a>
-        <a href="/cartdetails" class="link"><i class="fas fa-shopping-cart"></i></a>
-        <a href="/userprofile" class="link"><i class="fas fa-user"></i></a>
-        <a href="/logout" class="link"><i class="fas fa-sign-out-alt"></i></a>
-        <a href="/signup" class="link"><i class="fas fa-sign-in-alt"></i></a>
-    </div>
+   
 </div>
  <form action="/order" method="post">
   <section class="h-100 gradient-custom">
@@ -71,6 +64,7 @@
                         </svg>
                         <div class="_1QFLA6">
                           <span class="npYOZI text-black"><%= username.name %></span>
+                          <a  href="/userprofile"><button type="button" class="btn-outline-primary"> Add new Address</button></a>
                         </div>
                       </div>
                       
@@ -84,7 +78,7 @@
             <div class="_3E8aIl gGqMBW">
                 <div class="_2uTwDJ">
                     <h3 class="_2-K-ro">
-                        <span class="_3ENQxz">2</span>
+                        <span class="_3ENQxz"></span>
                     </h3>
                     <div class="RiK_Dp ms-3">
                         <div class="_1aULyb">Delivery Address<svg height="10" width="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="_1t8m48">
@@ -97,16 +91,17 @@
                               <label>
                                 <input type="radio" id="" name="addressCheckbox" value="<%= address.id %>" required="required">
                               <span>
-                                <span class="npYOZI"><%= address.name %></span>
-                                <span><%= address.street %>, <%= address.phone %> <%= address.city %>, <%= address.state %> - <span class="_2dQV-8"><%= address.pin %></span></span>
+                                <span class="npYOZI"><%= address.name %></span> <br>
+                                <span><%= address.Address %>, <%= address.phone %> <br> <%= address.city %>, <%= address.state %> - <span class="_2dQV-8"><%= address.pin %></span></span>
                               </span>
                               </label>
                               </span>
                             </div>
-                          <a href="/address/<%= address.id %>">  <button class="_32l7f0" onclick="editAddress('<%= address.id %>')">Edit address</button></a>
+                        
                           <% }); %>
                           
                 </div>
+                
             </div>
             </div>
         </div>
@@ -143,19 +138,7 @@
                                 
                                         <!-- Coupon Applied -->
                                 
-                                        <div class="d-flex justify-content-between align-items-center py-3">
-                                          <!-- Quantity Controls -->
-                                          <div class="d-flex me-3">
-                                            <!-- Decrease Quantity Button -->
-                                            <button class="btn btn-outline-secondary"> - </button>
-                                            <!-- Quantity Input Field -->
-                                            <input type="number" class="form-control text-center" value="<%= prod.quantity %>">
-                                            <!-- Increase Quantity Button -->
-                                            <button class="btn btn-outline-secondary"> + </button>
-                                          </div>
-                                          <!-- Remove Button -->
-                                          <button class="btn btn-danger ms-4">Remove</button>
-                                        </div>
+                                       
                                         
                                     
                                <hr>

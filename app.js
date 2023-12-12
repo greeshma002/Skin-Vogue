@@ -30,7 +30,7 @@ const sessionKey = crypto.randomBytes(16).toString("hex");
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || sessionKey,
+    secret: '123', //process.env.SESSION_SECRET || sessionKey,
     resave: false,
     saveUninitialized: true,
     cookie: {

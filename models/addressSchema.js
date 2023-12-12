@@ -7,7 +7,12 @@ const AddressSchema = new Schema({
     ref: "collection_1", // Reference to the User model
     required: true,
   },
-  street: {
+  name: {
+    type:String,
+    required:true,
+  },
+  
+  Address: {
     type: String,
     required: true,
   },

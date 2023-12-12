@@ -105,18 +105,38 @@ exports.deleteCart = async (req, res) => {
 };
 exports.updQuantity = async (req, res) => {
   try {
-    console.log(req.params.id);
-    const product = await Product.find({ _id: req.params.id });
-    console.log(product);
-    product.quantity += parseInt(req.query.change);
-    if (product.quantity < 0) {
-      product.quantity = 0;
+    console.log(req.params);
+    const product = await Product.findById(req.params.productId);
+    if (!product) {
+      return res.status(404).json({ message: "product does not exist."});
     }
-    await product.save();
-    res.json(product);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: error.toString() });
+
+    const newQuantity = parseInt(req.body.quantity);
+    console.log(req.body);
+    if (newQuantity > product.quantity) {
+      return res.status(200).json({ message: "product out of stock "})
+    }
+
+    // Find the cart of the user.
+    const cartData = await Cart.findOne({ userId: req.session.userId });
+    if (!cartData) {
+      return res.status(404).json({ message: "cart not found" });
+    }
+
+    const productInCartIndex = cartData.product.findIndex(prod => prod.productId.toString() === product._id.toString());
+    console.log(cartData.product);
+    if (productInCartIndex === -1) {
+      return res.status(404).json({ message: "product not in user's cart "});
+    }
+
+    cartData.product[productInCartIndex].quantity = newQuantity;
+    await cartData.save();
+
+    res.status(202).json({ message: "success", totalPrice: calculateTotalPrice(cartData) });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({message: "internal server error"})
   }
 };
 
@@ -125,12 +145,9 @@ exports.checkoutpage = async (req, res) => {
     const productId = req.params.productid;
     const cartdata = await Cart.findOne({ userId: req.session.userId });
     const productDetails = await Product.findById(productId);
+    
     const allproducts = {
-      //  productId: productId,
-      //   productName: productDetails.productName,
-      //   price: productDetails.productPrice,
-      //   quantity: 1,
-      //   image: productDetails.images[0],
+     
     };
 
     const username = await collection.findOne({ email: req.session.user });
@@ -155,11 +172,11 @@ exports.checkoutdetails = async (req, res) => {
     let email = req.session.user;
     console.log(email);
     const username = await collection.findOne({ email });
-    // const addresses = await address.find({ userId: username._id });
+     //const addresses = await address.find({ userId: username._id });
 
     const newdata = {
       userId: username._id,
-      street: req.body.street,
+      Address: req.body.Address,
       city: req.body.city,
       state: req.body.state,
       pin: req.body.pin,
@@ -179,53 +196,6 @@ exports.checkoutdetails = async (req, res) => {
   }
 };
 
-exports.geteditaddress = async (req, res) => {
-  try {
-    const addressId = req.params.addressId;
-    const userId = req.session.userId;
-    const existingAddress = await address.findById(addressId);
-    const existingUserId = await collection.findById(userId);
-    console.log(existingAddress);
-    if (!existingAddress) {
-      return res.status(404).send("Address not found");
-    }
-
-    res.render("user/addresspage", { existingAddress, existingUserId });
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).send("Internal Server Error");
-  }
-};
-
-exports.posteditaddress = async (req, res) => {
-  try {
-    const addressId = req.params.addressId;
-    const userId = req.session.userId;
-    const { name, email, street, city, state, pin, phone } = req.body;
-    console.log(addressId);
-    const updatedaddress = await address.findByIdAndUpdate(
-      addressId,
-
-      {
-        name,
-        email,
-        street,
-        city,
-        state,
-        pin,
-        phone,
-      },
-      { new: true }
-    );
-    if (!updatedaddress) {
-      return res.status(404).send("Product not found");
-    }
-    res.redirect("/checkout");
-  } catch (error) {
-    console.log(error);
-    res.send("internal server error");
-  }
-};
 
 exports.confirmpage = async (req, res) => {
   try {
@@ -242,7 +212,7 @@ exports.placeOrder = async (req, res) => {
 
   let products = cartdata.product.map((e) => {
     return {
-      price: e.price, quantity: e.quantity, productId: e.productId , productName:e.productName 
+      price: e.price, quantity: e.quantity, productId: e.productId , productName:e.productName ,  image: e.image[0] , totalAmount: e.totalAmount
     }
   });
 
@@ -281,11 +251,14 @@ exports.orderdetailpage = async (req, res) => {
           productId: product.productId,
           quantity: product.quantity,
           price: product.price,
-          productName: product.productName
+          productName: product.productName,
+          orderStatus: order.orderStatus,
+          image: product.image[0],
+          totalAmount:order.totalAmount,
         });
       }
     }
-
+    console.log(allProducts);
     res.render("user/orderdetailpage", { allProducts });
   } catch (error) {
     console.log(error.message);

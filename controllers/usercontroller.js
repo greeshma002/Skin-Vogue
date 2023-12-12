@@ -1,8 +1,11 @@
 const { isBlocked } = require("../middlewares/authMiddleware");
 const Product = require("../models/productSchema");
 const collection = require("../models/UserSchema");
+const address = require("../models/addressSchema")
+const Order = require('../models/orderSchema')
 
 const { sendOTP, generateOTP } = require("../utils/mailing");
+const { addAddress } = require("../models/addressSchema")
 
 const bcrypt = require("bcrypt");
 
@@ -162,15 +165,159 @@ exports.detail = async (req, res) => {
 };
 exports.userprofile = async (req, res) => {
   try {
+    let email = req.session.user
+    const username = await collection.findOne({ email });
+    res.render("user/userprofile", {username});
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+exports.getaddAddress = async (req, res) => {
+  try {
     res.render("user/userprofile");
   } catch (error) {
     console.log(error.message);
   }
 };
-exports.orderdetailpage = async (req,res) => {
-  try{
-    res.render("user/orderdetailpage")
-  }catch(error) {
-  console.log(error.message);
-}
+exports.postaddAddress = async (req, res) => {
+  try {
+    const email = req.session.user;
+    const username = await collection.findOne({ email });
+    const newAddress = new address({
+      userId: username._id,
+      name: req.body.name,
+      Address: req.body.Address,
+      city: req.body.city,
+      state: req.body.state,
+      pin: req.body.pin,
+      phone: req.body.phone,
+    });
+
+    
+    await newAddress.save();
+
+    
+    res.redirect('/userprofile');
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
 }; 
+exports.userorderStatus = async (req, res) => {
+  const orderId = req.params.orderId; 
+  const newStatus = req.body.newStatus;
+  console.log(newStatus);
+
+  try {
+    const updatedOrder = await Order.findById(orderId, { orderStatus: newStatus } ,{upsert: true});
+    res.json({ status: 'success', updatedOrder });
+    
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+  }
+}
+exports.userAddress = async (req, res) => {
+  try {
+    const email = req.session.user;
+    const username = await collection.findOne({ email });
+    const addresses = await address.find({ userId: username._id });
+
+    res.render('user/addressmanagement', { addresses }); // Assuming you have an EJS file named 'manage-addresses.ejs'
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+};
+exports.geteditaddress = async (req, res) => {
+  try {
+    const addressId = req.params.addressId;
+    const userId = req.session.userId;
+    const existingAddress = await address.findById(addressId);
+    const existingUserId = await collection.findById(userId);
+    console.log(existingAddress);
+    if (!existingAddress) {
+      return res.status(404).send("Address not found");
+    }
+
+    res.render("user/addresspage", { existingAddress, existingUserId });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+exports.posteditaddress = async (req, res) => {
+  try {
+    const addressId = req.params.addressId;
+    const userId = req.session.userId;
+    const { name, email, Address, city, state, pin, phone } = req.body;
+    console.log(addressId);
+    const updatedaddress = await address.findByIdAndUpdate(
+      addressId,
+
+      {
+        name,
+        email,
+        Address,
+        city,
+        state,
+        pin,
+        phone,
+      },
+      { new: true }
+    );
+    if (!updatedaddress) {
+      return res.status(404).send("Product not found");
+    }
+    res.redirect("/userAddress");
+  } catch (error) {
+    console.log(error);
+    res.send("internal server error");
+  }
+};
+exports.deleteAddress = async (req, res) => {
+  try {
+    const addressId = req.params.addressId;
+    const userId = req.session.userId;
+
+    // Find the user and update the address array to pull the specified addressId
+    const updatedUser = await address.findOneAndUpdate(
+      { userId: userId },
+      { $pull: { address: { addressId: addressId } } },
+      { new: true }
+    );
+
+    // Check if the user was found and the address was successfully deleted
+    if (updatedUser) {
+      res.redirect("/userAddress");
+    } else {
+      // User not found or address not deleted
+      res.status(404).send("Address not found");
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// exports.orderdetailpage = async (req,res) => {
+//   try{
+//     res.render("user/orderdetailpage")
+//   }catch(error) {
+//   console.log(error.message);
+// }
+// }; 

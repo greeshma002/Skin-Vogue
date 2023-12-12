@@ -6,6 +6,7 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const { log } = require("console");
+const Order = require('../models/orderSchema');
 
 exports.login = async (req, res) => {
   try {
@@ -233,21 +234,29 @@ exports.geteditCategory = async (req, res) => {
 exports.posteditCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
-    const categoryName = req.body;
+    const { categoryName } = req.body;
+    const existingCategory = await Category.findOne({ categoryName });
+    if (existingCategory && existingCategory._id != categoryId) {
+      const errorMessage ="category already exists"
+      // Send the error message in the response
+      return res.status(400).json({ error: "Category name already exists." })
+    }
+
     const updatedCategory = await Category.findByIdAndUpdate(
       categoryId,
-      categoryName
+      { categoryName },
+      { new: true }
     );
-    console.log(
-      `Category ${updatedCategory.categoryName} updated successfully.`
-    );
+
+    console.log(`Category ${updatedCategory.categoryName} updated successfully.`);
     res.redirect("/admin/categories");
   } catch (error) {
     console.error(error);
-     //res.status(500).json({ error: "Internal Server Error" });
-    res.render("admin/404error")
+    // Send the error message in the response
+    res.status(500).json({ error: "Internal server error." });
   }
 };
+
 
 exports.deleteCategory = async (req, res) => {
   try {
@@ -271,3 +280,64 @@ exports.adminlogout = async (req, res) => {
     }
   });
 };
+
+
+
+exports.adminOrder = async (req, res) => {
+  try {
+  
+    const orders = await Order.find().populate('userId').populate('addressId');
+
+    res.render('admin/order', { orders });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Internal Server Error');
+  }
+};
+exports.adminOrderdetail = async (req, res) => {
+  try {
+    
+   
+    const ordersOfUser = await Order.find({ _id: req.params.id });
+    let allProducts = [];
+
+    for (let order of ordersOfUser) {
+      for (let product of order.products) {
+        allProducts.push({
+          orderId: order._id,
+          productId: product.productId,
+          quantity: product.quantity,
+          price: product.price,
+          productName: product.productName,
+          orderStatus: order.orderStatus,
+          image: product.image[0],
+        });
+      }
+    }
+
+    res.render('admin/vieworder', { allProducts });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Internal Server Error');
+  }
+};
+exports.orderStatus = async (req, res) => {
+  const orderId = req.params.orderId; 
+  const newStatus = req.body.newStatus;
+  console.log(newStatus);
+
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(orderId, { orderStatus: newStatus }, { new: true });
+    res.json({ status: 'success', updatedOrder });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+  }
+}
+
+  
+
+
+
+
+

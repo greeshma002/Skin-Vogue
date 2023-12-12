@@ -24,6 +24,9 @@ const {
   deleteCategory,
   posteditCategory,
   adminlogout,
+  adminOrder,
+  adminOrderdetail,
+  orderStatus
 } = require("../controllers/admincontroller");
 
 
@@ -92,7 +95,11 @@ router.post("/categories/add",isAdmin, postaddCategory);
 
  router.post('/categories/delete/:id',isAdmin, deleteCategory);
 
- //Cart management
+ //order management
+
+ router.get("/order",isAdmin, adminOrder)
+ router.get("/orderdetails/:id",adminOrderdetail)
+ router.post("/orderstatus/:orderId",orderStatus)
 
  
 

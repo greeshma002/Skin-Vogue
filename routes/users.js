@@ -13,10 +13,21 @@ const {
   logout,
   detail,
   userprofile,
+  addAddress,
+  getaddAddress,
+  postaddAddress,
+  userorderStatus,
+  userAddress,
+  postuseraddress,
+  geteditaddress,
+  posteditaddress,
+  deleteAddress
+  
+  
   
  
 } = require("../controllers/usercontroller");
-const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage , geteditaddress,posteditaddress, addresses,confirmpage, placeOrder,orderdetailpage} = require("../controllers/cartcontroller")
+const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage ,  addresses,confirmpage, placeOrder,orderdetailpage } = require("../controllers/cartcontroller")
 const { isAuthenticated, isBlocked } = require("../middlewares/authMiddleware");
 
 
@@ -45,24 +56,29 @@ router.get("/detail/:id", detail);
 router.get("/cartdetails",cartdetails)
 router.get("/cart/:productid",cartcontroller)
 router.get("/cartremove/:productid",deleteCart)
-router.post("/updateQuantity/product/:id", updQuantity)
+router.put("/updateQuantity/:productId", updQuantity)
 
 // router.post("/addTocart",addtocartController);
 
-router.get("/userprofile",userprofile)
+router.get("/userprofile",isAuthenticated,userprofile)
 router.get("/checkout", checkoutpage)
 router.post("/check",checkoutdetails)
 
 router.get("/address/:addressId",geteditaddress)
 router.post("/editaddress/:addressId",posteditaddress)
+router.get("/addAddress",getaddAddress)
+router.post("/addaddress", postaddAddress)
 
 router.post("/order",placeOrder)
 router.get("/orderdetail",orderdetailpage)
 
 router.get("/confirm",confirmpage)
 
+router.post("/user/orderstatus/:orderId",isAuthenticated,userorderStatus)
 
 
+router.get("/useraddress", userAddress)
+router.post("/deleteAddress/:addressId", deleteAddress);
 
 
 

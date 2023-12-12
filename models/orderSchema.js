@@ -42,7 +42,10 @@ const orderSchema = new Schema({
     type: Number,
     required: true,
   },
-
+  orderStatus: {
+    type: String,
+    default: "Pending",
+  },
   addressId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
