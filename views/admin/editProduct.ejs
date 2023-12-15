@@ -73,11 +73,29 @@
         button:hover {
             background-color: #ff69b4; /* Change this to the desired pink color on hover */
         }
+    
+
+        
+        .image-container {
+          position: relative;
+          margin: 5px;
+          display: flex;
+        }
+      
+        .delete-icon {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          cursor: pointer;
+          font-size: 18px;
+          color: red;
+        }
+      
     </style>
 
     <!-- Rest of your code -->
 
-    <form action="/admin/editProduct/<%= product._id %>" method="POST">
+    <form action="/admin/editProduct/<%= product._id %>" method="POST" enctype="multipart/form-data">
 
         <h1>Edit Product</h1>
 
@@ -98,13 +116,101 @@
         <textarea id="productDescription" name="productDescription" required><%= product.productDescription %></textarea>
 
         <label for="productQuantity">Product Quantity:</label>
-        <input min="1" type="number" id="productQuantity" name="productQuantity" value="<%= product.productQuantity %>" required>
+        <input min="0" type="number" id="productQuantity" name="productQuantity" value="<%= product.productQuantity %>" required>
 
         <label for="images">Product Image:</label>
-        <input type="file" name="img" accept="image/*" multiple>
+        <input type="file" name="img" accept="image/*" multiple onchange="previewImages(event)">
+        <div id="imagePreviewContainer" style="display: flex;">
+          <% if (product.images && product.images.length > 0) { %>
+            <% product.images.forEach((imageUrl, index) => { %>
+              <div class="image-container">
+                <img src="<%= imageUrl %>" alt="Product Image <%= index + 1 %>" style="max-width: 80%; max-height: 100px;">
+                <span class="delete-icon" onclick="deleteImage"(<%= index %>)">&times;</span>
+              </div>
+            <% }); %>
+          <% } %>
+        </div>
+        
 
         <button type="submit">Save Product</button>
     </form>
+    
+    <script>
+
+function deleteImage(index) {
+  const productId =  req.params.productId; // Replace with the actual product ID
+  const url = `/deleteImage/${productId}/${index}`;
+
+  // Make an AJAX request to delete the image
+  fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(response => {
+      if (response.ok) {
+        console.log('Image deleted successfully');
+        // Update the UI as needed
+      } else {
+        console.error('Failed to delete image');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+
+    </script>
+    
+
+    <script>
+        function previewImages(event) {
+          const input = event.target;
+      
+          if (input.files) {
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            imagePreviewContainer.innerHTML = ''; // Clear previous previews
+      
+            for (let i = 0; i < input.files.length; i++) {
+              const reader = new FileReader();
+      
+              reader.onload = function (e) {
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'image-container';
+                imageContainer.style.marginLeft = '10px';
+      
+                const imagePreview = document.createElement('img');
+                imagePreview.src = e.target.result;
+                imagePreview.alt = `Product Image ${i + 1}`;
+                imagePreview.style.maxWidth = '100%';
+                imagePreview.style.maxHeight = '200px';
+      
+                const deleteIcon = document.createElement('span');
+                deleteIcon.className = 'delete-icon';
+                deleteIcon.innerHTML = '&times;'; // Unicode for 'times' symbol
+      
+                // Set up the click event for the delete icon
+                deleteIcon.addEventListener('click', function () {
+                  // Remove the image container when the delete icon is clicked
+                  imageContainer.remove();
+                });
+      
+                imageContainer.appendChild(imagePreview);
+                imageContainer.appendChild(deleteIcon);
+      
+                imagePreviewContainer.appendChild(imageContainer);
+              };
+      
+              reader.readAsDataURL(input.files[i]);
+            }
+          }
+        }
+      </script>
+      
+      
+      
 
 </body>
 </html>

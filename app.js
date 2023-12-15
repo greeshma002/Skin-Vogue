@@ -30,7 +30,7 @@ const sessionKey = crypto.randomBytes(16).toString("hex");
 
 app.use(
   session({
-    secret: '123', //process.env.SESSION_SECRET || sessionKey,
+    secret: process.env.SESSION_SECRET || sessionKey,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -55,6 +55,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/admin", indexRouter);
 app.use("/", usersRouter);
 app.use("/", otpRouter);
+app.use('*', (req,res)=>{ 
+  res.render('admin/404error')
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`http://localhost:${process.env.PORT}`);

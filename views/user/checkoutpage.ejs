@@ -124,26 +124,22 @@
                                
                                 <!-- Product Details -->
                                 <div class="_3fSRat">
-                                  <%console.log(cartdata ); %>
-                                  <% cartdata.product.forEach((prod)=> { %>
-                                  
-                                    
-                                        <div class="_2-uG6-">
-                                          <div class="_2Kn22P"><%= prod.productName %></div>
-                                        </div>
-                                        <div class="_3ZS8sw">
-                                          <img style="height: 10vh;" src="<%= prod.image[0] %>" alt="<%= prod.productName %> Image" class="img-fluid">
-                                        </div>
-                                        <span class="_2-ut7f _2xc6hH">₹<%= prod.price %></span>
+                   
+                                  <% allProducts.forEach((prod) => { %>
+                                    <div class="_2-uG6-">
+                                      <div class="_2Kn22P"><%= prod.productName %></div>
+                                    </div>
+                                    <div class="_3ZS8sw">
+                                      <img style="height: 10vh;" src="<%= prod.images[0] %>" alt="<%= prod.productName %> Image" class="img-fluid">
+                                    </div>
+                                    <span class="_2-ut7f _2xc6hH">₹<%= prod.productPrice %></span>
                                 
-                                        <!-- Coupon Applied -->
+                                    <!-- Additional product details can be added here -->
                                 
-                                       
-                                        
-                                    
-                               <hr>
+                                    <hr>
                                   <% }); %>
                                 </div>
+                                
                                 
                             </div>
                         </div>

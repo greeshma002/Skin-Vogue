@@ -96,7 +96,7 @@
 
   <div class="container">
     <% existingAddress._id%>
-    <form action="/editaddress/<%=existingAddress.id %>" method="POST">
+    <form action="/editaddress/<%=existingAddress.id %>" method="POST" onsubmit="return validateForm()">
         
             <div class="row">
                 <div class="col col-lg-6">
@@ -144,6 +144,79 @@
       <!-- Submit Button -->
       <button type="submit">Submit</button>
     </form>
+
+    <!-- Your existing HTML code -->
+
+
+
+<!-- Include the validation script -->
+<script>
+function validateForm() {
+  // Get form values
+  var fullName = document.getElementById('name').value.trim();
+  var pin = document.getElementById('pin').value;
+  var address = document.getElementById('Address').value.trim();
+  var state = document.getElementById('state').value.trim();
+  var city = document.getElementById('city').value.trim();
+  var email = document.getElementById('email').value.trim();
+  var phoneNumber = document.getElementById('phone').value.trim();
+
+  // Regular expressions for validation
+  var nameRegex = /^[A-Za-z\s]+$/; // Allow alphabetic characters and spaces
+  var addressRegex = /^[A-Za-z0-9\s,.'-]+$/;
+  var pinRegex = /^[0-9]+$/;
+  var textRegex = /^[A-Za-z\s]+$/; // Allow alphabetic characters and spaces
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var phoneRegex = /^[1-9]\d{9}$/;
+
+  // Validate full name
+  if (!nameRegex.test(fullName)) {
+    alert('Invalid name. Please enter only alphabetic characters with spaces.');
+    return false;
+  }
+
+  // Validate PIN
+  if (!pinRegex.test(pin)) {
+    alert('Invalid PIN. Please enter only numeric characters.');
+    return false;
+  }
+
+  if (!addressRegex.test(address)) {
+             alert('Invalid address. Please enter only alphabetic characters');
+               return false;
+  }
+
+  // Validate address
+  if (!textRegex.test(address)) {
+    alert('Invalid address. Please enter only alphabetic characters with spaces.');
+    return false;
+  }
+
+  // Validate state and city
+  if (!textRegex.test(state) || !textRegex.test(city)) {
+    alert('Invalid input for state or city. Please enter only alphabetic characters with spaces.');
+    return false;
+  }
+
+  // Validate email
+  if (!emailRegex.test(email)) {
+    alert('Invalid email address. Please enter a valid email.');
+    return false;
+  }
+
+  // Validate phone number
+  if (!phoneRegex.test(phoneNumber)) {
+    alert('Invalid phone number. Please enter a 10-digit number without spaces or special characters, except for zero.');
+    return false;
+  }
+
+  // If all validations pass, the form will be submitted
+  return true;
+}
+</script>
+
+
+    
 
     <!-- Back to Home Link -->
     <div class="back-to-home">

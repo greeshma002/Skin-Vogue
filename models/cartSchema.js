@@ -28,9 +28,10 @@ const cartItemSchema = new mongoose.Schema({
       image: {
         type: [String],
       },
+      
     },
   ],
-});
+},{timestamps:true});
 const Cart = mongoose.model("cart", cartItemSchema);
 
 module.exports = Cart;

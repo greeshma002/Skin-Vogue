@@ -94,10 +94,12 @@
         <textarea id="productDescription" name="productDescription" required></textarea>
 
         <label for="productQuantity">Product Quantity:</label>
-        <input min="1" type="number" id="productQuantity" name="productQuantity" value="" required>
+        <input min="0" type="number" id="productQuantity" name="productQuantity" value="" required>
 
         <label for="images">Product Image:</label>
-        <input type="file" name="img" accept="image/*" multiple />
+        <input type="file" name="img" accept="image/*" multiple onchange="previewImages(event)">
+        <div  id="imagePreviewContainer" style="display: flex;"></div>
+        
 
         <button type="submit">Save Product</button>
     </form>
@@ -121,6 +123,32 @@
             return true;
         }
     </script>
+     <script>
+        function previewImages(event) {
+          const input = event.target;
+      
+          if (input.files) {
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            imagePreviewContainer.innerHTML = ''; // Clear previous previews
+      
+            for (let i = 0; i < input.files.length; i++) {
+              const reader = new FileReader();
+      
+              reader.onload = function (e) {
+                const imagePreview = document.createElement('img');
+                imagePreview.src = e.target.result;
+                imagePreview.alt = `Product Image ${i + 1}`;
+                imagePreview.style.maxWidth = '40%';
+                imagePreview.style.maxHeight = '80px';
+      
+                imagePreviewContainer.appendChild(imagePreview);
+              };
+      
+              reader.readAsDataURL(input.files[i]);
+            }
+          }
+        }
+      </script>
 
 
 </body>

@@ -25,16 +25,23 @@ exports.cartcontroller = async (req, res) => {
     const existingCart = await Cart.findOne({ userId: username._id });
 
     if (existingCart) {
-      // If cart exists for the user
+     
       let itemIndex = existingCart.product.findIndex(
         (p) => p.productId.toString() === productId._id.toString()
       );
 
       if (itemIndex > -1) {
-        // If product exists in the cart, update the quantity
-        existingCart.product[itemIndex].quantity += 1;
+       
+        const productQuantity = req.params.productQuantity
+    
+        const maxQuantity = productQuantity; // Set your maximum quantity limit
+        if (existingCart.product[itemIndex].quantity < maxQuantity) {
+          existingCart.product[itemIndex].quantity += 1;
+        } else {
+          return res.status(400).json({ message: "Product is currently Out of Stock" });
+        }
       } else {
-        // If product does not exists in cart, add new item
+        // If product does not exist in cart, add new item
         existingCart.product.push({
           productId: productId._id,
           productName: productId.productName,
@@ -67,6 +74,7 @@ exports.cartcontroller = async (req, res) => {
   }
 };
 
+
 function calculateTotalPrice(cartdata) {
   if (!cartdata || !cartdata.product || cartdata.product.length === 0) {
     return 0;
@@ -80,8 +88,21 @@ function calculateTotalPrice(cartdata) {
 
 exports.cartdetails = async (req, res) => {
   try {
-    const cartdata = await Cart.findOne({ userId: req.session.userId });
-    res.render("user/Cart", { cartdata, calculateTotalPrice });
+   let err=req.query.err??''
+    let totalPrice = 0;
+    const cartdata = await Cart.findOne({ userId: req.session.userId }).lean();
+    if (cartdata) {
+      
+      for (let i = 0; i < cartdata.product.length; i++) {
+        cartdata.product[i].productQuantity = (await Product.findById(cartdata.product[i].productId)).productQuantity;
+        if (Product.productQuantity > 0) {
+          totalPrice += Product.productPrice * Product.quantity;
+        }
+      }
+    }else{
+      res.render("user/Cart", { cartdata:'', calculateTotalPrice, totalPrice,err:err });
+    }
+    res.render("user/Cart", { cartdata, calculateTotalPrice, totalPrice,err:err });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
@@ -111,14 +132,16 @@ exports.updQuantity = async (req, res) => {
       return res.status(404).json({ message: "product does not exist."});
     }
 
+
     const newQuantity = parseInt(req.body.quantity);
     console.log(req.body);
-    if (newQuantity > product.quantity) {
-      return res.status(200).json({ message: "product out of stock "})
+    
+    if (newQuantity > product.productQuantity) {
+      return res.status(400).json({ message: "Insufficient stock" });
     }
 
     // Find the cart of the user.
-    const cartData = await Cart.findOne({ userId: req.session.userId });
+    const cartData = await Cart.findOne({ userId: req.session.userId  });
     if (!cartData) {
       return res.status(404).json({ message: "cart not found" });
     }
@@ -142,23 +165,46 @@ exports.updQuantity = async (req, res) => {
 
 exports.checkoutpage = async (req, res) => {
   try {
-    const productId = req.params.productid;
-    const cartdata = await Cart.findOne({ userId: req.session.userId });
-    const productDetails = await Product.findById(productId);
     
-    const allproducts = {
-     
-    };
+    // const productId = req.params.productid;
+    const cartdata = await Cart.findOne({ userId: req.session.userId });
+    const products= await Product.find({})
+    let product
+    let allProducts=[]
+    let qtyErr=false
+    cartdata.product.forEach((prod)=>{
+        products.forEach((ele)=>{
+          if(prod.productId.equals(ele._id)){
+            allProducts.push(ele)
+            product=ele
+          }
+        })
+        if(product.productQuantity<prod.quantity){
+          qtyErr=true
+        }
+    })
+    if(qtyErr){
+      return res.redirect('/cartdetails?err=er')
+    }
+    // const productDetails = await Product.findById(productId);
+    // const inStockProducts = cartdata.product.filter(Product => Product.quantity > 1);
+    // console.log(inStockProducts);
+    
+   
 
     const username = await collection.findOne({ email: req.session.user });
     const addresses = await address.find({ userId: username._id });
+   
+    
 
     res.render("user/checkoutpage", {
       addresses,
       username,
-      allproducts,
+     
       calculateTotalPrice,
       cartdata,
+      allProducts,
+    
     });
   } catch (error) {
     console.log(error.message);
@@ -258,13 +304,32 @@ exports.orderdetailpage = async (req, res) => {
         });
       }
     }
-    console.log(allProducts);
+    allProducts=allProducts.reverse()
+    // console.log(allProducts);
     res.render("user/orderdetailpage", { allProducts });
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Internal Server Error');
   }
 };
+
+
+
+exports.cancelorder = async (req, res) => {
+  const orderId = req.params.orderId; 
+  const newStatus = 'cancelled'
+  console.log(orderId);
+
+
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(orderId, { orderStatus: newStatus }, { new: true });
+    res.redirect('/orderdetail')
+    // res.json({ status: 'success', updatedOrder });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+  }
+}
 
  
  

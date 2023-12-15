@@ -168,6 +168,8 @@
                                 <div class="col"> <strong>Shipping BY:</strong> <br> BLUEDART, | <i class="fa fa-phone"></i> +1598675986 </div>
                                 <div class="col"> <strong>Status:</strong> <br><%= product.orderStatus %> </div>
                                 <div class="col"> <strong>Amount you Pay:</strong> <br><%= product.totalAmount %> </div>
+                              
+                                <a href="/cancel/<%=product.orderId%>"><button style="background-color: red;">Cancel order</button>
 
 
                               
@@ -188,7 +190,8 @@
                             </div>
                             
                             <figcaption class="info align-self-center">
-                                <p class="title"><%= product.productName %></p> <span class="text-muted">$<%= product.price %> </span>
+                                <p class="title"><%= product.productName %></p> <span class="text-muted">$<%= product.price %> </span> 
+                               
                                 
                             </figcaption>
                            

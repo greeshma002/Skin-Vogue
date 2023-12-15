@@ -96,9 +96,10 @@
           
           <p>Phone: <%= address.phone %></p>
           <p>Address: <%= address.Address %>, <br> <%= address.city %>, <%= address.state %>, <%= address.pin %></p>
-          <a href="/address/<%= address.id %>">  <button class="_32l7f0" type="button" onclick="editAddress('<%= address.id %>')">Edit address</button></a>
+          <a href="/address/<%=address.id %>">  
+        <button class="_32l7f0" type="button" onclick="editAddress('<%= address.id %>')">Edit address</button></a>
           
-          <form method="post"  action="/deleteAddress/:addressId<%= address.addressId %>" onsubmit="return confirm('Are you sure you want to delete this address?')">
+          <form method="get"  action="/deleteAddress/<%=address.id%>" onsubmit="return confirm('Are you sure you want to delete this address?')">
             <button type="submit" class="btn btn-danger">Delete</button>
           </form>
           

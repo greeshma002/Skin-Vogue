@@ -13,6 +13,7 @@ const {
   getAddProduct,
   postAddProduct,
   postEditProduct,
+  deleteProductImage,
   deleteProduct,
   getEditProduct,
   fileUpload,
@@ -75,7 +76,9 @@ router.post("/addProduct",isAdmin, upload, postAddProduct);
 
 router.get("/editProduct/:productId",isAdmin, getEditProduct); 
 
-router.post("/editProduct/:id",isAdmin, postEditProduct);
+router.post("/editProduct/:id",isAdmin,upload, postEditProduct);
+
+router.delete('/deleteImage/:productId/:index', isAdmin, deleteProductImage);
 
 router.get("/products/:productId",isAdmin, deleteProduct);
 
@@ -98,7 +101,9 @@ router.post("/categories/add",isAdmin, postaddCategory);
  //order management
 
  router.get("/order",isAdmin, adminOrder)
+
  router.get("/orderdetails/:id",adminOrderdetail)
+ 
  router.post("/orderstatus/:orderId",orderStatus)
 
  

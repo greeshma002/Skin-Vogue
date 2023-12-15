@@ -38,20 +38,39 @@
         
         <div class = "product-price">
           <!-- <p class = "last-price">Old Price: <span>$257.00</span></p> -->
-          <p class = "new-price"> <h2>New Price:</h2> <strong> <%= product.productPrice %> (5%)</strong></p>
+          <p class = "new-price"> <h2>New Price:</h2> <strong> <%= product.productPrice %> </strong></p>
         </div>
   
         
-        <div class = "purchase-info">
-          <a href="/cart/<%= product._id %>" class="btn" id="addToCartBtn">
-            Add to Cart <i class="fas fa-shopping-cart"></i>
-          </a>
-          
-        </div>
+       <!-- ... (other HTML code) ... -->
+
+<div class="purchase-info">
+  <% if (product.productQuantity > 0) { %>
+    <a href="/cart/<%= product._id %>" class="btn" id="addToCartBtn">
+      Add to Cart <i class="fas fa-shopping-cart"></i>
+    </a>
+  <% } else { %>
+    <button class="btn" id="addToCartBtn" disabled>
+      Out of Stock <i class="fas fa-shopping-cart"></i>
+    </button>
+  <% } %>
+  <a href="/cartdetails"><button style="background-color: palegoldenrod;"> Go to Cart </button></a>
+</div>
+
+<!-- ... (other HTML code) ... -->
+
           
           <ul>
           
-            <li>Available: <strong style="color: green;">In stock</strong></li>
+            <li>
+              Available: 
+              <% if (product.productQuantity > 0) { %>
+                <strong style="color: green;">In stock</strong>
+              <% } else { %>
+                <strong style="color: red;">Out of stock</strong>
+              <% } %>
+            </li>
+            
             <li>Category: <span><%= product.category %></span></li>
             <li>Shipping Area: <span>All over the world</span></li>
             <li>Shipping Fee: <span>Free</span></li>
@@ -81,6 +100,35 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Function to show a pop-up message
+    function showMessage(message) {
+      alert(message); // You can replace this with your preferred pop-up library or custom implementation
+    }
+  
+    // Function to handle the click event on the "Add to Cart" button
+    document.getElementById('addToCartBtn').addEventListener('click', async function(event) {
+      event.preventDefault();
+  
+      // Make an asynchronous request to the server
+      try {
+        const response = await fetch(event.target.href, { method: 'GET' });
+        const data = await response.json();
+  
+        if (response.ok) {
+          // Redirect to the cart details page on successful response
+          window.location.href = '/cartdetails';
+        } else {
+          // Show the error message in a pop-up on unsuccessful response
+          showMessage(data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+  
 
   <script>
     $(document).ready(function () {

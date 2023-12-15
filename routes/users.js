@@ -21,13 +21,15 @@ const {
   postuseraddress,
   geteditaddress,
   posteditaddress,
-  deleteAddress
+  deleteAddress,
+  changepassword,
+  postchangepassword,
   
   
   
  
 } = require("../controllers/usercontroller");
-const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage ,  addresses,confirmpage, placeOrder,orderdetailpage } = require("../controllers/cartcontroller")
+const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage ,  addresses,confirmpage, placeOrder,orderdetailpage , cancelorder, } = require("../controllers/cartcontroller")
 const { isAuthenticated, isBlocked } = require("../middlewares/authMiddleware");
 
 
@@ -36,6 +38,10 @@ router.get("/", home);
 router.get("/login", login);
 
 router.post("/login", loginpost);
+
+router.get("/changepass",changepassword)
+
+router.post("/changepass",postchangepassword)
 
 router.get("/signup", signup);
 
@@ -53,33 +59,45 @@ router.get("/logout", logout);
 router.get("/detail/:id", detail);
 
 //Cart Management
-router.get("/cartdetails",cartdetails)
-router.get("/cart/:productid",cartcontroller)
-router.get("/cartremove/:productid",deleteCart)
-router.put("/updateQuantity/:productId", updQuantity)
+router.get("/cartdetails",isAuthenticated,cartdetails)
+
+router.get("/cart/:productid",isAuthenticated,cartcontroller)
+
+router.get("/cartremove/:productid",isAuthenticated,deleteCart)
+
+router.put("/updateQuantity/:productId",isAuthenticated, updQuantity)
 
 // router.post("/addTocart",addtocartController);
 
 router.get("/userprofile",isAuthenticated,userprofile)
-router.get("/checkout", checkoutpage)
-router.post("/check",checkoutdetails)
 
-router.get("/address/:addressId",geteditaddress)
-router.post("/editaddress/:addressId",posteditaddress)
-router.get("/addAddress",getaddAddress)
-router.post("/addaddress", postaddAddress)
+router.get("/checkout",isAuthenticated, checkoutpage)
 
-router.post("/order",placeOrder)
-router.get("/orderdetail",orderdetailpage)
+router.post("/check",isAuthenticated,checkoutdetails)
 
-router.get("/confirm",confirmpage)
+router.get("/address/:addressId",isAuthenticated,geteditaddress)
+
+router.post("/editaddress/:addressId",isAuthenticated,posteditaddress)
+
+router.get("/addAddress",isAuthenticated,getaddAddress)
+
+router.post("/addaddress", isAuthenticated,postaddAddress)
+
+router.post("/order",isAuthenticated,placeOrder)
+
+router.get("/orderdetail",isAuthenticated,orderdetailpage)
+
+router.get("/confirm",isAuthenticated,confirmpage)
 
 router.post("/user/orderstatus/:orderId",isAuthenticated,userorderStatus)
 
 
-router.get("/useraddress", userAddress)
-router.post("/deleteAddress/:addressId", deleteAddress);
+router.get("/useraddress", isAuthenticated,userAddress)
 
+router.get("/deleteAddress/:addressId",isAuthenticated,deleteAddress);
+
+router.get("/cancel/:orderId",isAuthenticated,cancelorder)
+   
 
 
 

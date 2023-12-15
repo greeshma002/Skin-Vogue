@@ -77,8 +77,10 @@ exports.listProducts = async (req, res) => {
 };
 
 exports.getAddProduct = async (req, res) => {
+  const productId = req.params.productId;
   const categories = await Category.find();
-  res.render("admin/addProduct", { categories });
+  const product = await Product.findById(productId);
+  res.render("admin/addProduct", { categories , product });
 };
 
 exports.postAddProduct = async (req, res) => {
@@ -104,7 +106,7 @@ exports.getEditProduct = async (req, res) => {
     const product = await Product.findById(productId);
     const category = await Category.find();
 
-    console.log("product is :", product);
+    // console.log("product is :", product);
     res.render("admin/editProduct", { product, category });
   } catch (error) {
     console.log("error");
@@ -114,7 +116,6 @@ exports.getEditProduct = async (req, res) => {
 
 exports.postEditProduct = async (req, res) => {
   try {
-    console.log(req.body);
     const productId = req.params.id;
     const category = req.body.productCategory;
     const {
@@ -125,6 +126,17 @@ exports.postEditProduct = async (req, res) => {
       productCategory,
     } = req.body;
 
+    // Check if new images are provided
+    let images = req.files ? req.files.map((file) => file.path.substring(6)) : [];
+
+    // If no new images are provided, fetch the existing images of the product
+    if (images.length === 0) {
+      const existingProduct = await Product.findById(productId);
+      if (existingProduct) {
+        images = existingProduct.images;
+      }
+    }
+
     const updateProduct = await Product.findByIdAndUpdate(
       productId,
       {
@@ -134,6 +146,7 @@ exports.postEditProduct = async (req, res) => {
         productQuantity,
         productCategory,
         category,
+        images,
       },
       { new: true }
     );
@@ -144,9 +157,41 @@ exports.postEditProduct = async (req, res) => {
     res.redirect("/admin/products");
   } catch (error) {
     console.log(error);
-    res.send("internal server error");
+    res.send("Internal server error");
   }
 };
+
+
+exports.deleteProductImage = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const index = parseInt(req.params.index);
+
+    // Fetch the product by ID
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).send('Product not found');
+    }
+
+    // Check if the index is valid
+    if (index < 0 || index >= product.images.length) {
+      return res.status(400).send('Invalid image index');
+    }
+
+    // Remove the image at the specified index
+    product.images.splice(index, 1);
+
+    // Save the updated product
+    await product.save();
+
+    res.status(200).send('Image deleted successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
 
 exports.deleteProduct = async (req, res) => {
   const productId = req.params.productId;
@@ -286,13 +331,13 @@ exports.adminlogout = async (req, res) => {
 exports.adminOrder = async (req, res) => {
   try {
   
-    const orders = await Order.find().populate('userId').populate('addressId');
-
+    let orders = await Order.find().populate('userId').populate('addressId');
+    orders=orders.reverse()
     res.render('admin/order', { orders });
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Internal Server Error');
-  }
+  } 
 };
 exports.adminOrderdetail = async (req, res) => {
   try {

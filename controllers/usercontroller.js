@@ -73,6 +73,54 @@ exports.loginpost = async (req, res) => {
   }
 };
 
+exports.changepassword = async (req,res) => {
+  try {
+    res.render ("user/changepassword")
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+exports.postchangepassword = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return res.status(400).render('user/changepassword', { error: 'All fields are required' });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).render('user/changepassword', { error: 'New password and confirmation password do not match' });
+    }
+
+    const user = await collection.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).render('user/changepassword', { error: 'User not found' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).render('user/changepassword', { error: 'Invalid old password' });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    await collection.updateOne({ _id: userId }, { $set: { password: hashedNewPassword } });
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).render('user/changepassword', { error: 'Internal server error' });
+  }
+};
+
+
+
+
+  
+
 exports.signuppost = async (req, res) => {
   console.log("enter the signup");
   try {
@@ -279,27 +327,14 @@ exports.posteditaddress = async (req, res) => {
 exports.deleteAddress = async (req, res) => {
   try {
     const addressId = req.params.addressId;
-    const userId = req.session.userId;
-
-    // Find the user and update the address array to pull the specified addressId
-    const updatedUser = await address.findOneAndUpdate(
-      { userId: userId },
-      { $pull: { address: { addressId: addressId } } },
-      { new: true }
-    );
-
-    // Check if the user was found and the address was successfully deleted
-    if (updatedUser) {
-      res.redirect("/userAddress");
-    } else {
-      // User not found or address not deleted
-      res.status(404).send("Address not found");
-    }
+    await address.deleteOne({_id: addressId});
+    res.redirect("/userAddress");
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 
