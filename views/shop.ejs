@@ -50,6 +50,80 @@
             display: flex;
             align-items: center;
         }
+        /* Add this to your CSS file or style section in the HTML document */
+
+
+
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.brand img {
+    margin-right: 10px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+input[type="text"] {
+    padding: 8px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: lightblue;
+    color: white;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+   
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Optional: Add some styling for responsiveness */
+@media screen and (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-container {
+        margin-top: 10px;
+    }
+}
+
 
  </style>
    
@@ -58,11 +132,15 @@
 <body>
 
   <!-- header section strats -->
-  <div class="navbar">
+  <div class="navbar fixed-top">
     <div class="brand">
         <img src="/assets/img/logo.png" alt="Logo">
         <div><strong>SKINVOGUE</strong></div>
     </div>
+   
+</div>
+
+
     <div class="navbar-links">
         
        
@@ -75,49 +153,56 @@
   <section class="shop_section layout_padding">
     <div class="container">
       <div class="heading_container heading_center">
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">🔍</span>
+          <input id="searchBar" type="text" class="form-control" style="border: 1px solid #ff69b4" placeholder="Search for product" aria-label="Search" aria-describedby="basic-addon1">
+        </div>
         <h2>
           Latest Products
         </h2>
       </div>
      
       <div class="row">
-          <!-- <div>
-            <h3></h3>
-            <p></p>
-            <! -->
-            <!-- <form action="/admin/products/" method="POST">
-              <button type="submit">Toggle Listing</button>
-            </form>
+        <aside class="card col-2">
+          <div>
+            <label for="priceFilter">Filter by Price:</label>
+            <select id="priceFilter" onchange="filterByPrice()">
+              <option value="lowToHigh">Low to High</option>
+              <option value="highToLow">High to Low</option>
+            </select>
           </div>
-        -->
-      <!-- </div> -->
-      <% productData.forEach(product => { %>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <a href="/detail/<%= product._id %>"><img src="<%= product.images[0] %>" alt=""></a>
+        </aside>
+        <div class="col-10">
+          <div class="row" id="productView">
+            <% productData.forEach(product => { %>
+              <div class="col-sm-6 col-md-4 col-lg-3" data-price="<%= product.productPrice %>">
+                <div class="box">
+                  <a href="">
+                    <div class="img-box">
+                      <a href="/detail/<%= product._id %>"><img src="<%= product.images[0] %>" alt=""></a>
+                    </div>
+                    <div class="detail-box">
+                      <h6>
+                        <%= product.productName %>
+                      </h6>
+                      <h6>
+                        Price
+                        <span>
+                          $<%= product.productPrice %>
+                        </span>
+                      </h6>
+                    </div>
+                    <div class="new">
+                      <span>
+                        New
+                      </span>
+                    </div>
+                  </a>
+                </div>
               </div>
-              <div class="detail-box">
-                <h6>
-                  <%= product.productName %>
-                </h6>
-                <h6>
-                  Price
-                  <span>
-                    $<%= product.productPrice %>
-                  </span>
-                </h6>
-              </div>
-              <div class="new">
-                <span>
-                  New
-                </span>
-              </div>
-            </a>
+              <% }); %>
           </div>
         </div>
-        <% }); %>
       </div>
       <div class="btn-box">
         <a href="">
@@ -247,6 +332,62 @@
     </div>
   </footer>
   <!-- footer section -->
+  // shop.js
+ <script>
+
+  const searchBarElement = document.getElementById('searchBar');
+  const productView = document.getElementById('productView');
+  searchBarElement.addEventListener('change', async  (e) => {
+    const htmlResult = await fetch(`/search?q=${searchBarElement.value}`, { method: "GET" });
+    productView.innerHTML = await htmlResult.text();
+  })
+
+  
+  function filterByPrice() {
+    var sortBy = document.getElementById("priceFilter").value;
+
+    // Grab all the elements of `#productView` and convert its children (each product) into an array.
+    const elements = [...document.getElementById('productView').children];
+    
+    elements.sort(function(a, b) {
+      let priceA = parseInt(a.dataset.price);
+      let priceB = parseInt(b.dataset.price);
+
+      if (sortBy === "lowToHigh") {
+        return priceA - priceB;
+      } else {
+        return priceB - priceA;
+      }
+    });
+
+    // Replace the whole elements of `#productView` with sorted version.
+    document.getElementById('productView').replaceChildren(...elements)
+  }
+
+
+  
+  function updateProductList(products) {
+      const productListContainer = document.getElementById("productList");
+  
+      // Clear existing products in the list
+      productListContainer.innerHTML = "";
+  
+      if (products.length === 0) {
+          // Display a message if no results are found
+          const noResultsMessage = document.createElement("div");
+          noResultsMessage.textContent = "No results found.";
+          productListContainer.appendChild(noResultsMessage);
+      } else {
+          // Display each product in the list
+          products.forEach(product => {
+              const productItem = document.createElement("div");
+              productItem.textContent = product.name; // Replace with actual product properties
+              productListContainer.appendChild(productItem);
+          });
+      }
+  }
+  </script>
+
 
 
   <!-- jQery -->

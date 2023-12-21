@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #eeeeee;
+            font-family: 'Open Sans', serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #ff69b4;
+            color: #fff;
+            width: 100%;
+        }
+
+        .brand {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand img {
+            margin-right: 10px;
+            height: 30px;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .link {
+            margin: 0 15px;
+            color: #fff;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .link i {
+            margin-right: 5px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .wishlist-container {
+            background-color: aliceblue;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .card-body row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .col {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .col strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .link:hover {
+            color: #ff2b00;
+        }
+
+        .btn-warning:hover {
+            background-color: #ff2b00;
+            color: #fff;
+        }
+
+        .back-to-home-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .back-to-home-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="brand">
+            <img src="/assets/img/logo.png" alt="Logo">
+            <div><strong>SKINVOGUE</strong></div>
+        </div>
+        <div class="navbar-links">
+            <a href="/" class="link"><i class="fas fa-home"></i> Home</a>
+            <a href="/shop" class="link"><i class="fas fa-shopping-bag"></i> Shop</a>
+            <a href="/wishlist" class="link"><i class="fas fa-heart"></i> Wishlist</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <article class="card">
+            <header class="card-header"> My Wishlist </header>
+            <div class="wishlist-container">
+                <% if (wishlist && Array.isArray(wishlist.products)) { %>
+                    <% wishlist.products.forEach(product => { %>
+                        <div class="card-body row">
+                            <div class="col"> 
+                                <strong>Images:</strong> <br>
+                                <%= console.log(product.image) %>
+                                <% if (Array.isArray(product.image) && product.image.length > 0) { %>
+                                    <% product.image.forEach(image => { %>
+                                        <%= console.log(image) %>
+                                        <img style="width: 120px; height: 120px;" src="<%= product.image %>" alt="Product Image"  class="wishlist-image">
+                                    <% }); %>
+                                <% } else { %>
+                                    No images available
+                                <% } %>
+                            </div>
+                            <div class="col"> 
+                                <strong>Product Name:</strong> <br> <%= product.productName %> 
+                            </div>
+                           
+                            <div class="col"> 
+                                <strong>Product Name:</strong> <br> <%= product.price %> 
+                            </div>
+                            
+                            
+                        </div>
+                        <hr>
+                    <% }); %>
+                <% } else { %>
+                    <p>No products in your wishlist</p>
+                <% } %>
+            </div>
+            <a href="/" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Continue Shopping</a>
+            <a href="/" class="back-to-home-btn" data-abc="true"> <i class="fa fa-home"></i> Back to Home</a>
+        </article>
+    </div>
+    
+    
+
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

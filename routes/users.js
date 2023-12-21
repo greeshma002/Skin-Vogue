@@ -24,7 +24,13 @@ const {
   deleteAddress,
   changepassword,
   postchangepassword,
-  
+  getwishlist,
+  postwishlist,
+  postrazorpay,
+  shopsearch,
+  userwallet,
+  orderreturn,
+  orderhistory,
   
   
  
@@ -39,7 +45,7 @@ router.get("/login", login);
 
 router.post("/login", loginpost);
 
-router.get("/changepass",changepassword)
+router.get("/changepass", changepassword)
 
 router.post("/changepass",postchangepassword)
 
@@ -59,9 +65,9 @@ router.get("/logout", logout);
 router.get("/detail/:id", detail);
 
 //Cart Management
-router.get("/cartdetails",isAuthenticated,cartdetails)
+router.get("/cartdetails",isAuthenticated,isBlocked,cartdetails)
 
-router.get("/cart/:productid",isAuthenticated,cartcontroller)
+router.get("/cart/:productid",isAuthenticated,isBlocked,cartcontroller)
 
 router.get("/cartremove/:productid",isAuthenticated,deleteCart)
 
@@ -69,7 +75,7 @@ router.put("/updateQuantity/:productId",isAuthenticated, updQuantity)
 
 // router.post("/addTocart",addtocartController);
 
-router.get("/userprofile",isAuthenticated,userprofile)
+router.get("/userprofile",isAuthenticated,isBlocked,userprofile)
 
 router.get("/checkout",isAuthenticated, checkoutpage)
 
@@ -91,14 +97,24 @@ router.get("/confirm",isAuthenticated,confirmpage)
 
 router.post("/user/orderstatus/:orderId",isAuthenticated,userorderStatus)
 
-
 router.get("/useraddress", isAuthenticated,userAddress)
 
 router.get("/deleteAddress/:addressId",isAuthenticated,deleteAddress);
 
 router.get("/cancel/:orderId",isAuthenticated,cancelorder)
-   
 
+router.get("/wishlist",getwishlist) 
 
+router.get("/wishlist/add/:productid",postwishlist)
+
+router.post("/razorpay",postrazorpay)
+
+router.get("/search",shopsearch)
+
+router.get("/wallet",userwallet)
+
+router.post("/return/:orderId",orderreturn)
+
+//router.get("/orderhistory",orderhistory)
 
 module.exports = router;

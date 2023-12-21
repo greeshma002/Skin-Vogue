@@ -6,10 +6,46 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-zoom/1.7.21/jquery.zoom.js"></script>
   <style>
-    /* Your styles go here */
+    
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background-color: #ff69b4;
+        color: #fff;
+        margin-top: 0;
+        width: 100%; /* Make the navbar full width */
+    }
+
+    .brand {
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+    }
+
+    .brand img {
+        margin-right: 10px;
+        height: 30px;
+    }
+</style>
+
   </style>
 </head>
 <body>
+   
+  <div class="navbar">
+    <div class="brand">
+        <img src="/assets/img/logo.png" alt="Logo">
+        <div><strong>SKINVOGUE</strong></div>
+    </div>
+    </div>
+
   <div class="card-wrapper">
     <div class="card">
       <!-- card left -->
@@ -46,15 +82,26 @@
 
 <div class="purchase-info">
   <% if (product.productQuantity > 0) { %>
-    <a href="/cart/<%= product._id %>" class="btn" id="addToCartBtn">
-      Add to Cart <i class="fas fa-shopping-cart"></i>
+    <a href="/cart/<%= product._id %>" class="btn" id="addToCartBtn" style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; text-decoration: none;">
+        Add to Cart <i class="fas fa-shopping-cart"></i>
     </a>
-  <% } else { %>
-    <button class="btn" id="addToCartBtn" disabled>
-      Out of Stock <i class="fas fa-shopping-cart"></i>
+<% } else { %>
+    <button class="btn" id="addToCartBtn" disabled style="background-color: #ddd; color: #777; border: none; padding: 10px 20px; border-radius: 5px; cursor: not-allowed;">
+        Out of Stock <i class="fas fa-shopping-cart"></i>
     </button>
-  <% } %>
-  <a href="/cartdetails"><button style="background-color: palegoldenrod;"> Go to Cart </button></a>
+    
+<% } %>
+
+  <a href="/cartdetails">
+    <button style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+        Go to Cart
+    </button>
+    <a href="/wishlist/add/<%= product._id  %>"><button style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+      Add to wishlist
+  </button></a>
+   
+</a>
+
 </div>
 
 <!-- ... (other HTML code) ... -->

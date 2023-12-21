@@ -35,7 +35,7 @@ const orderSchema = new Schema({
   ],
   paymentMethod: {
     type: String,
-    enum: ["cod", "wallet", "card"],
+    enum: ["cod", "wallet","online","card","UPI"],
     required: true,
   },
   totalAmount: {

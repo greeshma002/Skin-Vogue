@@ -115,6 +115,7 @@
         color: #333;
     }
 
+
     .btn-warning {
         background-color: #ffc107;
         color: #333;
@@ -168,11 +169,19 @@
                                 <div class="col"> <strong>Shipping BY:</strong> <br> BLUEDART, | <i class="fa fa-phone"></i> +1598675986 </div>
                                 <div class="col"> <strong>Status:</strong> <br><%= product.orderStatus %> </div>
                                 <div class="col"> <strong>Amount you Pay:</strong> <br><%= product.totalAmount %> </div>
+                                <div class="col"> <strong>Payment Method:</strong> <br><%= product.paymentMethod %> </div>
                               
-                                <a href="/cancel/<%=product.orderId%>"><button style="background-color: red;">Cancel order</button>
+                                <a href="/cancel/<%= product.orderId %>">
+                                    <button style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                                      Cancel Order
+                                    </button>
+                                  </a>
 
-
-                              
+                                  <span>
+                                    <button onclick="returnProduct('<%= product.orderId %>')" style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                                        Return Order
+                                    </button>
+                                  </span>  
                             </div>
                         </article>
                         <hr>
@@ -204,5 +213,26 @@
             </div>
         </article>
     </div>
+    <script>
+        function returnProduct(productId) {
+            fetch(`/return/${productId}`, { method: "POST", headers: { "Content-Type": "application/json"}})
+            .then(res => res.json())
+            .then(data => {
+              // Handle the response from the server
+              if (data.success) {
+                  // Update the UI or show a confirmation message
+                  alert('Order returned successfully. Amount refunded to your wallet.');
+              } else {
+                  alert('Failed to return the order. Please try again.');
+                  console.log(data.error);
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+        }
+  </script>
+        
+
 </body>
 </html>

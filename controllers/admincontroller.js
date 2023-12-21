@@ -248,7 +248,7 @@ exports.getaddCategory = async (req, res) => {
 };
 
 exports.postaddCategory = async (req, res) => {
-  const name = req.body.categoryName;
+  const name = req.body.categoryName.toLowerCase();
   console.log(req.body);
 
   try {

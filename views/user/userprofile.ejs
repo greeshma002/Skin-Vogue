@@ -3,305 +3,256 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <title>User Profile</title>
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-
-    .card {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-      padding: 20px;
-      
-      
-    }
-
-
-    .profile-info {
-      margin-bottom: 20px;
-    }
-
-    .profile-info h6 {
-      font-weight: bold;
-      margin-bottom: 0;
-    }
-
-    .profile-info .text-secondary {
-      color: #6c757d;
-    }
-
-    .edit-btn {
-      background-color: #17a2b8;
-      color: #fff;
-    }
-
-    .list-group-item {
-      border: none;
-      border-bottom: 1px solid #ddd;
-      padding: 15px;
-    }
-
-    .list-group-item:last-child {
-      border-bottom: none;
-    }
-
-    h6 {
-      font-size: 1.2rem;
-      margin-bottom: 5px;
-    }
-
-    svg {
-      vertical-align: middle;
-      margin-right: 8px;
-    }
-
-    .text-secondary {
-      color: #6c757d;
-    }
-
-    .text-info {
-      color: #17a2b8;
-    }
-
-    .text-danger {
-      color: #dc3545;
-    }
-    .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background-color: #ff69b4;
-            color: #fff;
-        }
-
-        .brand {
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-
-        .brand img {
-            margin-right: 10px;
-            height: 30px;
-        }
-        .wishlist-item,
-  .orders-item {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    padding: 15px;
-    transition: background-color 0.3s ease;
-  }
-
-  .wishlist-item:hover,
-  .orders-item:hover {
-    background-color: #f8f9fa;
-  }
-
-  .wishlist-icon,
-  .orders-icon {
-    flex: 0 0 auto;
-    margin-right: 15px;
-  }
-
-  .wishlist-content,
-  .orders-content {
-    flex: 1 1 auto;
-  }
-
-  .wishlist-content h6,
-  .orders-content h6 {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-  }
-
-  .wishlist-content .text-secondary,
-  .orders-content .text-secondary {
-    color: #6c757d;
-  }
-
-    .text-primary {
-      color: #007bff;
-    }
-  </style>
+  <title>Document</title>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="navbar">
-        <div class="brand">
-            <img src="/assets/img/logo.png" alt="Logo">
-            <div><strong>SKINVOGUE</strong></div>
-        </div>
-        </div>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body text-center">
-            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="User" class="rounded-circle" width="150">
-            <div class="mt-3">
-              <h4><%= username.name %></h4>
-              <p class="text-secondary mb-1"></p>
-              <p class="text-muted font-size-sm"></p>
-              <a href="/useraddress"><button  style="background-color: #ff69b4;" class="btn btn-primary">Addresses</button></a>
-              <a href="/orderdetail"><button class="btn btn-outline-primary">Orders</button></a>
-              <a href="/changepass"><button class="btn btn-outline-primary">Change Password</button></a>
-            </div>
-           
-          </div>
-        </div>
-        
-       
-      </div>
+<style>
+body{margin-top:20px;}
 
-      <div class="col-md-8">
-        <div class="card mb-3">
-          <div class="card-body">
-            <form id="addressForm" action="/addaddress" method="post" onsubmit="return validateForm()">
-              <div class="profile-info">
-                <div class="form-group row">
-                  <label for="fullName" class="col-sm-3 col-form-label"><i class="bi bi-person"></i> Full Name</label>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="fullName" name="name" placeholder="Enter your name">
-                  </div>
-                </div>
-                
-      
-                <div class="form-group row">
-                  <label for="pin" class="col-sm-3 col-form-label"><i class="bi bi-pin"></i> PIN</label>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="pin" name="pin" placeholder="Enter PIN">
-                  </div>
-                </div>
-      
-                <div class="form-group row">
-                  <label for="street" class="col-sm-3 col-form-label"><i class="bi bi-house-door"></i> Address </label>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="Address" name="Address" placeholder="Enter Address">
-                    
-                    
-                  </div>
-                </div>
-      
-                <div class="form-group row">
-                  <label for="state" class="col-sm-3 col-form-label"><i class="bi bi-flag"></i> State</label>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="state" name="state" placeholder="Enter State">
-                  </div>
-                </div>
-      
-                <div class="form-group row">
-                  <label for="city" class="col-sm-3 col-form-label"><i class="bi bi-building"></i> City</label>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="city" name="city" placeholder="Enter City">
-                  </div>
-                </div>
-      
-                <div class="form-group row">
-                  <label for="email" class="col-sm-3 col-form-label"><i class="bi bi-envelope"></i> Email</label>
-                  <div class="col-sm-9">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email">
-                  </div>
-                </div>
-      
-                <div class="form-group row">
-                  <label for="phoneNumber" class="col-sm-3 col-form-label"><i class="bi bi-phone"></i> Phone Number</label>
-                  <div class="col-sm-9">
-                    <input type="tel" class="form-control" id="phoneNumber" name="phone" placeholder="Enter Phone Number">
-                  </div>
-                </div>
-      
-              </div>
-      
-              <div class="row">
-                <div class="col-sm-12">
-                  <button type="submit" class="btn btn-info edit-btn">
-                    <i class="bi bi-pencil"></i> Submit
-                  </button>
-                </div>
-              </div>
-            </form>
+.user-info-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: -1px;
+    padding-top: 90px;
+    padding-bottom: 30px;
+    border: 1px solid #e1e7ec;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    overflow: hidden
+}
 
-            <script>
-              function validateForm() {
-                // Get form values
-                var fullName = document.getElementById('fullName').value.trim();
-                var pin = document.getElementById('pin').value;
-                var address = document.getElementById('Address').value.trim(); // Corrected ID
-                var state = document.getElementById('state').value.trim();
-                var city = document.getElementById('city').value.trim();
-                var email = document.getElementById('email').value.trim();
-                var phoneNumber = document.getElementById('phoneNumber').value.trim();
-            
-                // Regular expressions for validation
-                var nameRegex =  /^[A-Za-z\s]+$/;
-                var addressRegex = /^[A-Za-z0-9\s,.'-]+$/;
-                var pinRegex = /^[0-9]+$/;
-                var textRegex = /^[A-Za-z\s]+$/;
-                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                var phoneRegex = /^[1-9]\d{9}$/; // Removed duplicate definition
-            
-                // Validate full name
-                if (!nameRegex.test(fullName)) {
-                  alert('Invalid name. Please enter only alphabetic characters without spaces.');
-                  return false;
-                }
-            
-                // Validate PIN
-                if (!pinRegex.test(pin)) {
-                  alert('Invalid PIN. Please enter only numeric characters.');
-                  return false;
-                }
+.user-info-wrapper .user-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background-position: center;
+    background-color: #f5f5f5;
+    background-repeat: no-repeat;
+    background-size: cover
+}
 
-                if (!addressRegex.test(address)) {
-             alert('Invalid address. Please enter only alphabetic characters');
-               return false;
+
+
+.user-info-wrapper .info-label {
+    display: block;
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    height: 26px;
+    padding: 0 12px;
+    border-radius: 13px;
+    background-color: #fff;
+    color: #606975;
+    font-size: 12px;
+    line-height: 26px;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.18);
+    cursor: pointer
+}
+.user-info-wrapper .user-info {
+    display: table;
+    position: relative;
+    width: 100%;
+    padding: 0 18px;
+    z-index: 5
+}
+
+.user-info-wrapper .user-info .user-avatar,
+.user-info-wrapper .user-info .user-data {
+    display: table-cell;
+    vertical-align: top
+}
+
+.user-info-wrapper .user-info .user-avatar {
+    position: relative;
+    width: 115px
+}
+
+.user-info-wrapper .user-info .user-avatar>img {
+    display: block;
+    width: 100%;
+    border: 5px solid #fff;
+    border-radius: 50%
+}
+
+
+.user-info-wrapper .user-info .user-data {
+    padding-top: 48px;
+    padding-left: 12px
+}
+
+.user-info-wrapper .user-info .user-data h4 {
+    margin-bottom: 2px
+}
+
+.user-info-wrapper .user-info .user-data span {
+    display: block;
+    color: #9da9b9;
+    font-size: 13px
+}
+
+a.list-group-item {
+    padding-top: .87rem;
+    padding-bottom: .87rem;
+}
+
+
+.list-group-item {
+    border-color: #e1e7ec;
+    background-color: #fff;
+    text-decoration: none;
+}
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: .75rem 1.25rem;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,0.125);
+}
+
+@media screen and (max-width: 860px) {
+    .shopping-cart .product-item .product-thumb,
+    .wishlist-table .product-item .product-thumb,
+    .order-table .product-item .product-thumb {
+        display: none
     }
-            
-                // Validate  state, and city
-                if ( !textRegex.test(state) || !textRegex.test(city)) {
-                  alert('Invalid input. Please enter only alphabetic characters without spaces or special characters.');
-                  return false;
-                }
-            
-                // Validate email
-                if (!emailRegex.test(email)) {
-                  alert('Invalid email address. Please enter a valid email.');
-                  return false;
-                }
-            
-                // Validate phone number
-                if (!phoneRegex.test(phoneNumber)) {
-                  alert('Invalid phone number. Please enter a 10-digit number without spaces or special characters, except for zero.');
-                  return false;
-                }
-            
-                // If all validations pass, the form will be submitted
-                return true;
-              }
-            </script>
-            
+}
 
+.shopping-cart .product-item .product-info span,
+.wishlist-table .product-item .product-info span,
+.order-table .product-item .product-info span {
+    display: block;
+    font-size: 13px
+}
 
-          </div>
-        </div>
-      </div>
+.shopping-cart .product-item .product-info span>em,
+.wishlist-table .product-item .product-info span>em,
+.order-table .product-item .product-info span>em {
+    font-weight: 500;
+    font-style: normal
+}
 
-     
-      
+.shopping-cart .product-item .product-title,
+.wishlist-table .product-item .product-title,
+.order-table .product-item .product-title {
+    margin-bottom: 6px;
+    padding-top: 5px;
+    font-size: 16px;
+    font-weight: 500
+}
+
+.shopping-cart .product-item .product-title>a,
+.wishlist-table .product-item .product-title>a,
+.order-table .product-item .product-title>a {
+    transition: color .3s;
+    color: #374250;
+    line-height: 1.5;
+    text-decoration: none
+}
+
+.shopping-cart .product-item .product-title>a:hover,
+.wishlist-table .product-item .product-title>a:hover,
+.order-table .product-item .product-title>a:hover {
+    color: #0da9ef
+}
+
+.shopping-cart .product-item .product-title small,
+.wishlist-table .product-item .product-title small,
+.order-table .product-item .product-title small {
+    display: inline;
+    margin-left: 6px;
+    font-weight: 500
+}
+
+.wishlist-table .product-item .product-thumb {
+    display: table-cell !important
+}
+
+@media screen and (max-width: 576px) {
+    .wishlist-table .product-item .product-thumb {
+        display: none !important
+    }
+}
+
+.badge.badge-primary {
+    background-color: #0da9ef;
+}
+.with-badge .badge {
+    position: absolute;
+    top: 50%;
+    right: 1.15rem;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+.list-group-item i {
+    margin-top: -4px;
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background-color: #ff69b4;
+        color: #fff;
+        margin-top: 0;
+        width: 100%; /* Make the navbar full width */
+    }
+
+    .brand {
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+    }
+
+    .brand img {
+        margin-right: 10px;
+        height: 30px;
+    }
+
+</style>
+
+<body>
+  <div class="navbar">
+    <div class="brand">
+        <img src="/assets/img/logo.png" alt="Logo">
+        <div><strong>SKINVOGUE</strong></div>
     </div>
-  </div>
-   
+    </div>
+  <div class="container padding-bottom-3x mb-2">
+    <div class="row">
+        <div class="col-lg-4">
+            <aside class="user-info-wrapper">
+                <div class="user-cover" style="background-image: url(https://i.pinimg.com/564x/1a/d2/44/1ad244e41c9fce40b56e98481a14fa51.jpg);">
+                    <div class="info-label" data-toggle="tooltip" title="" data-original-title="You currently have 290 Reward Points to spend"><i class="icon-medal"></i>290 points</div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <a class="edit-avatar" href="#"></a><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User"></div>
+                    <div class="user-data">
+                        <h2><%= username.name %></h2><span>Joined February 06, 2017</span>
+                       
+                      
+                    </div>
+                </div>
+            </aside>
+            <nav class="list-group">
+                <a class="list-group-item with-badge" href="/orderdetail"><i class=" fa fa-th"></i>Orders<span class="badge badge-primary badge-pill">6</span></a>
+                <a class="list-group-item" href="/changepass"><i class="fa fa-user"></i>Change Password</a>
+                <a class="list-group-item" href="/useraddress"><i class="fa fa-map"></i>Addresses</a>
+                <a class="list-group-item with-badge active" href="/wishlist"><i class="fa fa-heart"></i>Wishlist<span class="badge badge-primary badge-pill">3</span></a>
+                <a class="list-group-item with-badge" href="/wallet"><i class="fa fa-tag"></i>Wallet<span class="badge badge-primary badge-pill">4</span></a>
+            </nav>
+        </div>
   
-            
-            
-      
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
-</html>
+       </html>

@@ -31,7 +31,7 @@ const {
 } = require("../controllers/admincontroller");
 
 
-
+const {  addcoupon , addnewcoupon } = require("../controllers/couponcontroller")
 const multer = require("multer");
 const { isAdmin, isLogout } = require("../middlewares/authMiddleware");
 const storage = multer.diskStorage({
@@ -105,6 +105,11 @@ router.post("/categories/add",isAdmin, postaddCategory);
  router.get("/orderdetails/:id",adminOrderdetail)
  
  router.post("/orderstatus/:orderId",orderStatus)
+
+ //coupon managemnet
+
+ router.get("/coupon", addcoupon)
+ router.post("/addcoupon" , addnewcoupon )
 
  
 

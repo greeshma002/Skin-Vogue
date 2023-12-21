@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <title>Wallet Management</title>
+
+  <style>
+
+body {
+  background-color: #f8f9fa;
+}
+
+.card {
+  margin-top: 50px;
+}
+
+#balance {
+  font-size: 24px;
+  font-weight: bold;
+}
+</style>
+
+
+</head>
+
+<body>
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center">Wallet Management</h3>
+          </div>
+          <div class="card-body">
+            <div class="text-center mb-3">
+              <h4>Current Balance</h4>
+              <p id="balance">₹<%= amount %></p>
+            </div>
+            <form id="transactionForm">
+              <div class="form-group">
+                <label for="amount">Enter Amount:</label>
+                <input type="number" class="form-control" id="amount" placeholder="Enter amount" required>
+              </div>
+             
+              <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ 
+  <!-- Add your styles or link to a stylesheet here -->
+
+
+
+
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

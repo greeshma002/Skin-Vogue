@@ -203,11 +203,15 @@
                                 <div class="form-group">
                                     <label class="form-label">Have coupon?</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control border" name=""
-                                            placeholder="Coupon code" />
-                                        <button class="btn btn-light border">Apply</button>
+                                      <select class="form-control border" name="selectedCoupon">
+                                        <option value="" selected disabled>Select a coupon</option>
+                                        <% coupons.forEach(coupon => { %>
+                                          <option value="<%= coupon.couponCode %>"><%= coupon.couponCode %></option>
+                                        <% }); %>
+                                      </select>
+                                      <button class="btn btn-light border">Apply</button>
                                     </div>
-                                </div>
+                                  </div>
                             </form>
                         </div>
                     </div>
@@ -223,7 +227,7 @@
                                 <a href="/checkout" class="btn btn-success w-100 shadow-0 mb-2"> Make Purchase </a>
                                 <a href="/shop" class="btn btn-light w-100 border mt-2"> Back to shop </a>
                                 <% if (err) {%>
-                                    <p>Item Of Stock </p>
+                                    <p style="color: red;"> Remove the Out of Stock Products </p>
                                 <%} %>
                             </div>
                         </div>
