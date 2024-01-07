@@ -4,12 +4,14 @@ const collection = require("../models/UserSchema");
 const address = require("../models/addressSchema");
 const Order = require("../models/orderSchema");
 const Wishlist = require("../models/wishlistSchema");
-const Razorpay = require("razorpay")
+const Razorpay = require("razorpay");
 require("dotenv").config();
-const wallet = require("../models/walletSchema")
-const coupon = require("../models/couponSchema")
+const wallet = require("../models/walletSchema");
+const coupon = require("../models/couponSchema");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
 
-const ejs = require('ejs');
+const ejs = require("ejs");
 
 const { sendOTP, generateOTP } = require("../utils/mailing");
 const { addAddress } = require("../models/addressSchema");
@@ -179,7 +181,7 @@ function sendMailfn(req, res, email) {
   req.session.otp = generateOTP();
   const now = new Date();
   req.session.otpExpiry = now.getTime() + 3 * 60 * 1000;
-  sendOTP(email, req.session.otp);
+  // sendOTP(email, req.session.otp);
   console.log(`${email} got the OTP for ${req.session.otp}`);
 }
 
@@ -187,18 +189,26 @@ exports.shoppage = async (req, res) => {
   try {
     let query = { listed: true };
 
-    // Check if a price filter is provided
-    if (req.query.sort === 'lowToHigh') {
-      // Sorting by price from low to high
-      query = { ...query, sort: { price: 1 } };
-    } else if (req.query.sort === 'highToLow') {
-      // Sorting by price from high to low
-      query = { ...query, sort: { price: -1 } };
+    // Pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = 8;
+    const startIndex = (page - 1) * limit;
+
+    const totalProducts = await Product.countDocuments();
+    const maxPage = Math.ceil(totalProducts / limit);
+    // console.log(maxPage);
+
+    // Redirect if the requested page is greater than the maximum page
+    if (page > maxPage) {
+      return res.redirect(`/shop?page=${maxPage}`);
     }
 
-    const productData = await Product.find(query);
+    const productData = await Product.find(query)
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
 
-    res.render("shop", { productData });
+    res.render("shop", { productData, page, maxPage });
   } catch (error) {
     console.log(error.message);
     res.render("error", { errorMessage: "An error occurred" });
@@ -239,15 +249,19 @@ exports.detail = async (req, res) => {
     console.log(error);
   }
 };
+
 exports.userprofile = async (req, res) => {
   try {
-    let email = req.session.user;
+    const email = req.session.user;
     const username = await collection.findOne({ email });
-    res.render("user/userprofile", { username });
+    const addresses = await address.find({ userId: username._id });
+
+    res.render("user/userprofile", { username, addresses });
   } catch (error) {
     console.log(error.message);
   }
 };
+
 exports.getaddAddress = async (req, res) => {
   try {
     res.render("user/userprofile");
@@ -255,6 +269,7 @@ exports.getaddAddress = async (req, res) => {
     console.log(error.message);
   }
 };
+
 exports.postaddAddress = async (req, res) => {
   try {
     const email = req.session.user;
@@ -279,6 +294,7 @@ exports.postaddAddress = async (req, res) => {
       .json({ error: "Internal Server Error", message: error.message });
   }
 };
+
 exports.userorderStatus = async (req, res) => {
   const orderId = req.params.orderId;
   const newStatus = req.body.newStatus;
@@ -296,6 +312,7 @@ exports.userorderStatus = async (req, res) => {
     res.status(500).json({ status: "error", message: "Internal Server Error" });
   }
 };
+
 exports.userAddress = async (req, res) => {
   try {
     const email = req.session.user;
@@ -310,6 +327,7 @@ exports.userAddress = async (req, res) => {
       .json({ error: "Internal Server Error", message: error.message });
   }
 };
+
 exports.geteditaddress = async (req, res) => {
   try {
     const addressId = req.params.addressId;
@@ -351,17 +369,18 @@ exports.posteditaddress = async (req, res) => {
     if (!updatedaddress) {
       return res.status(404).send("Product not found");
     }
-    res.redirect("/userAddress");
+    res.redirect("/userprofile");
   } catch (error) {
     console.log(error);
     res.send("internal server error");
   }
 };
+
 exports.deleteAddress = async (req, res) => {
   try {
     const addressId = req.params.addressId;
     await address.deleteOne({ _id: addressId });
-    res.redirect("/userAddress");
+    res.redirect("/userprofile");
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error");
@@ -372,7 +391,9 @@ exports.getwishlist = async (req, res) => {
   const email = req.session.user;
 
   try {
-    let wishlist = await Wishlist.findOne({ userId : req.session.userId }).populate("products");
+    let wishlist = await Wishlist.findOne({
+      userId: req.session.userId,
+    }).populate("products");
 
     if (wishlist) {
       console.log("Wishlist retrieved:", wishlist);
@@ -388,91 +409,107 @@ exports.getwishlist = async (req, res) => {
 };
 
 exports.postwishlist = async (req, res) => {
-  const productid = req.params.productid;
-  let email = req.session.user;
-  console.log(email);
-
-  const productId = await Product.findById({ _id: productid });
-  const username = await collection.findOne({ email });
-
   try {
-    let wishlist = await Wishlist.findOne({ userId: username._id });
+    const productId = req.params.productid;
+    const email = req.session.user;
 
-    if (wishlist) {
-      let productIndex = wishlist.products.findIndex(
-        (p) => p.productId.toString() === productid
-      );
-
-      
-  if (productIndex > -1) {
-    // product already exists in the wishlist, do nothing
-    console.log("Product already in wishlist");
-    return res.redirect('/wishlist');
-  } else {
-    // product does not exist in wishlist, add new product
-    wishlist.products.push({
-      productId: productid,
-      productName: productId.productName,
-      price: productId.productPrice,
-      quantity: 1,
-      image: productId.images[0],
-    });
-
-    wishlist = await wishlist.save();
-    console.log("Product added to wishlist:", wishlist);
-    return res.redirect('/wishlist');
-  }
+  
+    if (!email) {
+      return res.status(401).send("User not authenticated");
     }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+
+  
+    const user = await collection.findOne({ email });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+  
+    let wishlist = await Wishlist.findOne({ userId: user._id });
+    if (!wishlist) {
+      wishlist = await Wishlist.create({ userId: user._id, products: [] });
+    }
+
+  
+    const productIndex = wishlist.products.findIndex(
+      (p) => p.productId.toString() === productId
+    );
+
+    if (productIndex > -1) {
+     
+      return res.redirect("/wishlist");
+    } else {
+
+      wishlist.products.push({
+        productId: productId,
+        productName: product.productName,
+        price: product.productPrice,
+        quantity: 1,
+        image: product.images[0],
+      });
+      await wishlist.save();
+    }
+
+    return res.redirect("/wishlist");
   } catch (err) {
-    console.log(err);
+    console.log("greeshma" ,err);
     res.status(500).send("Something went wrong");
   }
 };
 
 exports.postrazorpay = async (req, res) => {
   try {
-
-    
-
-      const amount = Number(req.body.amount)
-      const addr=req.body.address
-      console.log("hii");
-      console.log(addr);
-      // Razorpay
-      const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env
-      const Razorpay = require('razorpay')
-      let instance = new Razorpay({ key_id: RAZORPAY_ID_KEY, key_secret: RAZORPAY_SECRET_KEY })
-      //RaZor Pay
-      instance.orders.create({
-          amount: amount  ,
-          currency: "INR",
-          receipt: "receipt#1",
-          notes: {
-            paymentMethod:"online", 
-            addressId: addr
-          }
-      }).then(order => {
-        console.log(order._id);
-          return res.send({ orderId: order.id })
+    const amount = Number(req.body.amount);
+    const addr = req.body.address;
+    console.log("hii");
+    console.log(addr);
+    // Razorpay
+    const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+    const Razorpay = require("razorpay");
+    let instance = new Razorpay({
+      key_id: RAZORPAY_ID_KEY,
+      key_secret: RAZORPAY_SECRET_KEY,
+    });
+    //RaZor Pay
+    instance.orders
+      .create({
+        amount: amount,
+        currency: "INR",
+        receipt: "receipt#1",
+        notes: {
+          paymentMethod: "online",
+          addressId: addr,
+        },
       })
-
-
+      .then((order) => {
+        console.log(order._id);
+        return res.send({ orderId: order.id });
+      });
   } catch (error) {
-      console.log(error);
+    console.log(error);
   }
-}
+};
 
-exports.shopsearch =  async (req, res) => {
+exports.shopsearch = async (req, res) => {
   const searchQuery = req.query.q;
 
   try {
-      const results = await Product.find({  productName: { $regex: new RegExp(`^${searchQuery}`, 'i') }  });
+    const results = await Product.find({
+      productName: { $regex: new RegExp(`^${searchQuery}`, "i") },
+    });
 
-      let html = await ejs.renderFile('./views/products_template.ejs', { productData: results });
-      res.send(html);
+    let html = await ejs.renderFile("./views/products_template.ejs", {
+      productData: results,
+    });
+    res.send(html);
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -484,12 +521,16 @@ exports.orderreturn = async (req, res) => {
     const order = await Order.findOne({ _id: orderId, userId: userId });
 
     if (!order) {
-      return res.status(404).json({ success: false, error: 'Order not found.' });
+      return res
+        .status(404)
+        .json({ success: false, error: "Order not found." });
     }
-    if (order.orderStatus === 'returned') {
-      return res.status(400).json({ success: false, error: 'Order has already been returned.' });
+    if (order.orderStatus === "returned") {
+      return res
+        .status(400)
+        .json({ success: false, error: "Order has already been returned." });
     }
-    order.orderStatus = 'returned';
+    order.orderStatus = "returned";
     await order.save();
 
     for (let orderedProduct of order.products) {
@@ -512,44 +553,324 @@ exports.orderreturn = async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
-    console.error('Error:', err);
-    res.status(500).send({ success: false, error: 'An internal server error occurred.' });
+    console.error("Error:", err);
+    res
+      .status(500)
+      .send({ success: false, error: "An internal server error occurred." });
   }
 };
-
-
-
 
 exports.userwallet = async (req, res) => {
   try {
     const userId = req.session.userId;
-    const userWallet = await wallet.findOne({ user: userId });
-   
 
-    if (!userWallet) {
-      return res.status(404).json({ success: false, error: 'Wallet not found for the user.' });
+    if (!userId) {
+      return res.status(401).send("Unauthorized"); // Or redirect to login page
     }
 
-    res.render('user/userwallet', { amount: userWallet.balance });
+    const userWallet = await wallet.findOne({ user: userId });
+    const transactions = userWallet ? userWallet.history : [];
+
+    if (!userWallet) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Wallet not found for the user." });
+    }
+
+    res.render("user/userwallet", { amount: userWallet.balance, transactions });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send("Internal Server Error");
   }
 };
 
-// exports.orderhistory =  async (userId, amount, type, description) => {
-//   try {
-//     const walletHistory = new wallet({
-//       user: userId,
-//       amount: amount,
-//       type: type,
-//       description: description,
-//     });
+function calculateTotalPrice(cartdata) {
+  if (!cartdata || !cartdata.product || cartdata.product.length === 0) {
+    return 0;
+  }
 
-//     await walletHistory.save();
-//   } catch (error) {
-//     console.error('Error adding wallet history:', error);
-//   }
-// };
+  return cartdata.product.reduce(
+    (total, product) => total + product.price * product.quantity,
+    0
+  );
+}
+
+exports.postwallet = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    let userWallet = await wallet.findOne({ user: userId });
+
+    if (!userWallet) {
+      userWallet = new wallet({ user: userId, balance: 0, history: [] });
+      await userWallet.save();
+    }
+
+    const orderTotal = req.body.totalPrice;
+    const refundedAmount = req.body.refundedAmount || 0;
+
+    if (userWallet.balance >= orderTotal - refundedAmount) {
+      console.log(userWallet.balance);
+      console.log(orderTotal);
+
+      const newTransaction = {
+        amount: orderTotal,
+        refunded: refundedAmount,
+        type: "debit",
+      };
+
+      if (req.body.orderId) {
+        newTransaction.orderId = req.body.orderId;
+      }
+
+      userWallet.balance -= orderTotal - refundedAmount;
+      userWallet.history.push(newTransaction);
+
+      if (refundedAmount > 0) {
+        const creditTransaction = {
+          amount: refundedAmount,
+          type: "credit",
+          refunded: refundedAmount, // Include refunded amount in credit transaction
+        };
+
+        if (req.body.orderId) {
+          creditTransaction.orderId = req.body.orderId;
+        }
+
+        userWallet.balance += refundedAmount;
+        userWallet.history.push(creditTransaction);
+      }
+
+      await userWallet.save();
+
+      return res.json({
+        success: true,
+        message: "Wallet transaction successful",
+      });
+    } else {
+      return res.json({
+        success: false,
+        message: "Insufficient funds in the wallet",
+      });
+    }
+  } catch (error) {
+    console.error("Error during wallet transaction:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+exports.userdetails = async (req, res) => {
+  try {
+    const email = req.session.user
+    console.log(email);
+    const user = await collection.findOne({ email })
+    
+    
+
+    // Update user details based on the form data
+    if (req.body.editName) {
+      user.name = req.body.editName;
+    }
+
+    user.phone = req.body.editMobile;
+
+    // Save the updated user details
+    await user.save();
+
+    res.redirect("/userprofile"); // Redirect to the user details page or any other desired page
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const getOrderDetailsById = async (orderId) => {
+  try {
+    const order = await Order.findById(orderId).populate("addressId").exec();
+
+    if (!order) {
+      return null; // Order not found
+    }
+
+    const orderDetails = {
+      orderId: order._id,
+      Address: {
+        name: order.addressId?.name,
+        address: order.addressId?.Address,
+        state: order.addressId?.state,
+        pin: order.addressId?.pin,
+        phone: order.addressId?.phone,
+      },
+      orderStatus: order.orderStatus,
+      totalAmount: order.totalAmount,
+      paymentMethod: order.paymentMethod,
+      products: order.products, // You may include other product details if needed
+      // Add other fields as needed
+    };
+
+    return orderDetails;
+  } catch (error) {
+    console.log(error.message);
+    throw error; // Handle the error according to your application's requirements
+  }
+};
+
+function generateInvoice(orderDetails, res) {
+  const doc = new PDFDocument();
+
+  // Set font size for the entire document
+  doc.fontSize(12);
+
+  // Website Name
+  doc
+    .fontSize(20)
+    .font("Helvetica-Bold")
+    .text("SKINVOGUE", { align: "center" })
+    .moveDown(1);
+
+  // Order ID
+  doc.fontSize(12).text(`Order ID: ${orderDetails.orderId}`, 50, doc.y);
+  doc.moveDown(); // Add some space
+
+  // Sold by details on the left
+  doc.fontSize(10).text("Sold by:", 50, doc.y);
+  doc.text("EZIO", { indent: 10 });
+  doc.text("Plot no. 49, Block 5, Basement Inner 2, Eros Garden", {
+    indent: 20,
+  });
+  doc.text("Near Surajkund Road, FARIDABAD - 121009", { indent: 20 });
+  doc.text("GST: 06AFRPB7420F1ZN", { indent: 20 });
+  doc.moveDown(); // Add some space
+
+  // User Selected Address on the right
+  const addressDetails = [
+    `Name: ${orderDetails.Address.name}`,
+    `Address: ${orderDetails.Address.address}`,
+    `State: ${orderDetails.Address.state}`,
+    `PIN: ${orderDetails.Address.pin}`,
+    `Phone: ${orderDetails.Address.phone}`,
+  ];
+
+  doc.fontSize(10).text(addressDetails, 350, 160, { align: "left" });
+  doc.moveDown(); // Add some space
+
+  // Order Summary Table
+  doc
+    .fontSize(16)
+    .fillColor("#ff69b4")
+    .text("Order Summary:", 50, doc.y + 60);
+  generateOrderTable(doc, orderDetails.products);
+
+  // Total Amount, Payment Method, and Order Status
+  doc.moveDown(); // Add some space
+  doc.fillColor("#ff69b4").text(`Total Amount: ${orderDetails.totalAmount}`);
+  doc.text(`Payment Method: ${orderDetails.paymentMethod}`);
+  doc.text(`Order Status: ${orderDetails.orderStatus}`);
+
+  // Pipe the document to the response
+  doc.pipe(res);
+  doc.end();
+  return doc
+}
+
+function generateOrderTable(doc, products) {
+  // Table Header
+  const tableHeader = ["Product Name", "Quantity", "Price"];
+  generateTableRow(doc, tableHeader, {
+    fontSize: 12,
+    bold: true,
+    backgroundColor: "#ff69b4",
+    color: "white",
+  });
+  doc.moveDown(); // Add some space
+
+  // Table Rows
+  products.forEach((product) => {
+    const rowData = [
+      product.productName,
+      product.quantity.toString(),
+      product.price.toString(),
+    ];
+    generateTableRow(doc, rowData, {
+      backgroundColor: "white",
+      color: "black",
+    });
+    doc.moveDown(); // Add some space
+  });
+}
+
+function generateTableRow(doc, rowData, options = {}) {
+  const {
+    fontSize = 12,
+    bold = false,
+    align = "center", // Changed alignment to center
+    cellPadding = 10,
+    backgroundColor = null,
+    color = null,
+  } = options;
+
+  doc.fontSize(fontSize);
+  if (bold) {
+    doc.font("Helvetica-Bold");
+  }
+
+  rowData.forEach((cell, index) => {
+    const xPosition = 50 + index * 150; // Adjust the starting position based on your layout
+    const yPosition = doc.y;
+    const width = 150;
+    const height = fontSize + cellPadding * 2;
+
+    // Draw cell background if specified
+    if (backgroundColor) {
+      doc.rect(xPosition, yPosition, width, height).fill(backgroundColor);
+    }
+
+    // Draw cell content
+    doc
+      .fillColor(color || "black")
+      .text(cell, xPosition, yPosition, {
+        align,
+        width: width - cellPadding * 2,
+      });
+
+    // Draw cell border
+    doc.rect(xPosition, yPosition, width, height).stroke();
+  });
+
+  doc.moveDown(); // Add some space
+
+  // Reset font and fill color to default
+  doc.font("Helvetica").fillColor("black");
+}
+
+// Example Usage:
+// Assume orderDetails is obtained using getOrderDetailsById function
+// const orderDetails = getOrderDetailsById('your-order-id');
+// generateInvoice(orderDetails, response);
+
+exports.invoice = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const orderDetails = await getOrderDetailsById(orderId);
+    console.log(JSON.stringify(orderDetails));
+  
+    if (orderDetails) {
+      const invoicePath = generateInvoice(orderDetails, res);
+      console.log("Generating invoice for:", orderDetails);
+      const fileStream = fs.createReadStream(invoicePath);
+      fileStream.pipe(res);
+       fs.unlinkSync(invoicePath);
+    } else {
+      res.status(404).send("Order not found");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  // Assume you have a function to get order details based on the order ID
  
- 
+};

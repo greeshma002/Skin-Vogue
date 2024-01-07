@@ -8,26 +8,63 @@
   <title>Wallet Management</title>
 
   <style>
+    body {
+      background-color: #f8f9fa;
+    }
 
-body {
-  background-color: #f8f9fa;
-}
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background-color: #ff69b4;
+      color: #fff;
+    }
 
-.card {
-  margin-top: 50px;
-}
+    .brand {
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
 
-#balance {
-  font-size: 24px;
-  font-weight: bold;
-}
-</style>
+    .brand img {
+      margin-right: 10px;
+      height: 30px;
+    }
 
+    .navbar-links {
+      display: flex;
+      align-items: center;
+    }
 
+    .card {
+      margin-top: 50px;
+    }
+
+    #balance {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    #history-table {
+      margin-top: 30px;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="navbar">
+    <div class="brand">
+      <img src="/assets/img/logo.png" alt="Logo">
+      <div><strong>SKINVOGUE</strong></div>
+    </div>
+    <div class="navbar-links">
+      <a href="/" class="link">Home</a>
+    </div>
+  </div>
 
+ <!-- Assuming salesReports is passed from the controller -->
+<div class="container mt-5">
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-6 offset-md-3">
@@ -41,12 +78,7 @@ body {
               <p id="balance">₹<%= amount %></p>
             </div>
             <form id="transactionForm">
-              <div class="form-group">
-                <label for="amount">Enter Amount:</label>
-                <input type="number" class="form-control" id="amount" placeholder="Enter amount" required>
-              </div>
-             
-              <button type="submit" class="btn btn-primary btn-block">Submit</button>
+              
             </form>
           </div>
         </div>
@@ -54,13 +86,35 @@ body {
     </div>
   </div>
 
- 
+  <div class="row" id="history-table">
+      <div class="col-md-8 offset-md-2">
+          <h3 class="text-center mb-4">Transaction History</h3>
+          <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Order ID</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% transactions.forEach(transaction => { %>
+                    <tr>
+                        <td><%= transaction.date %></td>
+                        <td><%= transaction.amount %></td>
+                        <td><%= transaction.orderId || '-' %></td>
+                        <td><%= transaction.type %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+      </div>
+  </div>
+</div>
+
+
   <!-- Add your styles or link to a stylesheet here -->
-
-
-
-
-
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

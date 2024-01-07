@@ -1,0 +1,389 @@
+<!-- admin/stockreport.ejs -->
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link rel="stylesheet" href="path/to/bootstrap/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Admin side  chart implementation -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Template Main CSS File -->
+  <link href="/assets/css/style.css" rel="stylesheet">
+  <style>
+
+
+
+     
+    body {
+      background-color: #fff; /* White background */
+      color: #000; /* Black text */
+    }
+
+    /* Customize your header and other elements with the desired colors */
+    .header {
+      background-color: #ff69b4; /* Pink header background */
+      color: #fff; /* White text */
+    }
+
+    .search-bar input {
+      background-color: #fff; /* White input background */
+      color: #000; /* Black text in input */
+    }
+
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+    }
+    .download-btn {
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    th {
+        background-color: #ff69b4;
+    }
+    
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+<body>
+  
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index" class="logo d-flex align-items-center">
+        <img src="/assets/img/logo.png" alt="">
+        <span class="d-none d-lg-block">SKINVOGUE</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+        <li class="nav-item dropdown">
+
+          
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+           
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-exclamation-circle text-warning"></i>
+              <div>
+                <h4>Lorem Ipsum</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>30 min. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-x-circle text-danger"></i>
+              <div>
+                <h4>Atque rerum nesciunt</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>1 hr. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-check-circle text-success"></i>
+              <div>
+                <h4>Sit rerum fuga</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>2 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-info-circle text-primary"></i>
+              <div>
+                <h4>Dicta reprehenderit</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>4 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li class="dropdown-footer">
+              <a href="#">Show all notifications</a>
+            </li>
+
+          </ul><!-- End Notification Dropdown Items -->
+
+        </li><!-- End Notification Nav -->
+
+        <li class="nav-item dropdown">
+
+         
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+            <li class="dropdown-header">
+              You have 3 new messages
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="/assets/img/messages-1.jpg" alt="" class="rounded-circle">
+                <div>
+                  <h4>Maria Hudson</h4>
+                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                  <p>4 hrs. ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="/assets/img/messages-2.jpg" alt="" class="rounded-circle">
+                <div>
+                  <h4>Anna Nelson</h4>
+                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                  <p>6 hrs. ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="/assets/img/messages-3.jpg" alt="" class="rounded-circle">
+                <div>
+                  <h4>David Muldon</h4>
+                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                  <p>8 hrs. ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="dropdown-footer">
+              <a href="#">Show all messages</a>
+            </li>
+
+          </ul><!-- End Messages Dropdown Items -->
+
+        </li><!-- End Messages Nav -->
+
+        <li class="nav-item dropdown pe-3">
+
+          <nav class="navbar navbar-expand-lg">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown pe-3">
+                    <!-- Profile Dropdown Toggle -->
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="/assets/img/profile-img (2).jpg" alt="Profile" class="rounded-circle">
+                        <span class="d-none d-md-block dropdown-toggle ps-2">Greeshma R Nair</span>
+                    </a>
+        
+                    <!-- Dropdown Menu -->
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="users-profile.ejs">
+                                <i class="bi bi-person"></i>
+                                <strong > Profile</strong>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="adminlogout">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <strong>Sign Out</strong>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- End Dropdown Menu -->
+                </li>
+            </ul>
+        </nav><!-- End Profile Iamge Icon -->
+
+          <!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="admindashboard">
+          <i class="bi bi-grid"></i>
+          <span>Admin Profile</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li> <!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link " href="users">
+          <i class="bi bi-grid"></i>
+          <span>Users</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="products">
+          <i class="bi bi-grid"></i>
+          <span>Products</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="categories">
+          <i class="bi bi-grid"></i>
+          <span>Categories</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="order">
+          <i class="bi bi-grid"></i>
+          <span>Orders</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="coupon">
+          <i class="bi bi-grid"></i>
+          <span>Coupons</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="salesrpt">
+          <i class="bi bi-grid"></i>
+          <span>Sales Reports</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="stock">
+          <i class="bi bi-grid"></i>
+          <span>Stock Reports</span>
+        </a>
+      </li>
+
+        </ul>
+      </li><!-- End Components Nav -->
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <h1 class="text-center mb-4">Stock Report</h1>
+        <button class="download-btn" onclick="downloadSaleReport()">Download</button>
+        <button class="download-btn" onclick="downloadSalesReport('xlsx')">Download Excel</button>
+        <table class="table table-bordered table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col" class="text-center">Product Name</th>
+              <th scope="col" class="text-center">Stock Level</th>
+              <th scope="col" class="text-center">Stock Left</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (const product of stockReport) { %>
+              <tr>
+                <td class="text-left"><%= product.productName %></td>
+                <td class="text-center"><%= product.productQuantity %></td>
+                <td class="text-center"><%= product.stockLeft %></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+<script>
+  function downloadSaleReport() {
+      window.print();
+  }
+</script>
+<script>
+  function downloadSalesReport(fileType) {
+      const ws = XLSX.utils.table_to_sheet(document.querySelector('table'));
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sales Report');
+      XLSX.writeFile(wb, `sales_report.${fileType}`);
+  }
+</script>
+

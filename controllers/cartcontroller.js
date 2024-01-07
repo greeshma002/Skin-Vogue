@@ -4,7 +4,7 @@ router.use(express.json());
 const path = require("path");
 const ObjectId = require("mongoose").Types.ObjectId;
 const mongoose = require("mongoose");
-
+const Coupon = require("../models/couponSchema");
 const collection = require("../models/UserSchema");
 const address = require("../models/addressSchema");
 const Product = require("../models/productSchema");
@@ -13,6 +13,7 @@ const Cart = require("../models/cartSchema");
 const { log } = require("console");
 const Order = require("../models/orderSchema");
 const coupon = require("../models/couponSchema")
+const wallet = require("../models/walletSchema")
 
 //razorpay
 
@@ -25,8 +26,10 @@ exports.cartcontroller = async (req, res) => {
     const productid = req.params.productid;
     let email = req.session.user;
     console.log(email);
+    console.log(productid);
 
     const productId = await Product.findById({ _id: productid });
+    
     const username = await collection.findOne({ email });
 
     const existingCart = await Cart.findOne({ userId: username._id });
@@ -37,9 +40,10 @@ exports.cartcontroller = async (req, res) => {
       );
 
       if (itemIndex > -1) {
-        const productQuantity = req.params.productQuantity;
+        const productQuantity = productId.productQuantity;
+        console.log(productQuantity);
 
-        const maxQuantity = productQuantity; // Set your maximum quantity limit
+        const maxQuantity = productQuantity; 
         if (existingCart.product[itemIndex].quantity < maxQuantity) {
           existingCart.product[itemIndex].quantity += 1;
         } else {
@@ -59,7 +63,6 @@ exports.cartcontroller = async (req, res) => {
       }
       await existingCart.save();
     } else {
-      // If no cart exists, create one
       const newCartData = {
         userId: username._id,
         product: [
@@ -93,33 +96,41 @@ function calculateTotalPrice(cartdata) {
 }
 
 exports.cartdetails = async (req, res) => {
-  try {
-    let err = req.query.err ?? "";
-    let totalPrice = 0;
-    const coupons = await coupon.find();
-    const cartdata = await Cart.findOne({ userId: req.session.userId }).lean();
-    if (cartdata) {
-      for (let i = 0; i < cartdata.product.length; i++) {
-        cartdata.product[i].productQuantity = (
-          await Product.findById(cartdata.product[i].productId)
-        ).productQuantity;
-        if (Product.productQuantity > 0) {
-          totalPrice += Product.productPrice * Product.quantity;
+  
+    try {
+      let err = req.query.err ?? "";
+      let totalPrice = 0;
+      const coupons = await coupon.find();
+      const cartdata = await Cart.findOne({ userId: req.session.userId }).lean();
+      if (cartdata) {
+        for (let i = 0; i < cartdata.product.length; i++) {
+          cartdata.product[i].productQuantity = (
+            await Product.findById(cartdata.product[i].productId)
+          ).productQuantity;
+          if (Product.productQuantity > 0) {
+            totalPrice += Product.productPrice * Product.quantity;
+          }
         }
       }
+      res.render("user/Cart", {
+        cartdata,
+        calculateTotalPrice,
+        totalPrice,
+        coupons,
+        err: err,
+      });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send("Internal Server Error");
     }
-    res.render("user/Cart", {
-      cartdata,
-      calculateTotalPrice,
-      totalPrice,
-      coupons,
-      err: err,
-    });
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).send("Internal Server Error");
-  }
-};
+  };
+
+// Function to calculate discounted price
+function calculateDiscountedPrice(actualPrice, discountPercentage) {
+  const discountAmount = (discountPercentage / 100) * actualPrice;
+  return actualPrice - discountAmount;
+}
+
 
 exports.deleteCart = async (req, res) => {
   try {
@@ -179,9 +190,20 @@ exports.updQuantity = async (req, res) => {
 
 exports.checkoutpage = async (req, res) => {
   try {
-    // const productId = req.params.productid;
+    const couponId= req.query?.id;
+    let selectedCoupon 
+    if(couponId){
+      selectedCoupon = await Coupon.findOne({
+        _id: couponId,
+      });
+
+    }
+   console.log(couponId);
+    const username = await collection.findOne({ email: req.session.user });
     const cartdata = await Cart.findOne({ userId: req.session.userId });
+    const userWallet = await wallet.findOne({ user: username._id });
     const products = await Product.find({});
+   
     let product;
     let allProducts = [];
     let qtyErr = false;
@@ -195,21 +217,36 @@ exports.checkoutpage = async (req, res) => {
       if (product.productQuantity < prod.quantity) {
         qtyErr = true;
       }
-    });
+    })
+    let total=cartdata.product.reduce(
+      (total, product) => total + product.price * product.quantity,
+      0
+    ); 
+    if(selectedCoupon){
+      
+    const discountPercentage = selectedCoupon.discountPercentage;
+    total -= (total * discountPercentage) / 100;
+  }
+  
+  console.log(selectedCoupon);
+
     if (qtyErr) {
       return res.redirect("/cartdetails?err=er");
     }
 
-    const username = await collection.findOne({ email: req.session.user });
+    
     const addresses = await address.find({ userId: username._id });
+    
 
     res.render("user/checkoutpage", {
       addresses,
       username,
-
+      userWallet,
+      total,
       calculateTotalPrice,
       cartdata,
       allProducts,
+     
     });
   } catch (error) {
     console.log(error.message);
@@ -247,6 +284,8 @@ exports.checkoutdetails = async (req, res) => {
   }
 };
 
+
+
 exports.confirmpage = async (req, res) => {
   try {
     res.render("user/orderconfirmpage");
@@ -263,6 +302,7 @@ exports.placeOrder = async (req, res) => {
   let addressCheckbox;
 
   try {
+    
     if (req.body.razorpay_order_id) {
       // Online payment
       console.log(req.body.razorpay_order_id);
@@ -319,15 +359,18 @@ exports.placeOrder = async (req, res) => {
 
 exports.orderdetailpage = async (req, res) => {
   try {
-    const ordersOfUser = await Order.find({ userId: req.session.userId });
+    const ordersOfUser = await Order.find({ userId: req.session.userId }).populate('addressId').exec();
     let allProducts = [];
-
+    console.log(ordersOfUser);
+    console.log("=========================");
     for (let order of ordersOfUser) {
+      // console.log(order.addressId);
       for (let product of order.products) {
         allProducts.push({
           orderId: order._id,
           productId: product.productId,
           quantity: product.quantity,
+          Address: { name: order.addressId?.name, address: order.addressId?.Address, state: order.addressId?.state, pin: order.addressId?.pin, phone: order.addressId?.phone},
           price: product.price,
           productName: product.productName,
           orderStatus: order.orderStatus,
@@ -335,6 +378,7 @@ exports.orderdetailpage = async (req, res) => {
           totalAmount: order.totalAmount,
           paymentMethod: order.paymentMethod,
         });
+        // console.log(allProducts);
       }
     }
     allProducts = allProducts.reverse();

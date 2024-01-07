@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+
+
 const {
   signuppost,
   signup,
@@ -31,12 +33,15 @@ const {
   userwallet,
   orderreturn,
   orderhistory,
-  
+  postwallet,
+  userdetails,
+  invoice
   
  
 } = require("../controllers/usercontroller");
 const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage ,  addresses,confirmpage, placeOrder,orderdetailpage , cancelorder, } = require("../controllers/cartcontroller")
 const { isAuthenticated, isBlocked } = require("../middlewares/authMiddleware");
+const { applyCoupon } = require("../controllers/couponcontroller");
 
 
 router.get("/", home);
@@ -81,6 +86,8 @@ router.get("/checkout",isAuthenticated, checkoutpage)
 
 router.post("/check",isAuthenticated,checkoutdetails)
 
+router.post("/usersdetails", userdetails);
+
 router.get("/address/:addressId",isAuthenticated,geteditaddress)
 
 router.post("/editaddress/:addressId",isAuthenticated,posteditaddress)
@@ -103,17 +110,25 @@ router.get("/deleteAddress/:addressId",isAuthenticated,deleteAddress);
 
 router.get("/cancel/:orderId",isAuthenticated,cancelorder)
 
-router.get("/wishlist",getwishlist) 
+router.get("/wishlist",isAuthenticated,getwishlist) 
 
-router.get("/wishlist/add/:productid",postwishlist)
+router.get("/wishlist/add/:productid",isAuthenticated,postwishlist)
 
-router.post("/razorpay",postrazorpay)
+router.post("/razorpay",isAuthenticated,postrazorpay)
 
-router.get("/search",shopsearch)
+router.get("/search",isAuthenticated,shopsearch)
 
-router.get("/wallet",userwallet)
+router.get("/wallet",isAuthenticated,userwallet)
 
-router.post("/return/:orderId",orderreturn)
+router.post("/walletpay",isAuthenticated,postwallet)
+
+router.post("/return/:orderId",isAuthenticated,orderreturn)
+
+router.post("/applyCoupon",isAuthenticated,applyCoupon)
+
+router.get("/downloadinvoice/:orderId",isAuthenticated,invoice)
+
+
 
 //router.get("/orderhistory",orderhistory)
 

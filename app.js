@@ -14,6 +14,7 @@ const crypto = require("crypto");
 const indexRouter = require("./routes/admin");
 const usersRouter = require("./routes/users");
 const otpRouter = require("./routes/otpRoute");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 //view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -28,11 +29,18 @@ app.use(nocache());
 const sessionKey = crypto.randomBytes(16).toString("hex");
 //console.log(sessionKey);
 
+const store = new MongoDBStore({
+  uri: "mongodb://127.0.0.1:27017/New_Project",
+  collection: "sessions",
+  expires: 1000 * 60 * 60 * 24 * 30 // 30 days
+}, err => {err && console.error(`An error occured when connecting MongoDB to Session: ${err}`)});
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || sessionKey,
     resave: false,
     saveUninitialized: true,
+    store: store,
     cookie: {
       maxAge: 60 * 60 * 1000, //set the cookie for one hour
     },

@@ -11,6 +11,7 @@
         margin: 0;
         padding: 0;
     }
+    
 
     .navbar {
         display: flex;
@@ -51,7 +52,7 @@
       <!-- card left -->
       <div class="product-imgs">
         <div class="img-display">
-          <div class="img-showcase">
+          <div " class="img-showcase">
             <% product.images.forEach(function(image, index) { %>
                 <img src="<%= image %>" alt="Product Image <%= index + 1 %>">
             <% }); %>
@@ -111,12 +112,15 @@
           
             <li>
               Available: 
-              <% if (product.productQuantity > 0) { %>
+              <% console.log(product.productQuantity);
+              if (product.productQuantity > 0) { %>
                 <strong style="color: green;">In stock</strong>
               <% } else { %>
                 <strong style="color: red;">Out of stock</strong>
               <% } %>
             </li>
+            
+          
             
             <li>Category: <span><%= product.category %></span></li>
             <li>Shipping Area: <span>All over the world</span></li>
@@ -195,6 +199,38 @@
       });
     });
   </script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#addToCartBtn").on("click", function (event) {
+            event.preventDefault(); // Prevent the default behavior of the link
+
+            // Add your logic here to handle adding the item to the cart
+
+            // Display a message toast
+            showToast("Item added to cart");
+        });
+        function showToast(message) {
+            // Create a new toast element
+            var toast = $('<div class="toast">' + message + '</div>');
+
+            // Append the toast to the container
+            $('#toast-container').append(toast);
+
+            // Show the toast with a fade-in effect
+            toast.fadeIn();
+
+            // Hide the toast after a certain duration (e.g., 3000 milliseconds or 3 seconds)
+            setTimeout(function () {
+                toast.fadeOut(function () {
+                    // Remove the toast from the DOM after it's hidden
+                    $(this).remove();
+                });
+            }, 3000);
+        }
+    });
+</script>
 
   <script src="/js/detailspage.js"></script>
 </body>

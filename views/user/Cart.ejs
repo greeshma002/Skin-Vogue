@@ -158,6 +158,9 @@
                                   <% } %>
                                 </div>
                               </td>
+                              <%= console.log(product.productQuantity) %>
+                              <%=  console.log(product.productId)  %>
+                           
                       
                               <!-- Price -->
                               <td class="text-center">
@@ -199,7 +202,7 @@
                 <div class="col-lg-12">
                     <div class="card mb-3 border shadow-0">
                         <div class="card-body">
-                            <form>
+                            <form action="/applyCoupon" method="post">
                                 <div class="form-group">
                                     <label class="form-label">Have coupon?</label>
                                     <div class="input-group">
@@ -209,7 +212,7 @@
                                           <option value="<%= coupon.couponCode %>"><%= coupon.couponCode %></option>
                                         <% }); %>
                                       </select>
-                                      <button class="btn btn-light border">Apply</button>
+                                      <button type="submit" class="btn btn-light border">Apply</button>
                                     </div>
                                   </div>
                             </form>
@@ -218,24 +221,23 @@
                     <div class="card shadow-0 border">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
-                                <p>Total Price: $<span id="totalPrice"><%= calculateTotalPrice(cartdata) + totalPrice %></span>
+                                <p>Total Price: $<span id="totalPrice"><%=calculateTotalPrice(cartdata) + totalPrice %></span>
                                 </p>
                             </div>
 
 
                             <div class="mt-3">
-                                <a href="/checkout" class="btn btn-success w-100 shadow-0 mb-2"> Make Purchase </a>
+                                <a href="/checkout" id="CheckOut" class="btn btn-success w-100 shadow-0 mb-2"> Make Purchase </a>
                                 <a href="/shop" class="btn btn-light w-100 border mt-2"> Back to shop </a>
                                 <% if (err) {%>
                                     <p style="color: red;"> Remove the Out of Stock Products </p>
                                 <%} %>
                             </div>
                         </div>
-                    </div>
                 </div>
-
             </div>
         </div>
+    </div>
     </div>
 </div>
 
@@ -248,15 +250,56 @@
 <!-- footer section -->
 <script>
 
+const CheckOut=document.getElementById('CheckOut')
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Get the selected coupon code
+            const selectedCoupon = form.querySelector('[name="selectedCoupon"]').value;
+
+            // Perform an asynchronous request to the server to apply the coupon
+            fetch('/applyCoupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ selectedCoupon }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the total price on the page
+                const totalPriceElement = document.getElementById('totalPrice');
+                const discountedPriceElement = document.getElementById('discountedPrice');
+                CheckOut.href=`/checkout?id=${data.id}`
+                // Use the discounted price if available, otherwise use the original total price
+                const updatedTotalPrice = data.discountedPrice || data.totalPrice;
+                
+                totalPriceElement.textContent = `${updatedTotalPrice}`;
+                discountedPriceElement.value = data.discountedPrice || ''; // Store the discounted price in the hidden input field
+            })
+            .catch(error => {
+                console.error('Error applying coupon:', error);
+            });
+        });
+    });
+
+
+
     function updateQuantity(productId,change) { 
 
         const totalPrice = document.getElementById('totalPrice');
         const quantityTextBox = document.getElementById(`quantity-${productId}`);
         const existingQuantity = Number(quantityTextBox.innerText);
         const newQuantity = existingQuantity + change;
+        console.log(totalPrice);
+        console.log(existingQuantity);
+        console.log(newQuantity);
 
         if (newQuantity < 1) return;
-        if (newQuantity > 100) return alert("You cannot purchase more than 100 items.");
+        if (newQuantity > 9) return alert("You cannot purchase more than 9");
 
 
         fetch (`/updateQuantity/${productId}`,  { 

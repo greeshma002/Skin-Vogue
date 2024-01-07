@@ -1,258 +1,572 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-</head>
-<style>
-body{margin-top:20px;}
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha384-czjwF+Q8rekkbIk8EXqUfZ3XRuuR4HXBIJSNQnqvLAgUHeftVks4Gz4dgOjH3ixr" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
 
-.user-info-wrapper {
-    position: relative;
-    width: 100%;
-    margin-bottom: -1px;
-    padding-top: 90px;
-    padding-bottom: 30px;
-    border: 1px solid #e1e7ec;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-    overflow: hidden
-}
+  <script src=" https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+  </script>
+  <title>View Product</title>
 
-.user-info-wrapper .user-cover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 120px;
-    background-position: center;
-    background-color: #f5f5f5;
-    background-repeat: no-repeat;
-    background-size: cover
-}
-
-
-
-.user-info-wrapper .info-label {
-    display: block;
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    height: 26px;
-    padding: 0 12px;
-    border-radius: 13px;
-    background-color: #fff;
-    color: #606975;
-    font-size: 12px;
-    line-height: 26px;
-    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.18);
-    cursor: pointer
-}
-.user-info-wrapper .user-info {
-    display: table;
-    position: relative;
-    width: 100%;
-    padding: 0 18px;
-    z-index: 5
-}
-
-.user-info-wrapper .user-info .user-avatar,
-.user-info-wrapper .user-info .user-data {
-    display: table-cell;
-    vertical-align: top
-}
-
-.user-info-wrapper .user-info .user-avatar {
-    position: relative;
-    width: 115px
-}
-
-.user-info-wrapper .user-info .user-avatar>img {
-    display: block;
-    width: 100%;
-    border: 5px solid #fff;
-    border-radius: 50%
-}
-
-
-.user-info-wrapper .user-info .user-data {
-    padding-top: 48px;
-    padding-left: 12px
-}
-
-.user-info-wrapper .user-info .user-data h4 {
-    margin-bottom: 2px
-}
-
-.user-info-wrapper .user-info .user-data span {
-    display: block;
-    color: #9da9b9;
-    font-size: 13px
-}
-
-a.list-group-item {
-    padding-top: .87rem;
-    padding-bottom: .87rem;
-}
-
-
-.list-group-item {
-    border-color: #e1e7ec;
-    background-color: #fff;
-    text-decoration: none;
-}
-.list-group-item {
-    position: relative;
-    display: block;
-    padding: .75rem 1.25rem;
-    margin-bottom: -1px;
-    background-color: #fff;
-    border: 1px solid rgba(0,0,0,0.125);
-}
-
-@media screen and (max-width: 860px) {
-    .shopping-cart .product-item .product-thumb,
-    .wishlist-table .product-item .product-thumb,
-    .order-table .product-item .product-thumb {
-        display: none
-    }
-}
-
-.shopping-cart .product-item .product-info span,
-.wishlist-table .product-item .product-info span,
-.order-table .product-item .product-info span {
-    display: block;
-    font-size: 13px
-}
-
-.shopping-cart .product-item .product-info span>em,
-.wishlist-table .product-item .product-info span>em,
-.order-table .product-item .product-info span>em {
-    font-weight: 500;
-    font-style: normal
-}
-
-.shopping-cart .product-item .product-title,
-.wishlist-table .product-item .product-title,
-.order-table .product-item .product-title {
-    margin-bottom: 6px;
-    padding-top: 5px;
-    font-size: 16px;
-    font-weight: 500
-}
-
-.shopping-cart .product-item .product-title>a,
-.wishlist-table .product-item .product-title>a,
-.order-table .product-item .product-title>a {
-    transition: color .3s;
-    color: #374250;
-    line-height: 1.5;
-    text-decoration: none
-}
-
-.shopping-cart .product-item .product-title>a:hover,
-.wishlist-table .product-item .product-title>a:hover,
-.order-table .product-item .product-title>a:hover {
-    color: #0da9ef
-}
-
-.shopping-cart .product-item .product-title small,
-.wishlist-table .product-item .product-title small,
-.order-table .product-item .product-title small {
-    display: inline;
-    margin-left: 6px;
-    font-weight: 500
-}
-
-.wishlist-table .product-item .product-thumb {
-    display: table-cell !important
-}
-
-@media screen and (max-width: 576px) {
-    .wishlist-table .product-item .product-thumb {
-        display: none !important
-    }
-}
-
-.badge.badge-primary {
-    background-color: #0da9ef;
-}
-.with-badge .badge {
-    position: absolute;
-    top: 50%;
-    right: 1.15rem;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-}
-.list-group-item i {
-    margin-top: -4px;
-    margin-right: 8px;
-    font-size: 1.1em;
-}
-body {
-        margin: 0;
-        padding: 0;
+  <style>
+    body {
+      font-family: poppins;
+      background-color: #ffffff;
     }
 
+    #profile-card {
+      width: 25vw;
+      margin-top: 0px;
+      margin-bottom: 20px;
+      border: 1px solid grey;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: #f0ecee;
+      position: fixed;
+    }
+
+    .DxGiT2 {
+      margin-left: 15px;
+    }
+
+    .profile-card img {
+      height: 40px;
+      width: 54px;
+    }
+
+
+    #sidebar {
+      margin-top: 90px;
+      width: 25vw;
+      height: 80vh;
+      color: black;
+      border-radius: 10px;
+      background-color: #f0ecee;
+      padding-top: 20px;
+      position: fixed;
+    }
+
+    #sidebar a {
+      color: black;
+      margin-top: 1rem;
+      border-bottom: 1px solid black;
+      text-decoration: none;
+    }
+
+    #sidebar a:hover {
+      background-color: lightgrey;
+    }
+
+    nav li {
+      margin-top: 15px;
+    }
+
+    .icon {
+      margin-right: 15px;
+    }
+
+    #logout-btn {
+      margin-top: 1rem;
+      width: 90%;
+    }
+
+    main {
+      margin-left: 26vw;
+      margin-top: 15px;
+      padding: 20px;
+
+    }
     .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px;
-        background-color: #ff69b4;
-        color: #fff;
-        margin-top: 0;
-        width: 100%; /* Make the navbar full width */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #ff69b4;
+            color: #fff;
+        }
+
+        .brand {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand img {
+            margin-right: 10px;
+            height: 30px;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+        }
+
+    #user-profile {
+      margin-top: 30px;
     }
 
-    .brand {
-        font-weight: bold;
-        display: flex;
-        align-items: center;
+    #user-profile h2 {
+      margin-bottom: 20px;
     }
 
-    .brand img {
-        margin-right: 10px;
-        height: 30px;
+    .user-details {
+     
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-</style>
+    .user-details label {
+      font-weight: bold;
+    }
+
+    .address-card {
+      margin-bottom: 20px;
+    }
+
+    .add-address-btn {
+      margin-top: 20px;
+    }
+
+
+    .profile-card {
+  padding: 1rem;
+  background: white;
+  box-shadow: 2px 2px 2px rgba(14, 14, 14, 0.25);
+  /* width: min(80%, 70.5rem); */
+  width: 100%;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-center;
+  gap: 1rem;
+  position: relative;
+  transition: ease-in 0.25s;
+  border: 1px solid rgba(14, 14, 14, 0.25);
+}
+
+.profile-card h1 {
+  text-transform: uppercase;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.profile-card:hover {
+  box-shadow: 2px 2px 2px rgba(14, 14, 14, 0.55);
+  transition: ease-in 0.25s;
+}
+
+.profile-card p {
+  margin-block: 0.55rem;
+}
+
+.muted {
+  color: gray;
+  
+}
+
+.floating-edit {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  opacity: 0.8;
+}
+
+.floating-edit:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.profile-card .profile-avatar {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  width: 128px;
+}
+
+.profile-card {
+    position: relative;
+    /* Add your styling for the profile card here */
+  }
+
+  .floating-edit {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    color: #007bff; /* Bootstrap's primary color */
+  }
+
+  </style>
+</head>
 
 <body>
-  <div class="navbar">
-    <div class="brand">
-        <img src="/assets/img/logo.png" alt="Logo">
-        <div><strong>SKINVOGUE</strong></div>
+    <div class="navbar">
+        <div class="brand">
+            <img src="/assets/img/logo.png" alt="Logo">
+            <div><strong>SKINVOGUE</strong></div>
+        </div>
+        <div class="navbar-links">
+            <a href="/" class="link">Home</a>
+            
+        </div>
+        </div>
+  <div class="container-fluid">
+
+    <div class="col-md-4 d-flex " id="profile-card">
+      <img class="_3X2gOt"
+        src="//static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/profile-pic-male_4811a1.svg">
+      <div class="DxGiT2 ">
+        <div class="_2QZ3Er mb-2" style="font-size:0.6rem">Hello</div>
+        <div class="_1ruvv2 ms-2" style="font-size:1rem"><%= username.name %></div>
+      </div>
     </div>
-    </div>
-  <div class="container padding-bottom-3x mb-2">
-    <div class="row">
-        <div class="col-lg-4">
-            <aside class="user-info-wrapper">
-                <div class="user-cover" style="background-image: url(https://i.pinimg.com/564x/1a/d2/44/1ad244e41c9fce40b56e98481a14fa51.jpg);">
-                    <div class="info-label" data-toggle="tooltip" title="" data-original-title="You currently have 290 Reward Points to spend"><i class="icon-medal"></i>290 points</div>
+
+    <nav id="sidebar" class="col-md-4 d-md-block sidebar">
+      <div class="position-sticky">
+        <ul class="nav flex-column">
+
+          <li class="nav-item">
+            <a class="nav-link" href="/wishlist">
+              <i class="fas fa-heart icon "></i>Wishlist
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/cartdetails">
+              <i class="fas fa-shopping-cart icon"></i>My Cart
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/wallet">
+              <i class="fas fa-wallet icon"></i> My Wallet
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/orderdetail">
+              <i class="fas fa-clipboard-list icon"></i>My Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/changepass">
+              <i class="fas fa-reply icon"></i>Change Password
+            </a>
+          </li>
+        </ul>
+       <a href="/logout"> <button id="logout-btn" class="btn btn-danger"><i class="fas fa-sign-out-alt me-2"></i>Logout</button> </a>
+      </div>
+    </nav>
+
+    <main class="col-md-8 ms-sm-auto col-lg-8 border" id="user-profile">
+      <div class="container mt-3">
+
+        <div class="row">
+          <div class="col-md-8">
+            <h2>Welcome <%= username.name %> !</h2>
+          </div>
+
+          <div class="profile-card">
+            <span style="color: black;" class="floating-edit" data-toggle="modal" data-target="#editProfileModal">
+              <i style="color: black;" class="fa fa-pencil"></i> Update
+            </span>
+            <div>
+              <img class="profile-avatar" src="https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg">
+            </div>
+            <div>
+              <h2><%= username.name %></h2>
+              <p><strong class="muted">Email:</strong> <%= username.email %></p>
+              <p><strong class="muted">Mobile:</strong> <%= username.phone %></p>
+             
+             
+            </div>
+          </div>
+
+          <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                 </div>
-                <div class="user-info">
-                    <div class="user-avatar">
-                        <a class="edit-avatar" href="#"></a><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User"></div>
-                    <div class="user-data">
-                        <h2><%= username.name %></h2><span>Joined February 06, 2017</span>
-                       
-                      
+                <div class="modal-body">
+                  
+                  <form id="editProfileForm" method="POST" action="/usersdetails" >
+                    <div class="form-group">
+                      <label for="editEmail">Name</label>
+                      <input type="text" class="form-control" id="name" name="editName" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                      <label for="editMobile">Mobile Number</label>
+                      <input type="tel" class="form-control" name="editMobile" id="phone" placeholder="Enter mobile number">
                     </div>
                 </div>
-            </aside>
-            <nav class="list-group">
-                <a class="list-group-item with-badge" href="/orderdetail"><i class=" fa fa-th"></i>Orders<span class="badge badge-primary badge-pill">6</span></a>
-                <a class="list-group-item" href="/changepass"><i class="fa fa-user"></i>Change Password</a>
-                <a class="list-group-item" href="/useraddress"><i class="fa fa-map"></i>Addresses</a>
-                <a class="list-group-item with-badge active" href="/wishlist"><i class="fa fa-heart"></i>Wishlist<span class="badge badge-primary badge-pill">3</span></a>
-                <a class="list-group-item with-badge" href="/wallet"><i class="fa fa-tag"></i>Wallet<span class="badge badge-primary badge-pill">4</span></a>
-            </nav>
-        </div>
-  
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary" >Save changes</button>
+                </form>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+      
+        </form>
+        <div class="col-md-12 mt-4">
+          <h4>Addresses:</h4>
+
+          <!-- Display user addresses in a grid -->
+          <div class="address-container">
+            <% addresses.forEach(address => { %>
+              <div class="address-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title"><%= address.name %></h5>
+                
+                    <p class="card-text">Phone: <%= address.phone %></p>
+                    <p class="card-text">
+                      Address: <%= address.Address %>, <br>
+                      <%= address.city %>, <%= address.state %>, <%= address.pincode %>
+                    </p>
+                
+                    <div class="d-flex justify-content-between align-items-center">
+                      <a href="/address/<%=address.id %>" class="btn btn-primary edit-btn" style="background-color: #ff69b4;">
+                        Edit Address
+                      </a>
+                
+                      <form method="get" action="/deleteAddress/<%=address.id%>" onsubmit="return confirm('Are you sure you want to delete this address?')">
+                        <button type="submit" class="btn btn-danger delete-btn">Delete</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+            <% }); %>
+          </div>
+          
+          
+          <!-- Add Address Button -->
+          <button class="btn btn-primary mt-5 add-address-btn" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+            <i class="fas fa-plus me-2"></i>Add Address
+          </button>
+
+          
+
+          <!-- Add Address Modal -->
+          <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addAddressModalLabel">Add Address</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <!-- Add Address Form -->
+                  <form id="addressForm" action="/addaddress" method="post" onsubmit="return validateForm()">
+                    <div class="profile-info">
+                      <div class="form-group row">
+                        <label for="fullName" class="col-sm-3 col-form-label"><i class="bi bi-person"></i> Full Name</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="fullName" name="name" placeholder="Enter your name">
+                        </div>
+                      </div>
+                      
+            
+                      <div class="form-group row">
+                        <label for="pin" class="col-sm-3 col-form-label"><i class="bi bi-pin"></i> PIN</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="pin" name="pin" placeholder="Enter PIN">
+                        </div>
+                      </div>
+            
+                      <div class="form-group row">
+                        <label for="street" class="col-sm-3 col-form-label"><i class="bi bi-house-door"></i> Address </label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="Address" name="Address" placeholder="Enter Address">
+                          
+                          
+                        </div>
+                      </div>
+            
+                      <div class="form-group row">
+                        <label for="state" class="col-sm-3 col-form-label"><i class="bi bi-flag"></i> State</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="state" name="state" placeholder="Enter State">
+                        </div>
+                      </div>
+            
+                      <div class="form-group row">
+                        <label for="city" class="col-sm-3 col-form-label"><i class="bi bi-building"></i> City</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="city" name="city" placeholder="Enter City">
+                        </div>
+                      </div>
+            
+                      <div class="form-group row">
+                        <label for="email" class="col-sm-3 col-form-label"><i class="bi bi-envelope"></i> Email</label>
+                        <div class="col-sm-9">
+                          <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email">
+                        </div>
+                      </div>
+            
+                      <div class="form-group row">
+                        <label for="phoneNumber" class="col-sm-3 col-form-label"><i class="bi bi-phone"></i> Phone Number</label>
+                        <div class="col-sm-9">
+                          <input type="tel" class="form-control" id="phoneNumber" name="phone" placeholder="Enter Phone Number">
+                        </div>
+                      </div>
+            
+                    </div>
+            
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <button type="submit" class="btn btn-info edit-btn">
+                          <i class="bi bi-pencil"></i> Submit
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+          
+          
+  function submitForm() {
+    // Get form data
+    var formData = {
+      editEmail: document.getElementById('editEmail').value,
+      editMobile: document.getElementById('editMobile').value,
+      editDOB: document.getElementById('editDOB').value,
+      // Add other form fields as needed
+    };
+
+    // Make an AJAX request to submit the form data
+    fetch('/users/<%= username._id %>/edit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+    .then(response => {
+      if (response.ok) {
+        // Optionally, you can redirect or perform other actions on success
+        window.location.reload(); // Reload the page for simplicity
+      } else {
+        console.error('Failed to save changes');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
+
+
+
+
+
+
+            function validateForm() {
+              // Get form values
+              var fullName = document.getElementById('fullName').value.trim();
+              var pin = document.getElementById('pin').value;
+              var address = document.getElementById('Address').value.trim(); // Corrected ID
+              var state = document.getElementById('state').value.trim();
+              var city = document.getElementById('city').value.trim();
+              var email = document.getElementById('email').value.trim();
+              var phoneNumber = document.getElementById('phoneNumber').value.trim();
+          
+              // Regular expressions for validation
+              var nameRegex =  /^[A-Za-z\s]+$/;
+              var addressRegex = /^[A-Za-z0-9\s,.'-]+$/;
+              var pinRegex = /^\d{6}$/;
+              var textRegex = /^[A-Za-z\s]+$/;
+              var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              var phoneRegex = /^[1-9]\d{9}$/; // Removed duplicate definition
+          
+              // Validate full name
+              if (!nameRegex.test(fullName)) {
+                alert('Invalid name. Please enter only alphabetic characters without spaces.');
+                return false;
+              }
+          
+              // Validate PIN
+              if (!pinRegex.test(pin)) {
+                alert('Invalid PIN.');
+                return false;
+              }
+
+              if (!addressRegex.test(address)) {
+           alert('Invalid address. Please enter only alphabetic characters');
+             return false;
+  }
+          
+              // Validate  state, and city
+              if ( !textRegex.test(state) || !textRegex.test(city)) {
+                alert('Invalid input. Please enter only alphabetic characters without spaces or special characters.');
+                return false;
+              }
+          
+              // Validate email
+              if (!emailRegex.test(email)) {
+                alert('Invalid email address. Please enter a valid email.');
+                return false;
+              }
+          
+              // Validate phone number
+              if (!phoneRegex.test(phoneNumber)) {
+                alert('Invalid phone number. Please enter a 10-digit number without spaces or special characters, except for zero.');
+                return false;
+              }
+          
+
+              return true;
+            }
+          </script>
+          
+
+          <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+          <script src="https://kit.fontawesome.com/9d71a7ac3f.js" crossorigin="anonymous"></script>
+          <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+          <script src="https://kit.fontawesome.com/9d71a7ac3f.js" crossorigin="anonymous"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
 </body>
-       </html>
+
+</html>

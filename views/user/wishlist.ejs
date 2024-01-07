@@ -15,6 +15,7 @@
         }
 
         .navbar {
+        
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -51,85 +52,44 @@
             margin-right: 5px;
         }
 
-        .container {
-            max-width: 100%;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 50px;
-        }
+       
+    .container {
+        background-color: #fff; /* White container background */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 50px;
+    }
 
-        .card-header {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            border-radius: 8px 8px 0 0;
-        }
+    .card-header {
+        background-color: #ff69b4; /* Pink card header background */
+        color: #fff; /* White text color */
+    }
 
-        .wishlist-container {
-            background-color: aliceblue;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            padding: 20px;
-        }
+    .wishlist-container {
+        background-color: white; /* Light pink background for wishlist items */
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        padding: 20px;
+    }
 
-        .card-body row {
-            display: flex;
-            justify-content: space-between;
-        }
+    .link, .btn-warning, .back-to-home-btn {
+        color: #ff69b4; /* Pink text color for links and buttons */
+    }
 
-        .col {
-            flex: 1;
-            padding: 10px;
-        }
+    .link:hover, .btn-warning:hover, .back-to-home-btn:hover {
+        color: #ff2b00; /* Darker pink color on hover */
+    }
 
-        .col strong {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-            color: #333;
-        }
+    .btn-warning {
+        background-color: #fff; /* White background for the warning button */
+        border: 1px solid #ff69b4; /* Pink border */
+    }
 
-        .btn-warning {
-            background-color: #ffc107;
-            color: #333;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin-top: 20px;
-        }
+    .btn-warning:hover {
+        background-color: #ff69b4; /* Darker pink color on hover */
+        color: #fff; /* White text color on hover */
+    }
 
-        .link:hover {
-            color: #ff2b00;
-        }
-
-        .btn-warning:hover {
-            background-color: #ff2b00;
-            color: #fff;
-        }
-
-        .back-to-home-btn {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin-top: 20px;
-        }
-
-        .back-to-home-btn:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
@@ -154,11 +114,9 @@
                         <div class="card-body row">
                             <div class="col"> 
                                 <strong>Images:</strong> <br>
-                                <%= console.log(product.image) %>
                                 <% if (Array.isArray(product.image) && product.image.length > 0) { %>
                                     <% product.image.forEach(image => { %>
-                                        <%= console.log(image) %>
-                                        <img style="width: 120px; height: 120px;" src="<%= product.image %>" alt="Product Image"  class="wishlist-image">
+                                        <img style="width: 120px; height: 120px;" src="<%= image %>" alt="Product Image" class="wishlist-image">
                                     <% }); %>
                                 <% } else { %>
                                     No images available
@@ -167,12 +125,42 @@
                             <div class="col"> 
                                 <strong>Product Name:</strong> <br> <%= product.productName %> 
                             </div>
-                           
                             <div class="col"> 
-                                <strong>Product Name:</strong> <br> <%= product.price %> 
+                                <strong>Price:</strong> <br> <%= product.price %> 
                             </div>
-                            
-                            
+                            <div>
+                                <% if (product.productQuantity > 0) { %>
+                                    <%= console.log(product.productQuantity)  %>
+                                  <a href="/cart/<%= product.productId %>" class="btn" id="addToCartBtn" style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; text-decoration: none;">
+                                    Add to Cart <i class="fas fa-shopping-cart"></i>
+                                  </a>
+                                <% } else { %>
+                                  <button class="btn" style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: not-allowed; text-decoration: none;" onclick="notifyMe()">
+                                    Notify Me
+                                  </button>
+                                <% } %>
+                              </div>
+                              
+                              <script>
+                                function notifyMe() {
+                                  alert("We will notify you when the product is back in stock");
+                                  // You can also customize this to show a modal or perform any other desired action
+                                }
+                              </script>
+                              
+                              
+
+                            <script>
+                                function showMessage(message) {
+                                  alert(message); // You can replace this with your preferred pop-up library or custom implementation
+                                }
+                               </script>
+                              
+                           
+
+
+
+
                         </div>
                         <hr>
                     <% }); %>
@@ -180,12 +168,10 @@
                     <p>No products in your wishlist</p>
                 <% } %>
             </div>
-            <a href="/" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Continue Shopping</a>
+            <a href="/shop" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Continue Shopping</a>
             <a href="/" class="back-to-home-btn" data-abc="true"> <i class="fa fa-home"></i> Back to Home</a>
         </article>
     </div>
-    
-    
 
     
 

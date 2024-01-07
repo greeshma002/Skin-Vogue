@@ -6,7 +6,10 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const { log } = require("console");
-const Order = require('../models/orderSchema');
+const Order = require("../models/orderSchema");
+const moment = require("moment");
+const fs = require('fs');
+const PDFDocument = require('pdfkit');
 
 exports.login = async (req, res) => {
   try {
@@ -18,15 +21,145 @@ exports.login = async (req, res) => {
 
 exports.dashboard = async (req, res) => {
   try {
-    res.render("./admin/admindashboard");
+    //category bar diagram implementation
+    const categoryCounts = await Order.aggregate([
+      { $unwind: "$products" },
+      {
+        $lookup: {
+          from: "products",
+          localField: "products.productId",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      { $unwind: "$productDetails" },
+      { $group: { _id: "$productDetails.category", count: { $sum: 1 } } },
+    ]);
+    console.log(categoryCounts);
+
+    const labels = categoryCounts.map((categoryCount) => categoryCount._id);
+    const counts = categoryCounts.map((categoryCount) => categoryCount.count);
+    console.log(labels);
+
+    //orders per day implementation
+    const today = moment().startOf("day"); // Get the start of today
+    const ordersToday = await Order.countDocuments({
+      createdAt: { $gte: today.toDate() },
+    });
+
+    //total purchase amount implementation
+    const startOfMonth = moment().startOf("month");
+    const endOfMonth = moment().endOf("month");
+    const totalRevenueThisMonth = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startOfMonth.toDate(), $lte: endOfMonth.toDate() },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$totalAmount" },
+        },
+      },
+    ]);
+    const revenue =
+      totalRevenueThisMonth.length > 0
+        ? totalRevenueThisMonth[0].totalAmount
+        : 0;
+    const paymentOptionCounts = await Order.aggregate([
+      {
+        $group: {
+          _id: "$paymentMethod",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    //which payment option have highest no: of orders
+    const highestOrderPaymentOption = paymentOptionCounts.reduce(
+      (max, current) => (current.count > max.count ? current : max),
+      { count: 0 }
+    );
+
+    const paymentOptionCount = await Order.aggregate([
+      {
+        $group: {
+          _id: "$paymentMethod",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // Extract payment option labels and counts for the pie chart
+    const pieLabels = paymentOptionCount.map(
+      (paymentOption) => paymentOption._id
+    );
+    const pieCounts = paymentOptionCount.map(
+      (paymentOption) => paymentOption.count
+    );
+
+    const highestOrderCategory = categoryCounts.reduce(
+      (max, current) => (current.count > max.count ? current : max),
+      { count: 0 }
+    );
+
+      // Calculate weekly order counts
+      const startOfWeek = moment().startOf('week');
+      const endOfWeek = moment().endOf('week');
+      const dailyCounts = await Order.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              dayOfWeek: { $dayOfWeek: '$createdAt' },
+              date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+            },
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+      
+      console.log(dailyCounts);
+      
+      // Extract labels and counts for weekly 
+      const dailyLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dailyData = Array(7).fill(0); // Initialize a 1D array for daily counts
+      
+      dailyCounts.forEach((dayCount) => {
+        const dayOfWeekIndex = dailyLabels.indexOf(moment(dayCount._id.date).format('dddd'));
+        dailyData[dayOfWeekIndex] = dayCount.count;
+      });
+      
+      
+
+    console.log(dailyCounts);
+    res.render("./admin/admindashboard", {
+      labels,
+      counts,
+      ordersToday,
+      revenue,
+      highestOrderPaymentOption,
+      pieLabels,
+      pieCounts,
+      highestOrderCategory,
+      dailyLabels,
+      dailyCounts,
+      dailyData
+    });
   } catch (error) {
     console.log(error.message);
+    res.status(500).send("Internal Server Error");
   }
 };
 
 exports.userdetails = async (req, res) => {
   try {
-    const admin = await collection.find({}); // Fetch all users from the database
+    const admin = await collection.find({});
     console.log(admin);
     res.render("admin/users", { admin });
   } catch (error) {
@@ -37,7 +170,7 @@ exports.userdetails = async (req, res) => {
 
 exports.users = async (req, res) => {
   try {
-    const admin = await collection.find({}); // Fetch all users from the database
+    const admin = await collection.find({});
 
     res.render("admin/users", { admin });
   } catch (error) {
@@ -80,7 +213,7 @@ exports.getAddProduct = async (req, res) => {
   const productId = req.params.productId;
   const categories = await Category.find();
   const product = await Product.findById(productId);
-  res.render("admin/addProduct", { categories , product });
+  res.render("admin/addProduct", { categories, product });
 };
 
 exports.postAddProduct = async (req, res) => {
@@ -127,7 +260,9 @@ exports.postEditProduct = async (req, res) => {
     } = req.body;
 
     // Check if new images are provided
-    let images = req.files ? req.files.map((file) => file.path.substring(6)) : [];
+    let images = req.files
+      ? req.files.map((file) => file.path.substring(6))
+      : [];
 
     // If no new images are provided, fetch the existing images of the product
     if (images.length === 0) {
@@ -161,7 +296,6 @@ exports.postEditProduct = async (req, res) => {
   }
 };
 
-
 exports.deleteProductImage = async (req, res) => {
   try {
     const productId = req.params.productId;
@@ -171,12 +305,12 @@ exports.deleteProductImage = async (req, res) => {
     const product = await Product.findById(productId);
 
     if (!product) {
-      return res.status(404).send('Product not found');
+      return res.status(404).send("Product not found");
     }
 
     // Check if the index is valid
     if (index < 0 || index >= product.images.length) {
-      return res.status(400).send('Invalid image index');
+      return res.status(400).send("Invalid image index");
     }
 
     // Remove the image at the specified index
@@ -185,13 +319,12 @@ exports.deleteProductImage = async (req, res) => {
     // Save the updated product
     await product.save();
 
-    res.status(200).send('Image deleted successfully');
+    res.status(200).send("Image deleted successfully");
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send("Internal Server Error");
   }
 };
-
 
 exports.deleteProduct = async (req, res) => {
   const productId = req.params.productId;
@@ -282,9 +415,9 @@ exports.posteditCategory = async (req, res) => {
     const { categoryName } = req.body;
     const existingCategory = await Category.findOne({ categoryName });
     if (existingCategory && existingCategory._id != categoryId) {
-      const errorMessage ="category already exists"
+      const errorMessage = "category already exists";
       // Send the error message in the response
-      return res.status(400).json({ error: "Category name already exists." })
+      return res.status(400).json({ error: "Category name already exists." });
     }
 
     const updatedCategory = await Category.findByIdAndUpdate(
@@ -293,7 +426,9 @@ exports.posteditCategory = async (req, res) => {
       { new: true }
     );
 
-    console.log(`Category ${updatedCategory.categoryName} updated successfully.`);
+    console.log(
+      `Category ${updatedCategory.categoryName} updated successfully.`
+    );
     res.redirect("/admin/categories");
   } catch (error) {
     console.error(error);
@@ -301,7 +436,6 @@ exports.posteditCategory = async (req, res) => {
     res.status(500).json({ error: "Internal server error." });
   }
 };
-
 
 exports.deleteCategory = async (req, res) => {
   try {
@@ -326,23 +460,18 @@ exports.adminlogout = async (req, res) => {
   });
 };
 
-
-
 exports.adminOrder = async (req, res) => {
   try {
-  
-    let orders = await Order.find().populate('userId').populate('addressId');
-    orders=orders.reverse()
-    res.render('admin/order', { orders });
+    let orders = await Order.find().populate("userId").populate("addressId");
+    orders = orders.reverse();
+    res.render("admin/order", { orders });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Internal Server Error');
-  } 
+    res.status(500).send("Internal Server Error");
+  }
 };
 exports.adminOrderdetail = async (req, res) => {
   try {
-    
-   
     const ordersOfUser = await Order.find({ _id: req.params.id });
     let allProducts = [];
 
@@ -360,29 +489,107 @@ exports.adminOrderdetail = async (req, res) => {
       }
     }
 
-    res.render('admin/vieworder', { allProducts });
+    res.render("admin/vieworder", { allProducts });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send("Internal Server Error");
   }
 };
 exports.orderStatus = async (req, res) => {
-  const orderId = req.params.orderId; 
+  const orderId = req.params.orderId;
   const newStatus = req.body.newStatus;
   console.log(newStatus);
 
   try {
-    const updatedOrder = await Order.findByIdAndUpdate(orderId, { orderStatus: newStatus }, { new: true });
-    res.json({ status: 'success', updatedOrder });
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { orderStatus: newStatus },
+      { new: true }
+    );
+    res.json({ status: "success", updatedOrder });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+    console.error("Error:", error);
+    res.status(500).json({ status: "error", message: "Internal Server Error" });
   }
-}
+};
 
-  
+exports.salesreport = async (req, res) => {
+  try {
+    const salesReports = await Order.find()
+      .populate({
+        path: "userId",
+        model: "collection_1",
+        select: "name",
+      })
+      .populate({
+        path: "addressId",
+        model: "Address",
+        select: "name Address city pin phone",
+      })
+      .exec();
 
+    const formattedSalesReports = salesReports.map((order) => ({
+      userId: order.userId._id,
+      username: order.userId.name,
+      products: order.products,
+      paymentMethod: order.paymentMethod,
+      totalAmount: order.totalAmount,
+      orderStatus: order.orderStatus,
+      orderDate: order.createdAt,
+      address: {
+        addressId: order.addressId._id,
+        name: order.addressId.name,
+        address: order.addressId.Address,
+        city: order.addressId.city,
+        pincode: order.addressId.pin,
+        phone: order.addressId.phone,
+      },
+    }));
 
+    //console.log(formattedSalesReports);
 
+    res.render("admin/salesreports", {
+      success: true,
+      salesReports: formattedSalesReports,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching sales report details" });
+  }
+};
 
+exports.stockreport = async (req, res) => {
+  try {
+    const products = await Product.find();
 
+    const orders = await Order.find();
+
+    const stockReport = products.map((product) => {
+      const totalQuantitySold = orders.reduce((total, order) => {
+        const productInOrder = order.products.find((orderProduct) =>
+          orderProduct.productId.equals(product._id)
+        );
+        return total + (productInOrder ? productInOrder.quantity : 0);
+      }, 0);
+
+      const stockLeft = product.productQuantity - totalQuantitySold;
+
+      return {
+        productId: product._id,
+        productName: product.productName,
+        productQuantity: product.productQuantity,
+        stockLeft,
+      };
+    });
+
+    console.log(stockReport);
+    res.render("admin/stockreport", { success: true, stockReport });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching stock report details" });
+  }
+};

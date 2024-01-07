@@ -177,14 +177,16 @@
                                     <strong>Status:</strong><br>
                                     <span id="currentStatus"><%= product.orderStatus %></span>
                                     <br>
-                                    <select id="statusDropdown">
-                                      <option value="pending">Pending</option>
-                                      <option value="delivered">Delivered</option>
-                                      <option value="confirmed">Confirmed</option>.
-                                      <option value="cancelled">Cancel</option>
+                                    <select id="statusDropdown" <% if (product.orderStatus === 'cancelled' || product.orderStatus === 'returned') { %>disabled<% } %>>
+                                      <option value="pending" <% if (product.orderStatus === 'pending') { %>selected<% } %>>Pending</option>
+                                      <option value="delivered" <% if (product.orderStatus === 'delivered') { %>selected<% } %>>Delivered</option>
+                                      <option value="confirmed" <% if (product.orderStatus === 'confirmed') { %>selected<% } %>>Confirmed</option>
+                                      <option value="cancelled" <% if (product.orderStatus === 'cancelled') { %>selected<% } %>>Cancelled</option>
+                                      <option value="returned" <% if (product.orderStatus === 'returned') { %>selected<% } %>>Returned</option>
                                     </select>
-                                    <button onclick="updateStatus('<%= product.orderId %>')">Update Status</button>
+                                    <button onclick="updateStatus('<%= product.orderId %>')" <% if (product.orderStatus === 'cancelled' || product.orderStatus === 'returned') { %>disabled<% } %>>Update Status</button>
                                   </div>
+                                  
                                 
                                   <script>
                                     function updateStatus(orderId) {

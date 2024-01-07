@@ -15,118 +15,122 @@
 
   <title>SKINVOGUE</title>
 
-   <!-- bootstrap core css -->
-   <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css" />
-   <!-- font awesome style -->
-   <link href="/stylesheets/font-awesome.min.css" rel="stylesheet">
-   <!-- Custom styles for this template -->
-   <link href="/stylesheets/style.css" rel="stylesheet">
-   <!-- responsive style -->
-   <link href="/stylesheets/responsive.css" rel="stylesheet">
-   <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
- 
- <style>
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css" />
+  <!-- font awesome style -->
+  <link href="/stylesheets/font-awesome.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="/stylesheets/style.css" rel="stylesheet">
+  <!-- responsive style -->
+  <link href="/stylesheets/responsive.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+
+  <style>
     .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background-color: #ff69b4;
-            color: #fff;
-        }
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background-color: #ff69b4;
+      color: #fff;
+    }
 
-        .brand {
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
+    .brand {
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
 
-        .brand img {
-            margin-right: 10px;
-            height: 30px;
-        }
+    .brand img {
+      margin-right: 10px;
+      height: 30px;
+    }
 
-        .navbar-links {
-            display: flex;
-            align-items: center;
-        }
-        /* Add this to your CSS file or style section in the HTML document */
+    .navbar-links {
+      display: flex;
+      align-items: center;
+    }
+
+    /* Add this to your CSS file or style section in the HTML document */
 
 
 
-.brand {
-    display: flex;
-    align-items: center;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+    }
 
-.brand img {
-    margin-right: 10px;
-}
-
-.search-container {
-    display: flex;
-    align-items: center;
-}
-
-input[type="text"] {
-    padding: 8px;
-    margin-right: 5px;
-    border: none;
-    border-radius: 5px;
-}
-
-button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: lightblue;
-    color: white;
-    cursor: pointer;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-   
-    z-index: 1;
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #ddd;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-/* Optional: Add some styling for responsiveness */
-@media screen and (max-width: 600px) {
-    .navbar {
-        flex-direction: column;
-        align-items: stretch;
+    .brand img {
+      margin-right: 10px;
     }
 
     .search-container {
-        margin-top: 10px;
+      display: flex;
+      align-items: center;
     }
+    .hidden {
+ display: none;
 }
 
 
- </style>
-   
+    input[type="text"] {
+      padding: 8px;
+      margin-right: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: lightblue;
+      color: white;
+      cursor: pointer;
+    }
+    
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Optional: Add some styling for responsiveness */
+    @media screen and (max-width: 600px) {
+      .navbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-container {
+        margin-top: 10px;
+      }
+    }
+  </style>
+
 </head>
 
 <body>
@@ -134,18 +138,26 @@ button {
   <!-- header section strats -->
   <div class="navbar fixed-top">
     <div class="brand">
-        <img src="/assets/img/logo.png" alt="Logo">
-        <div><strong>SKINVOGUE</strong></div>
+      <img src="/assets/img/logo.png" alt="Logo">
+      <div><strong>SKINVOGUE</strong></div>
     </div>
-   
-</div>
+
+    <!-- Centered search bar without button -->
+    <div class="search-bar">
+      <form action="/search" method="get">
+        <input id="searchBar" type="text" name="q" placeholder="Search...">
+      </form>
+    </div>
+  </div>
 
 
-    <div class="navbar-links">
-        
-       
-    </div>
-</div>
+
+
+  <div class="navbar-links">
+
+
+  </div>
+  </div>
   <!-- end header section -->
 
   <!-- shop section -->
@@ -153,35 +165,46 @@ button {
   <section class="shop_section layout_padding">
     <div class="container">
       <div class="heading_container heading_center">
-        <div class="input-group mb-3">
-          <span class="input-group-text" id="basic-addon1">🔍</span>
-          <input id="searchBar" type="text" class="form-control" style="border: 1px solid #ff69b4" placeholder="Search for product" aria-label="Search" aria-describedby="basic-addon1">
-        </div>
+
         <h2>
           Latest Products
         </h2>
       </div>
-     
-      <div class="row">
-        <aside class="card col-2">
-          <div>
+
+      <div  class="row">
+        <aside style="margin-top: 25px; " class=" col-md-2">
+          <div class="filter-container">
             <label for="priceFilter">Filter by Price:</label>
-            <select id="priceFilter" onchange="filterByPrice()">
+            <select id="priceFilter" class="form-select" onchange="filterByPrice()">
               <option value="lowToHigh">Low to High</option>
               <option value="highToLow">High to Low</option>
             </select>
           </div>
+        
+          <div class="filter-container">
+            <label for="categoryFilter">Filter by Category:</label>
+            <select id="categoryFilter" class="form-select" onchange="filterByCategory()">
+              <option value="all">All Categories</option>
+              <option value="bodyCare">Body Care</option>
+              <option value="skinCare">Skin Care</option>
+              <option value="lipCare">Lip Care</option>
+            </select>
+          </div>
         </aside>
+        
+
         <div class="col-10">
           <div class="row" id="productView">
-            <% productData.forEach(product => { %>
-              <div class="col-sm-6 col-md-4 col-lg-3" data-price="<%= product.productPrice %>">
-                <div class="box">
+            <% productData.forEach(product=> { %>
+              <div class="col-sm-6 col-md-4 col-lg-3" data-category="<%= product.category %>"  data-price="<%= product.productPrice %>">
+               
+                <div class="box" style="height: 350px; overflow: hidden;" >
                   <a href="">
                     <div class="img-box">
-                      <a href="/detail/<%= product._id %>"><img src="<%= product.images[0] %>" alt=""></a>
+                      <a href="/detail/<%= product._id %>"><img height="200px" src="<%= product.images[0] %>"
+                          alt=""></a>
                     </div>
-                    <div class="detail-box">
+                    <div  class="detail-box">
                       <h6>
                         <%= product.productName %>
                       </h6>
@@ -192,11 +215,7 @@ button {
                         </span>
                       </h6>
                     </div>
-                    <div class="new">
-                      <span>
-                        New
-                      </span>
-                    </div>
+                    
                   </a>
                 </div>
               </div>
@@ -211,6 +230,24 @@ button {
       </div>
     </div>
   </section>
+  <section  class="my-6">
+    <div class="pagination flex justify-center gap-4">
+      <% if (page > 1) { %>
+        <a style="background-color: #ff69b4;  margin-left: 710px;" href="?page=<%= page - 1 %>"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Previous</a>
+      <% } %>
+  
+      <% if (page < maxPage) { %>
+        <a style="background-color: #ff69b4; margin-left: 720px;"  href="?page=<%= page + 1 %>"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:bg-blue-700 focus:outline-none transition duration-300 ease-in-out">
+          Next
+        </a>
+      <% } %>
+    </div>
+    <p class="text-gray-900 font-bold items-center text-center "><%= page %> out of <%= maxPage %></p>
+  </section>
+  
+  
 
   <!-- end shop section -->
 
@@ -286,7 +323,9 @@ button {
               About Us
             </h4>
             <p class="mb-0">
-              Welcome to SKINVOGUE, where radiant beauty meets expert care. At SKINVOGUE, we are dedicated to unlocking the secrets to healthier, more vibrant skin, empowering you to embrace your natural beauty with confidence. 
+              Welcome to SKINVOGUE, where radiant beauty meets expert care. At SKINVOGUE, we are dedicated to unlocking
+              the secrets to healthier, more vibrant skin, empowering you to embrace your natural beauty with
+              confidence.
             </p>
           </div>
         </div>
@@ -327,65 +366,84 @@ button {
     <div class="container">
       <p>
         &copy; <span id="displayYear"></span> All Rights Reserved By
-        <a href="https://html.design/">skin vogue private kimited</a>
+        <a href="https://html.design/">skin vogue private limited</a>
       </p>
     </div>
   </footer>
   <!-- footer section -->
   // shop.js
- <script>
+  <script>
 
-  const searchBarElement = document.getElementById('searchBar');
-  const productView = document.getElementById('productView');
-  searchBarElement.addEventListener('change', async  (e) => {
-    const htmlResult = await fetch(`/search?q=${searchBarElement.value}`, { method: "GET" });
-    productView.innerHTML = await htmlResult.text();
-  })
-
-  
-  function filterByPrice() {
-    var sortBy = document.getElementById("priceFilter").value;
-
-    // Grab all the elements of `#productView` and convert its children (each product) into an array.
-    const elements = [...document.getElementById('productView').children];
-    
-    elements.sort(function(a, b) {
-      let priceA = parseInt(a.dataset.price);
-      let priceB = parseInt(b.dataset.price);
-
-      if (sortBy === "lowToHigh") {
-        return priceA - priceB;
-      } else {
-        return priceB - priceA;
-      }
-    });
-
-    // Replace the whole elements of `#productView` with sorted version.
-    document.getElementById('productView').replaceChildren(...elements)
-  }
+    const searchBarElement = document.getElementById('searchBar');
+    const productView = document.getElementById('productView');
+    searchBarElement.addEventListener('input', async (e) => {
+      const htmlResult = await fetch(`/search?q=${searchBarElement.value}`, { method: "GET" });
+      productView.innerHTML = await htmlResult.text();
+    })
 
 
-  
-  function updateProductList(products) {
+    function filterByPrice() {
+      var sortBy = document.getElementById("priceFilter").value;
+
+      // Grab all the elements of `#productView` and convert its children (each product) into an array.
+      const elements = [...document.getElementById('productView').children];
+
+      elements.sort(function (a, b) {
+        let priceA = parseInt(a.dataset.price);
+        let priceB = parseInt(b.dataset.price);
+
+        if (sortBy === "lowToHigh") {
+          return priceA - priceB;
+        } else {
+          return priceB - priceA;
+        }
+      });
+
+      // Replace the whole elements of `#productView` with sorted version.
+      document.getElementById('productView').replaceChildren(...elements)
+    }
+
+
+    function filterByCategory() {
+ var selectedCategory = document.getElementById("categoryFilter").value.toLowerCase().trim();
+
+ const elements = [...document.getElementById('productView').children];
+
+ elements.forEach(function (element) {
+   let category = element.dataset.category.toLowerCase().trim();
+
+   if (selectedCategory === "all" || category === selectedCategory) {
+     element.classList.remove("hidden");
+   } else {
+     element.classList.add("hidden");
+   }
+ });
+}
+
+
+
+
+
+    function updateProductList(products) {
       const productListContainer = document.getElementById("productList");
-  
+
       // Clear existing products in the list
       productListContainer.innerHTML = "";
-  
+
       if (products.length === 0) {
-          // Display a message if no results are found
-          const noResultsMessage = document.createElement("div");
-          noResultsMessage.textContent = "No results found.";
-          productListContainer.appendChild(noResultsMessage);
+        // Display a message if no results are found
+        const noResultsMessage = document.createElement("div");
+        noResultsMessage.textContent = "No results found.";
+        productListContainer.appendChild(noResultsMessage);
       } else {
-          // Display each product in the list
-          products.forEach(product => {
-              const productItem = document.createElement("div");
-              productItem.textContent = product.name; // Replace with actual product properties
-              productListContainer.appendChild(productItem);
-          });
+        // Display each product in the list
+        products.forEach(product => {
+          const productItem = document.createElement("div");
+          productItem.textContent = product.name; // Replace with actual product properties
+          productListContainer.appendChild(productItem);
+        });
       }
-  }
+    }
   </script>
 
 

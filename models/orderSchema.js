@@ -35,7 +35,7 @@ const orderSchema = new Schema({
   ],
   paymentMethod: {
     type: String,
-    enum: ["cod", "wallet","online","card","UPI"],
+    enum: ["COD", "WALLET","online","card","UPI"],
     required: true,
   },
   totalAmount: {
@@ -51,7 +51,11 @@ const orderSchema = new Schema({
     ref: "Address",
     required: true,
   },
-});
+},
+{
+  timestamps:true
+}
+);
 
 const Order = mongoose.model("Order", orderSchema);
 

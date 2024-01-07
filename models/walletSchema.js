@@ -4,26 +4,32 @@ const walletSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'collecion_1',
-
   },
   balance: {
     type: Number,
     default: 0,
   },
-  // amount: {
-  //   type: Number,
-  //   required: true,
-  // },
-  // type: {
-  //   type: String,
-  //   enum: ['deposit', 'withdrawal'],
-  //   required: true,
-  // },
-  // description: String,
-  // createdAt: {
-  //   type: Date,
-  //   default: Date.now,
- // },
+  history: [
+    {
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+      amount: {
+        type: Number,
+        required: true,
+      },
+      type: {
+        type: String, // 'credit' or 'debit'
+        required: true,
+      },
+    },
+  ],
+  orderId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Order',
+  },
 });
 
 module.exports = mongoose.model('Wallet', walletSchema);
+

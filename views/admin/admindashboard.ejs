@@ -28,6 +28,9 @@
   <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="/assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
+    <!-- Admin side  chart implementation -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- Template Main CSS File -->
   <link href="/assets/css/style.css" rel="stylesheet">
   <style>
@@ -304,6 +307,20 @@
         </a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link " href="salesrpt">
+          <i class="bi bi-grid"></i>
+          <span>Sales Reports</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="stock">
+          <i class="bi bi-grid"></i>
+          <span>Stock Reports</span>
+        </a>
+      </li>
+
         </ul>
       </li><!-- End Components Nav -->
     </ul>
@@ -326,128 +343,248 @@
       <div class="row">
 
         <!-- Left side columns -->
-        <div class="col-lg-8">
+        <div class="col-lg-12">
           <div class="row">
+          
 
             <!-- Sales Card -->
-            <div class="col-xxl-4 col-md-6">
+            <div class="col-xxl-3 col-md-6">
               <div class="card info-card sales-card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
                 <div class="card-body">
                   <h5 class="card-title">Sales <span>| Today</span></h5>
-
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                       <i class="bi bi-cart"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>145</h6>
-                      <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
+                      <h6><%= ordersToday %> orders</h6>
+                      <span class="text-success small pt-1 fw-bold">12%</span>
+                      <span class="text-muted small pt-2 ps-1">increase</span>
                     </div>
                   </div>
                 </div>
-
               </div>
-            </div><!-- End Sales Card -->
+            </div>
+            <!-- End Sales Card -->
 
             <!-- Revenue Card -->
-            <div class="col-xxl-4 col-md-6">
+            <div class="col-xxl-3 col-md-6">
               <div class="card info-card revenue-card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
                 <div class="card-body">
                   <h5 class="card-title">Revenue <span>| This Month</span></h5>
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-currency-dollar"></i>
+                      <i class="bi bi-currency-rupee"></i>
+
                     </div>
                     <div class="ps-3">
-                      <h6>$3,264</h6>
-                      <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                      <h6>₹<%= revenue.toFixed(2) %></h6>
+                      <span class="text-success small pt-1 fw-bold">8%</span>
+                      <span class="text-muted small pt-2 ps-1">increase</span>
                     </div>
                   </div>
                 </div>
               </div>
-            </div><!-- End Revenue Card -->
+            </div>
+
+           
+            <!-- End Revenue Card -->
 
             <!-- Customers Card -->
-            <div class="col-xxl-4 col-xl-12">
-
-              <div class="card info-card customers-card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Customers <span>| This Year</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-people"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>1244</h6>
-                      <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
+          
+              <!-- PaymentOption div -->
+              <div class="col-xxl-3 col-xl-12">
+                <div class="card info-card customers-card">
+                  <div class="card-body">
+                    <h5 class="card-title">PaymentOption</h5>
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-people"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6><%= highestOrderPaymentOption._id  %> </h6>
+                        <span class="text-danger small pt-1 fw-bold">High</span>
+                        <span class="text-muted small pt-2 ps-1">demand</span>
+                      </div>
                     </div>
                   </div>
-
                 </div>
               </div>
+            
+              <!-- Category div -->
+              <div class="col-xxl-3 col-xl-12"> <!-- Adjust the column size as needed -->
+                <div class="card info-card customers-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Category</h5>
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-people"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6><%= highestOrderCategory._id %> </h6>
+                        <span class="text-danger small pt-1 fw-bold">High</span>
+                        <span class="text-muted small pt-2 ps-1">demand</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
 
-            </div><!-- End Customers Card -->
+             
+              <div style="width: 800px; margin-right: auto;padding-block:1.25rem;">
+                <canvas id="myChart" style="position: relative; left: 0%;"></canvas>
+                <script>
+                  // Data passed from the server
+                  var labels = '<%= labels %>'.split(',');
+                  var counts = '<%= counts %>'.split(',');
+              
+                  console.log(labels[0]); // Check the values in the browser console
+                  console.log(counts); // Check the values in the browser console
+              
+                  // Create the chart
+                  var ctx = document.getElementById('myChart').getContext('2d');
+                  var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                      labels: labels,
+                      datasets: [
+                        {
+                          label: 'Number of Orders',
+                          borderColor: '#36A2EB',
+                          backgroundColor: '#9BD0F5',
+                          data: counts,
+                        },
+                      ],
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                        },
+                      },
+                    },
+                    layout: {
+          padding: {
+            left: 20, // Adjust left padding for better alignment
+            right: 20, // Adjust right padding for better alignment
+            top: 20, // Adjust top padding for better alignment
+            bottom: 20, // Adjust bottom padding for better alignment
+          },
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top', // Adjust legend position if needed
+          },
+        }
+                  });
+                </script>
+              </div>
+
+              <div style="width: 800px; margin-right: auto;padding-block:1.25rem;" class="col-xxl-4 col-md-6">
+                <div class="card info-card combined-bar-chart-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Daily Orders</h5>
+                    <canvas id="combinedBarChart" style="position: relative; left: 0%;"></canvas>
+                  </div>
+                </div>
+              </div>
+              
+              <script>
+                // Data passed from the server for the Combined Bar Graph
+              
+                // Marking the dailyLabels
+                var dailyLabels = '<%= (dailyLabels) %>'.split(',');
+                
+                var dailyCounts = '<%= (dailyCounts) %>'.split(',');
+              
+                console.log('dailyLabels:', dailyLabels);
+                console.log('dailyCounts:', dailyCounts);
+              
+                // Create the Combined Bar Graph
+                var combinedBarChartCtx = document.getElementById('combinedBarChart').getContext('2d');
+                var combinedBarChart = new Chart(combinedBarChartCtx, {
+                  type: 'bar',
+                  data: {
+                    labels: [...dailyLabels],
+                    datasets: [{
+                      label: 'Daily Orders',
+                      data: dailyCounts.flat(), // Flatten the 2D array
+                      backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                    }],
+                  },
+                  options: {
+                    scales: {
+                      x: {
+                        stacked: true,
+                      },
+                      y: {
+                        stacked: true,
+                      },
+                    },
+                  },
+                });
+              </script>
+              
+              
+              
+              
+                
+                
+              </div>
+
+            </div>
+            <div style="height: 300px; width: 300px; margin-right: auto;">
+              <canvas id="paymentOptionsPieChart" style="position: relative; left: 0%;"></canvas>
+            </div>
+            
+            <script>
+              // Data passed from the server for the Pie Chart
+              var pieLabels = '<%= pieLabels %>'.split(',');
+              var pieCounts = '<%= pieCounts %>'.split(',');
+            
+              console.log(pieLabels);
+              console.log(pieCounts);
+            
+              // Create the Pie Chart
+              var pieChartCtx = document.getElementById('paymentOptionsPieChart').getContext('2d');
+              var paymentOptionsPieChart = new Chart(pieChartCtx, {
+                type: 'pie',
+                data: {
+                  labels: pieLabels,
+                  datasets: [{
+                    data: pieCounts,
+                    backgroundColor: [
+                      'rgba(255, 99, 132, 0.8)',   // Red
+                      'rgba(54, 162, 235, 0.8)',  // Blue
+                      'rgba(255, 205, 86, 0.8)',  // Yellow
+                      // Add more colors as needed
+                    ],
+                  }],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  legend: {
+                    position: 'bottom',
+                  },
+                  title: {
+                    display: true,
+                    text: 'Payment Options Distribution',
+                  },
+                },
+              });
+            </script>
+            
+            
+
 
             <!-- Reports -->
             <div class="col-12">
               <div class="card">
 
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
+            
             </div><!-- End Reports -->
 
 
@@ -457,18 +594,7 @@
         <div class="col-lg-4">
           <!-- Recent Activity -->
           <div class="card">
-            <div class="filter">
-              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <li class="dropdown-header text-start">
-                  <h6>Filter</h6>
-                </li>
-
-                <li><a class="dropdown-item" href="#">Today</a></li>
-                <li><a class="dropdown-item" href="#">This Month</a></li>
-                <li><a class="dropdown-item" href="#">This Year</a></li>
-              </ul>
-            </div>
+           
 
         </div><!-- End Right side columns -->
       </div>
@@ -506,6 +632,9 @@
   <script src="path/to/jquery/jquery.min.js"></script>
   <script src="path/to/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
 
 
 </body>
