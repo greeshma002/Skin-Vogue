@@ -35,11 +35,12 @@ const {
   orderhistory,
   postwallet,
   userdetails,
-  invoice
+  invoice,
+  deletewishlist,
   
  
 } = require("../controllers/usercontroller");
-const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage ,  addresses,confirmpage, placeOrder,orderdetailpage , cancelorder, } = require("../controllers/cartcontroller")
+const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage ,  addresses,confirmpage, placeOrder,orderdetailpage ,uservieworder, cancelorder, } = require("../controllers/cartcontroller")
 const { isAuthenticated, isBlocked } = require("../middlewares/authMiddleware");
 const { applyCoupon } = require("../controllers/couponcontroller");
 
@@ -61,72 +62,76 @@ router.post("/signup", signuppost);
 //User pages
 router.get("/shop", isAuthenticated, isBlocked, shoppage);
 
-router.get("/blog", isAuthenticated, blogpage);
+router.get("/blog", isAuthenticated,isBlocked, blogpage);
 
-router.get("/about", aboutpage);
+router.get("/about",isAuthenticated,isBlocked, aboutpage);
 
 router.get("/logout", logout);
 
-router.get("/detail/:id", detail);
+router.get("/detail/:id",isAuthenticated,isBlocked, detail);
 
 //Cart Management
 router.get("/cartdetails",isAuthenticated,isBlocked,cartdetails)
 
 router.get("/cart/:productid",isAuthenticated,isBlocked,cartcontroller)
 
-router.get("/cartremove/:productid",isAuthenticated,deleteCart)
+router.get("/cartremove/:productid",isAuthenticated,isBlocked,deleteCart)
 
-router.put("/updateQuantity/:productId",isAuthenticated, updQuantity)
+router.put("/updateQuantity/:productId",isAuthenticated,isBlocked, updQuantity)
 
 // router.post("/addTocart",addtocartController);
 
-router.get("/userprofile",isAuthenticated,isBlocked,userprofile)
+router.get("/userprofile",isAuthenticated, isBlocked,userprofile)
 
-router.get("/checkout",isAuthenticated, checkoutpage)
+router.get("/checkout",isAuthenticated,isBlocked, checkoutpage)
 
-router.post("/check",isAuthenticated,checkoutdetails)
+router.post("/check",isAuthenticated,isBlocked,checkoutdetails)
 
-router.post("/usersdetails", userdetails);
+router.post("/usersdetails",isAuthenticated,isBlocked, userdetails);
 
-router.get("/address/:addressId",isAuthenticated,geteditaddress)
+router.get("/address/:addressId",isAuthenticated,isBlocked,geteditaddress)
 
-router.post("/editaddress/:addressId",isAuthenticated,posteditaddress)
+router.post("/editaddress/:addressId",isAuthenticated,isBlocked,posteditaddress)
 
-router.get("/addAddress",isAuthenticated,getaddAddress)
+router.get("/addAddress",isAuthenticated,isBlocked,getaddAddress)
 
-router.post("/addaddress", isAuthenticated,postaddAddress)
+router.post("/addaddress", isAuthenticated,isBlocked,postaddAddress)
 
-router.post("/order",isAuthenticated,placeOrder)
+router.post("/order",isAuthenticated,isBlocked,placeOrder)
 
-router.get("/orderdetail",isAuthenticated,orderdetailpage)
+ router.get("/orderdetail",isAuthenticated,isBlocked,orderdetailpage)
 
-router.get("/confirm",isAuthenticated,confirmpage)
+router.get("/vieworder/:id",isAuthenticated,isBlocked, uservieworder)
 
-router.post("/user/orderstatus/:orderId",isAuthenticated,userorderStatus)
+router.get("/confirm",isAuthenticated,isBlocked,confirmpage)
 
-router.get("/useraddress", isAuthenticated,userAddress)
+router.post("/user/orderstatus/:orderId",isAuthenticated,isBlocked,userorderStatus)
 
-router.get("/deleteAddress/:addressId",isAuthenticated,deleteAddress);
+router.get("/useraddress", isAuthenticated,isBlocked,userAddress)
 
-router.get("/cancel/:orderId",isAuthenticated,cancelorder)
+router.get("/deleteAddress/:addressId",isAuthenticated,isBlocked,deleteAddress);
 
-router.get("/wishlist",isAuthenticated,getwishlist) 
+router.get("/cancel/:orderId",isAuthenticated,isBlocked,cancelorder)
 
-router.get("/wishlist/add/:productid",isAuthenticated,postwishlist)
+router.get("/wishlist",isAuthenticated,isBlocked,getwishlist) 
 
-router.post("/razorpay",isAuthenticated,postrazorpay)
+router.get("/wishlist/add/:productid",isAuthenticated,isBlocked,postwishlist)
 
-router.get("/search",isAuthenticated,shopsearch)
+router.get("/removewish/:productid",isAuthenticated,isBlocked,deletewishlist)
 
-router.get("/wallet",isAuthenticated,userwallet)
+router.post("/razorpay",isAuthenticated,isBlocked,postrazorpay)
 
-router.post("/walletpay",isAuthenticated,postwallet)
+router.get("/search",isAuthenticated,isBlocked,shopsearch)
 
-router.post("/return/:orderId",isAuthenticated,orderreturn)
+router.get("/wallet",isAuthenticated,isBlocked,userwallet)
 
-router.post("/applyCoupon",isAuthenticated,applyCoupon)
+router.post("/walletpay",isAuthenticated,isBlocked,postwallet)
 
-router.get("/downloadinvoice/:orderId",isAuthenticated,invoice)
+router.post("/return/:orderId",isAuthenticated,isBlocked,orderreturn)
+
+router.post("/applyCoupon",isAuthenticated,isBlocked,applyCoupon)
+
+router.get("/downloadinvoice/:orderId",isAuthenticated,isBlocked,invoice)
 
 
 

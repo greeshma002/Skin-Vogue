@@ -1,5 +1,7 @@
 const Coupon = require("../models/couponSchema");
 const Cart = require("../models/cartSchema");
+const Swal = require('sweetalert2');
+
 
 exports.addcoupon = async (req, res) => {
   try {
@@ -48,10 +50,13 @@ function updateCartWithDiscountedPrice(cart, discountedPrice) {
   return { updatedCart: cart, updatedTotalPrice };
 }
 
+
+
 exports.applyCoupon = async (req, res) => {
   try {
     const selectedCouponCode = req.body.selectedCoupon;
     const cartData = await Cart.findOne({ userId: req.session.userId });
+    
 
     if (!selectedCouponCode) {
       return res.redirect("/cartdetails");
@@ -70,11 +75,12 @@ exports.applyCoupon = async (req, res) => {
     const maxValue = selectedCoupon.maxValue;
 
     const totalPrice = calculateTotalPrice(cartData);
+    
 
     console.log("Before applying coupon:", totalPrice);
 
     if (totalPrice < minValue || totalPrice > maxValue) {
-      return res.status(400).send("Coupon is not applicable for this purchase.");
+      return res.status(400).send("Coupon is not applicable for this purchase");
     }
 
     const discountedPrice = totalPrice - (totalPrice * discountPercentage) / 100;

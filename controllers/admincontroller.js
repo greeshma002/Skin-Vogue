@@ -124,17 +124,17 @@ exports.dashboard = async (req, res) => {
         },
       ]);
       
-      console.log(dailyCounts);
-      
-      // Extract labels and counts for weekly 
+      // Extract labels and counts for weekly
       const dailyLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const dailyData = Array(7).fill(0); // Initialize a 1D array for daily counts
+      const dailyData = Array(7).fill(0).map(() =>0); // Initialize a 2D array for weekly counts
       
       dailyCounts.forEach((dayCount) => {
         const dayOfWeekIndex = dailyLabels.indexOf(moment(dayCount._id.date).format('dddd'));
         dailyData[dayOfWeekIndex] = dayCount.count;
       });
       
+      //console.log("haiii", dailyCounts);
+      //console.log("weeklyData", dailyData);
       
 
     console.log(dailyCounts);
@@ -402,22 +402,41 @@ exports.postaddCategory = async (req, res) => {
 };
 
 exports.geteditCategory = async (req, res) => {
-  console.log("etr the edit");
-  const categoryId = req.params.id;
-  const category = await Category.findOne({ _id: categoryId });
-  console.log("category is", category);
-  res.render("admin/editCategory", { category });
+  let category;
+
+  try {
+    console.log("Enter the edit");
+    const categoryId = req.params.id;
+    category = await Category.findOne({ _id: categoryId });
+    console.log("Category is", category);
+
+  } catch (error) {
+    console.error(error);
+    const errorMessage = "Error fetching category.";
+    return res.render("admin/editCategory", { category: null, errorMessage });
+  }
+
+  const errorMessage = "";
+
+  res.render("admin/editCategory", { category, errorMessage });
 };
+
+
 
 exports.posteditCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
+    const category = await Category.findOne({ _id: categoryId });
     const { categoryName } = req.body;
-    const existingCategory = await Category.findOne({ categoryName });
+    const existingCategory = await Category.findOne({
+      categoryName: { $regex: new RegExp(`^${categoryName}$`, 'i') },
+      _id: { $ne: categoryId }, 
+    });
+
     if (existingCategory && existingCategory._id != categoryId) {
-      const errorMessage = "category already exists";
-      // Send the error message in the response
-      return res.status(400).json({ error: "Category name already exists." });
+      const errorMessage = "Category name already exists.";
+      // Pass the error message to the template
+      return res.render("admin/editCategory", { category, errorMessage });
     }
 
     const updatedCategory = await Category.findByIdAndUpdate(
@@ -432,10 +451,11 @@ exports.posteditCategory = async (req, res) => {
     res.redirect("/admin/categories");
   } catch (error) {
     console.error(error);
-    // Send the error message in the response
-    res.status(500).json({ error: "Internal server error." });
+    // Pass the error message to the template
+    res.render("admin/editCategory", { category, errorMessage: "Internal server error." });
   }
 };
+
 
 exports.deleteCategory = async (req, res) => {
   try {
@@ -528,6 +548,8 @@ exports.salesreport = async (req, res) => {
       })
       .exec();
 
+      console.log(salesReports);
+
     const formattedSalesReports = salesReports.map((order) => ({
       userId: order.userId._id,
       username: order.userId.name,
@@ -546,7 +568,7 @@ exports.salesreport = async (req, res) => {
       },
     }));
 
-    //console.log(formattedSalesReports);
+   // console.log("hiiiiiiiiiiii" ,formattedSalesReports);
 
     res.render("admin/salesreports", {
       success: true,

@@ -3,8 +3,14 @@
 <head>
   <base href="/">
   <link rel="stylesheet" href="/stylesheets/detailspage.css">
+  <script src="https://code.jquery.com/jquery-3.7.0.js"
+  integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" 
+  crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-zoom/1.7.21/jquery.zoom.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+ 
   <style>
     
     body {
@@ -52,16 +58,16 @@
       <!-- card left -->
       <div class="product-imgs">
         <div class="img-display">
-          <div " class="img-showcase">
+          <div class="img-showcase">
             <% product.images.forEach(function(image, index) { %>
-                <img src="<%= image %>" alt="Product Image <%= index + 1 %>">
+                <img class="main-product-image" src="<%= image %>" alt="Product Image <%= index + 1 %>">
             <% }); %>
           </div>
         </div>
         <div class="img-select">
           <% product.images.forEach(function(image, index) { %>
-            <div class="img-item">
-              <img src="<%= image %>" alt="Product Image <%= index + 1 %>" data-index="<%= index %>">
+            <div class="img-item" style="width: 6rem; height: 6rem;">
+              <img onclick="setMainImage('<%= image %>')" src="<%= image %>" alt="Product Image <%= index + 1 %>" data-index="<%= index %>" style="object-fit: contain;" width="100%" height="100%">
             </div>
           <% }); %>
         </div>
@@ -75,7 +81,7 @@
         
         <div class = "product-price">
           <!-- <p class = "last-price">Old Price: <span>$257.00</span></p> -->
-          <p class = "new-price"> <h2>New Price:</h2> <strong> <%= product.productPrice %> </strong></p>
+          <p class = "new-price"> <h2>New Price:</h2> <strong> ₹<%= product.productPrice %> </strong></p>
         </div>
   
         
@@ -97,7 +103,7 @@
     <button style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
         Go to Cart
     </button>
-    <a href="/wishlist/add/<%= product._id  %>"><button style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+    <a  href="/wishlist/add/<%= product._id  %>"> <button style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
       Add to wishlist
   </button></a>
    
@@ -127,30 +133,35 @@
             <li>Shipping Fee: <span>Free</span></li>
           </ul>
         </div>
-  
-      
-  
-        <!-- <div class = "social-links">
-          <p>Share At: </p>
-          <a href = "#">
-            <i class = "fab fa-facebook-f"></i>
-          </a>
-          <a href = "#">
-            <i class = "fab fa-twitter"></i>
-          </a>
-          <a href = "#">
-            <i class = "fab fa-instagram"></i>
-          </a>
-          <a href = "#">
-            <i class = "fab fa-whatsapp"></i>
-          </a>
-          <a href = "#">
-            <i class = "fab fa-pinterest"></i>
-          </a>
-        </div> -->
       </div>
     </div>
   </div>
+
+
+  <script>
+    const addToCartBtn = document.getElementById("addToCartBtn")
+    addToCartBtn.addEventListener("click",()=> {
+      console.log("hii");
+      Toastify({
+          text: "Added to Cart",
+          duration: 600,
+          destination: "https://github.com/apvarun/toastify-js",
+          newWindow: true,
+          close: true,
+          gravity: "top", // top or bottom
+          position: "center", // left, center or right
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: " #228B22  ",
+          },
+          onClick: function(){
+            alert("Toast clicked!");
+          }
+        }).showToast();
+    })
+    </script>
+
+  
 
   <script>
     // Function to show a pop-up message
@@ -180,15 +191,11 @@
     });
   </script>
   
-
   <script>
     $(document).ready(function () {
-      // Zoom functionality
-      $('.parents').css('width', $('img').width());
-      $('.img-showcase img:first-child').parent().zoom({
-        magnify: 1,
-        target: $('.contain').get(0)
-      });
+      $(".main-product-image").imagezoomsl({
+            zoomrange: [3, 3]
+        });
 
       // Image selection
       $('.img-item img').on('click', function() {
@@ -198,7 +205,9 @@
         targetImage.show();
       });
     });
-  </script>
+    </script>
+
+    
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
@@ -233,5 +242,7 @@
 </script>
 
   <script src="/js/detailspage.js"></script>
+
+  <script src="/js/zoom.js"></script>
 </body>
 </html>

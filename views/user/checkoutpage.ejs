@@ -70,7 +70,8 @@
                       </svg>
                       <div class="_1QFLA6">
                         <span class="npYOZI text-black">
-                          <%= username.name %>
+                          <%= username.name %> <br>
+                         
                         </span>
                         <a href="/userprofile" style="text-decoration: none;">
                           <button type="button"
@@ -195,7 +196,7 @@
                       <option value="WALLET">WALLET</option>
                       <option id="UPI" value="UPI">UPI</option>
                     </select>
-                    
+
                   </div>
                 </div>
               </div>
@@ -213,7 +214,7 @@
                   <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
                     Products
                     <!-- Display the total price for products -->
-                    <span>$<%= total %></span>
+                    <span>₹<%= total %></span>
                   </li>
                   <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                     Shipping
@@ -234,9 +235,25 @@
                 </ul>
 
                 <button id="placeOrderBtn" style="background-color: green;" type="submit"
-                  class="btn btn-primary btn-lg btn-block">
+                  class="btn btn-primary btn-lg btn-block" onclick="checkAddress()">
                   Place Order
                 </button>
+                <script>
+                  function checkAddress() {
+                    var selectedAddress = document.querySelector('input[name="addressCheckbox"]:checked');
+
+                    if (!selectedAddress) {
+                      document.getElementById('placeOrderBtn').disabled = true;
+                      alert("Please select an address before placing the order.");
+                      return false;
+                    }
+
+
+                    document.getElementById('placeOrderBtn').disabled = false;
+
+                  }
+                </script>
+
 
                 <script>
                   const orderForm = document.getElementById('orderForm');
@@ -245,104 +262,104 @@
                     e.preventDefault()
                     const paymentOptionSelect = document.querySelector('select[name="paymentOption"]').value;
                     const totalPrice = parseFloat(document.getElementById('price').innerText);
-                     console.log(totalPrice);
+                    console.log(totalPrice);
 
                     console.log("payment : " + paymentOptionSelect);
-                      if (paymentOptionSelect === 'WALLET') {
-                        let price = document.getElementById('price').innerText
-                        console.log(price);
-                        fetch('/walletpay', {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
-                          body: JSON.stringify({
-                            totalPrice: totalPrice,
-                          }),
+                    if (paymentOptionSelect === 'WALLET') {
+                      let price = document.getElementById('price').innerText
+                      console.log(price);
+                      fetch('/walletpay', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          totalPrice: totalPrice,
+                        }),
+                      })
+                        .then(response => response.json())
+                        .then(data => {
+                          if (data.success) {
+                            // Wallet payment successful, you can proceed with order placement logic
+                            console.log("Wallet payment successful");
+                            orderForm.submit(); // Assuming you want to submit the form after wallet payment
+                          } else {
+                            // Wallet payment failed, handle accordingly
+                            console.error("Wallet payment failed");
+                            alert(data.message);
+                          }
                         })
-                          .then(response => response.json())
-                          .then(data => {
-                            if (data.success) {
-                              // Wallet payment successful, you can proceed with order placement logic
-                              console.log("Wallet payment successful");
-                              orderForm.submit(); // Assuming you want to submit the form after wallet payment
-                            } else {
-                              // Wallet payment failed, handle accordingly
-                              console.error("Wallet payment failed");
-                              alert(data.message);
+                        .catch(error => {
+                          console.error("Error during wallet payment", error);
+                          // Handle errors, show an error message to the user, etc.
+                        });
+
+                    } else if (paymentOptionSelect === 'UPI') {
+                      console.log("asfdasfd");
+                      let price = document.getElementById('price').innerText
+                      console.log("prize is ", price);
+                      var selectedAddressId = document.querySelector('input[name="addressCheckbox"]:checked').value;
+
+                      console.log("address is", selectedAddressId);
+                      fetch('/razorpay', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          amount: Number(price) * 100,
+                          address: selectedAddressId
+                        }),
+                      }).then(response => response.json()).catch((rej) => console.log(rej))
+                        .then(data => {
+                          console.log("id" + data.orderId);
+
+                          let orderId = data.orderId
+                          var options = {
+                            "key": "rzp_test_mWxoWL4GDtyb6R", // Enter the Key ID generated from the Dashboard
+                            "amount": price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            "currency": "INR",
+                            "name": "SKINVOGUE",
+                            "description": "Online Payment",
+                            "image": "https://example.com/your_logo",
+                            "order_id": orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                            "callback_url": "order",
+                            "prefill": {
+                              "name": "Gaurav Kumar",
+                              "email": "gaurav.kumar@example.com",
+                              "contact": "9000090000"
+                            },
+                            "notes": {
+                              "address": "Razorpay Corporate Office",
+                              "paymentOption": "ONLINE",
+                              "addressCheckbox": selectedAddressId
+                            },
+                            "theme": {
+                              "color": "#3399cc"
                             }
-                          })
-                          .catch(error => {
-                            console.error("Error during wallet payment", error);
-                            // Handle errors, show an error message to the user, etc.
+                          };
+
+
+                          var rzp1 = new Razorpay(options);
+                          rzp1.on('payment.failed', function (response) {
+                            alert(response.error.code);
+                            alert(response.error.description);
+                            alert(response.error.source);
+                            alert(response.error.step);
+                            alert(response.error.reason);
+                            alert(response.error.metadata.order_id);
+                            alert(response.error.metadata.payment_id);
+                            alert(response.error.metadata.paymentOption)
+                            alert(response.error.metadata.addressCheckbox)
                           });
+                          rzp1.open();
+                          e.preventDefault();
+                        }).catch((rej) => console.log(rej))
+                    } else {
+                      orderForm.submit()
+                    }
 
-                      } else if (paymentOptionSelect === 'UPI') {
-                        console.log("asfdasfd");
-                        let price = document.getElementById('price').innerText
-                        console.log("prize is ", price);
-                        var selectedAddressId = document.querySelector('input[name="addressCheckbox"]:checked').value;
-
-                        console.log("address is", selectedAddressId);
-                        fetch('/razorpay', {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
-                          body: JSON.stringify({
-                            amount: Number(price) * 100,   
-                            address: selectedAddressId 
-                          }),
-                        }).then(response => response.json()).catch((rej) => console.log(rej))
-                          .then(data => {
-                            console.log("id" + data.orderId);
-
-                            let orderId = data.orderId
-                            var options = {
-                              "key": "rzp_test_mWxoWL4GDtyb6R", // Enter the Key ID generated from the Dashboard
-                              "amount": price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                              "currency": "INR",
-                              "name": "SKINVOGUE",
-                              "description": "Online Payment",
-                              "image": "https://example.com/your_logo",
-                              "order_id": orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                              "callback_url": "order",
-                              "prefill": {
-                                "name": "Gaurav Kumar",
-                                "email": "gaurav.kumar@example.com",
-                                "contact": "9000090000"
-                              },
-                              "notes": {
-                                "address": "Razorpay Corporate Office",
-                                "paymentOption": "ONLINE",
-                                "addressCheckbox": selectedAddressId
-                              },
-                              "theme": {
-                                "color": "#3399cc"
-                              }
-                            };
-
-
-                            var rzp1 = new Razorpay(options);
-                            rzp1.on('payment.failed', function (response) {
-                              alert(response.error.code);
-                              alert(response.error.description);
-                              alert(response.error.source);
-                              alert(response.error.step);
-                              alert(response.error.reason);
-                              alert(response.error.metadata.order_id);
-                              alert(response.error.metadata.payment_id);
-                              alert(response.error.metadata.paymentOption)
-                              alert(response.error.metadata.addressCheckbox)
-                            });
-                            rzp1.open();
-                            e.preventDefault();
-                          }).catch((rej) => console.log(rej))
-                      } else {
-                        orderForm.submit()
-                      }
-                    
-                    });
+                  });
                 </script>
               </div>
             </div>

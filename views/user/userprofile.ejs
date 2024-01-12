@@ -4,7 +4,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -299,33 +300,67 @@
 
           <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  
-                  <form id="editProfileForm" method="POST" action="/usersdetails" >
-                    <div class="form-group">
-                      <label for="editEmail">Name</label>
-                      <input type="text" class="form-control" id="name" name="editName" placeholder="Enter name">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="form-group">
-                      <label for="editMobile">Mobile Number</label>
-                      <input type="tel" class="form-control" name="editMobile" id="phone" placeholder="Enter mobile number">
+                    <div class="modal-body">
+                        <form id="editProfileForm" method="POST" action="/usersdetails">
+                            <div class="form-group">
+                                <label for="editEmail">Name</label>
+                                <input type="text" class="form-control" id="name" name="editName" placeholder="Enter name">
+                                <span id="nameError" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="editMobile">Mobile Number</label>
+                                <input type="tel" class="form-control" name="editMobile" id="phone" placeholder="Enter mobile number">
+                                <span id="mobileError" class="text-danger"></span>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="validateForm()">Save changes</button>
+                    </form>
                     </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary" >Save changes</button>
-                </form>
-                </div>
-              </div>
             </div>
-          </div>
+        </div>
+        
+        <script>
+          function validateForm() {
+              var name = document.getElementById('name').value.trim();
+              var mobile = document.getElementById('phone').value;
+       
+              // Name validation (allow only letters and spaces)
+              if (!/^[A-Za-z]+$/.test(name)) {
+    document.getElementById('nameError').innerHTML = 'Name should contain only letters.';
+    return false;
+}
+
+
+       
+              // Mobile number validation (allow only digits and enforce length)
+              if (!/^[1-9]\d{9}$/.test(mobile)) {
+                  document.getElementById('mobileError').innerHTML = 'Mobile number should be 10 digits.';
+                  return;
+              } else {
+                  document.getElementById('mobileError').innerHTML = '';
+              }
+       
+              // If all validations pass, submit the form
+              document.getElementById('editProfileForm').submit();
+          }
+       
+          document.getElementById('editProfileModal').addEventListener('shown.bs.modal', function () {
+              // Clear previous errors
+              document.getElementById('nameError').innerHTML = '';
+              document.getElementById('mobileError').innerHTML = '';
+          });
+       </script>
+        
     
       
         </form>
@@ -381,7 +416,7 @@
                 </div>
                 <div class="modal-body">
                   <!-- Add Address Form -->
-                  <form id="addressForm" action="/addaddress" method="post" onsubmit="return validateForm()">
+                  <form id="addressForm" action="/addaddress" method="post" onsubmit="return validateFormAddr()">
                     <div class="profile-info">
                       <div class="form-group row">
                         <label for="fullName" class="col-sm-3 col-form-label"><i class="bi bi-person"></i> Full Name</label>
@@ -489,7 +524,7 @@
 
 
 
-            function validateForm() {
+            function validateFormAddr() {
               // Get form values
               var fullName = document.getElementById('fullName').value.trim();
               var pin = document.getElementById('pin').value;

@@ -85,32 +85,40 @@
       </div>
     </div>
   </div>
+  
 
   <div class="row" id="history-table">
-      <div class="col-md-8 offset-md-2">
-          <h3 class="text-center mb-4">Transaction History</h3>
-          <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Amount</th>
-                    <th>Order ID</th>
-                    <th>Type</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% transactions.forEach(transaction => { %>
+    <div class="col-md-8 offset-md-2">
+        <h3 class="text-center mb-4">Transaction History</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
                     <tr>
-                        <td><%= transaction.date %></td>
-                        <td><%= transaction.amount %></td>
-                        <td><%= transaction.orderId || '-' %></td>
-                        <td><%= transaction.type %></td>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Order ID</th>
+                        <th>Type</th>
                     </tr>
-                <% }); %>
-            </tbody>
-        </table>
-      </div>
-  </div>
+                </thead>
+                <tbody>
+                    <% transactions.forEach(transaction => { %>
+                        <tr>
+                            <td><%= transaction.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></td>
+                            <td style="color: '<%= transaction.type === 'debit' ? 'red' : 'green' %>';">
+                                <%= transaction.type === 'debit' ? '-' : '' %><%= transaction.amount %>
+                            </td>
+                            <td><%= transaction._id %></td>
+                            <td style="color: '<%= transaction.type === 'debit' ? 'red' : 'green' %>';">
+                                <%= transaction.type %>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 </div>
 
 

@@ -6,194 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
 
         body {
-            background-color: #eeeeee;
-            font-family: 'Open Sans', serif
-        }
-
-        .container {
-            margin-top: 50px;
-            margin-bottom: 50px
-        }
-
-        .card {
-            position: relative;
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            min-width: 0;
-            word-wrap: break-word;
-            background-color: #fff;
-            background-clip: border-box;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 0.10rem
-        }
-
-        .card-header:first-child {
-            border-radius: calc(0.37rem - 1px) calc(0.37rem - 1px) 0 0
-        }
-
-        .card-header {
-            padding: 0.75rem 1.25rem;
-            margin-bottom: 0;
-            background-color: #fff;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1)
-        }
-
-        .track {
-            position: relative;
-            background-color: #ddd;
-            height: 7px;
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            margin-bottom: 60px;
-            margin-top: 50px
-        }
-
-        .track .step {
-            -webkit-box-flex: 1;
-            -ms-flex-positive: 1;
-            flex-grow: 1;
-            width: 25%;
-            margin-top: -18px;
-            text-align: center;
-            position: relative
-        }
-
-        .track .step.active:before {
-            background: #FF5722
-        }
-
-        .track .step::before {
-            height: 7px;
-            position: absolute;
-            content: "";
-            width: 100%;
-            left: 0;
-            top: 18px
-        }
-
-        .track .step.active .icon {
-            background: #ee5435;
-            color: #fff
-        }
-
-        .track .icon {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            position: relative;
-            border-radius: 100%;
-            background: #ddd
-        }
-
-        .track .step.active .text {
-            font-weight: 400;
-            color: #000
-        }
-
-        .track .text {
-            display: block;
-            margin-top: 7px
-        }
-
-        .itemside {
-            position: relative;
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            width: 100%
-        }
-
-        .itemside .aside {
-            position: relative;
-            -ms-flex-negative: 0;
-            flex-shrink: 0
-        }
-
-        .img-sm {
-            width: 80px;
-            height: 80px;
-            padding: 7px
-        }
-
-        ul.row,
-        ul.row-sm {
-            list-style: none;
-            padding: 0
-        }
-
-        .itemside .info {
-            padding-left: 15px;
-            padding-right: 7px
-        }
-
-        .itemside .title {
-            display: block;
-            margin-bottom: 5px;
-            color: #212529
-        }
-
-        p {
-            margin-top: 0;
-            margin-bottom: 1rem
-        }
-
-        .btn-warning {
-            color: #ffffff;
-            background-color: #ee5435;
-            border-color: #ee5435;
-            border-radius: 1px
-        }
-
-        .btn-warning:hover {
-            color: #ffffff;
-            background-color: #ff2b00;
-            border-color: #ff2b00;
-            border-radius: 1px
-        }
-
-        body,
-        html {
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background-color: #ff69b4;
-            color: #fff;
-            width: 100%;
-            /* Set the navbar width to 100% */
-        }
-
-        .brand {
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-
-        .brand img {
-            margin-right: 10px;
-            height: 30px;
-        }
-
-        body,
-        html {
-            margin: 0;
-            padding: 0;
+            box-sizing: border-box;
+            background-color: #f8f9fa; /* Added a light background color */
+            height: 100vh; /* Set the height of the body to 100% of the viewport height */
         }
 
         .navbar {
@@ -229,65 +52,75 @@
         }
 
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 50px;
-        }
-
-        .card-header {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .card-body {
-            padding: 20px;
+            margin: 20px;
+            height: 100%; /* Set the height of the container to 100% of the viewport height */
+            overflow-y: auto; /* Add vertical scroll if needed */
         }
 
         .card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+    margin-left: 1rem;
+    margin-top: 2rem;
+    width: 96vw;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 1535px;
         }
 
-        .card-body row {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .col {
-            flex: 1;
+        .card-header {
+            background-color: #ff69b4;
+            color: #fff;
             padding: 10px;
+            border-bottom: 1px solid #ddd; /* Added a border-bottom for separation */
+            border-radius: 8px 8px 0 0; /* Rounded top corners */
         }
 
-        .col strong {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-            color: #333;
+        .card-body {
+            display: flex;
+            flex-wrap: wrap; /* Allow flex items to wrap to the next line */
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
         }
 
+        .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px; /* Added border-radius for rounded corners */
+        }
 
-        .btn-warning {
-            background-color: #ffc107;
-            color: #333;
+        .order-details {
+             /* Allow the order details to grow and take up remaining space */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .order-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+             /* Align to the right */
+        }
+
+        .order-details p strong {
+            font-weight: bold;
+        }
+
+        .order-details p:not(strong) {
+            font-weight: normal;
+        }
+
+        /* Styling for order details button */
+        .order-details-button {
+            background-color: #007bff;
+            color: #fff;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin-top: 20px;
-        }
-
-        .link i {
-            margin-right: 5px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px; /* Added margin-top for space */
         }
     </style>
 </head>
@@ -301,160 +134,45 @@
         <div class="navbar-links">
             <a href="/" class="link"><i class="fas fa-home"></i> Home</a>
             <a href="/shop" class="link"><i class="fas fa-shopping-bag"></i> Shop</a>
-
         </div>
     </div>
-    </style>
-    </head>
 
-    <body>
-
-
-
-        <div class="container">
+    <div class="container-fluid">
+        <% ordersOfUser.forEach(order => { %>
             <article class="card">
-                <header class="card-header"> My Orders / Tracking </header>
+                <header class="card-header">
+                    <h5>Order ID: <%= order._id %></h5>
+                </header>
                 <div class="card-body">
-                    <% let currentOrderId=null; %>
-                        <% allProducts.forEach(product=> { %>
-                            <% if (product.orderId !==currentOrderId) { %>
-                                <% if (currentOrderId !==null) { %>
-                                    </ul>
-                                    <hr>
-                                    <% } %>
-                                        <h6>Order ID: <%= product.orderId %>
-                                        </h6>
+                    <div class="order-details">
+                        <% order.products.forEach(product => { %>
+                            <div class="d-flex align-items-center">
+                                <img src="<%= product.image[0] %>" alt="Product Image" class="product-image">
+                                <div class="ml-3">
+                                    <p><strong> <%= product.productName %> </strong></p>
+                                    <p><strong>Price:</strong> <%= product.price %></p>
+                                    <p><strong>Quantity:</strong> <%= product.quantity %></p>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                    <div class="order-meta">
+                        <p>Ordered Date: <%= new Date(order.createdAt).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                        <p>Order Status: <%= (order.orderStatus) %></p>
+                        <p>Payment method: <%= (order.paymentMethod) %></p>
+                        <p>Total Amount: <%= (order.totalAmount) %></p>
+                    </div>
+                   <a href="/vieworder/<%= order._id %>"> <button class="order-details-button">View Details</button></a>
+                </div>
+            </article>
 
-                                        <article class="card">
-                                            <div style="background-color: aliceblue;" class="card-body row">
-                                                <!-- Existing columns -->
-                                                <div class="col"> <strong>Shipping BY:</strong> <br> BLUEDART, | <i
-                                                        class="fa fa-phone"></i> +1598675986 </div>
-                                                <div class="col"> <strong>Status:</strong> <br>
-                                                    <%= product.orderStatus %>
-                                                </div>
-                                                <div class="col"> <strong>Amount you Pay:</strong> <br>
-                                                    <%= product.totalAmount %>
-                                                </div>
-                                                <div class="col"> <strong>Payment Method:</strong> <br>
-                                                    <%= product.paymentMethod %>
-                                                </div>
+            <!-- Order Detail Modal -->
 
-
-                                                <div class="col"> <strong>Selected Address:</strong> <br>
-                                                    <p>
-                                                        <%= product.Address.name %>
-                                                    </p>
-                                                    <p>
-                                                        <%= product.Address.address %>
-                                                    </p>
-                                                    <p>
-                                                        <%= product.Address.pin %>
-                                                    </p>
-                                                    <p>
-                                                        <%= product.Address.phone %>
-                                                    </p>
-                                                </div>
-                                                <% if (product.orderStatus==='cancelled' ||
-                                                    product.orderStatus==='delivered' ||
-                                                    product.orderStatus==='returned' ) { %>
-                                                    <button
-                                                        style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: not-allowed; display: none;">
-                                                        Cancel Order
-                                                    </button>
-                                                <% } else { %>
-                                                    <a href="/cancel/<%= product.orderId %>">
-                                                        <button
-                                                            style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                                                            Cancel Order
-                                                        </button>
-                                                    </a>
-                                                    <% } %>
-
-                                                <% if (product.orderStatus==='delivered' ) { %>
-                                                    <button
-                                                        onclick="returnProduct('<%= product.orderId %>')"
-                                                        style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                                                        Return Order
-                                                    </button>
-                                                <% } else { %>
-                                                    <button
-                                                        style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: not-allowed; display: none;">
-                                                        Return Order
-                                                    </button>
-                                                <% } %>
-                                        <div class="col">
-                                            <strong>Download Invoice:</strong> <br>
-                                            <a href="/downloadinvoice/<%= product.orderId %>" id="downloadInvoiceBtn">
-                                                <button style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                                                    Download Invoice
-                                                </button>
-                                            </a>
-                                        </div>
-
- 
-                                        <hr>
-                                        <ul class="row">
-                                            <% currentOrderId=product.orderId; %>
-                                                <% } %>
-                                                    <li class="col-md-4">
-                                                        <figure class="itemside mb-3">
-                                                            <div class="aside">
-                                                                <% if (product.image) { %>
-                                                                    <img src="<%= product.image %>"
-                                                                        class="img-sm border">
-                                                                    <% } else { %>
-                                                                        <img src="<%= product.image%>"
-                                                                            class="img-sm border">
-                                                                        <!-- Provide a path to a default image -->
-                                                                        <% } %>
-                                                            </div>
-
-                                                            <figcaption class="info align-self-center">
-                                                                <p class="title">
-                                                                    <%= product.productName %>
-                                                                </p> <span class="text-muted">$<%= product.price %>
-                                                                </span>
-
-
-                                                            </figcaption>
-
-                                                        </figure>
-                                                    </li>
-                                                    </ul>
-                                                    <hr>
-                                                    <a href="/" style="background-color: #ff69b4;" class="btn btn-warning"
-                                                    data-abc="true"> <i class="fa fa-chevron-left"></i> Back to Home</a>
-                                                    </div>
-                                                    </article>
-                            <% }); %>
-        </div>
-        <script>
-            function returnProduct(productId) {
-                fetch(`/return/${productId}`, { method: "POST", headers: { "Content-Type": "application/json" } })
-                    .then(res => res.json())
-                    .then(data => {
-                        // Handle the response from the server
-                        if (data.success) {
-                            // Update the UI or show a confirmation message
-                            alert('Order returned successfully. Amount refunded to your wallet.');
-                        } else {
-                            alert('Failed to return the order. Please try again.');
-                            console.log(data.error);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
-        </script>
-        <script>
-    
-
-
-</script>
-
-
-    </body>
+        <% }); %>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
 
 </html>

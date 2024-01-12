@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');body{background-color: #eeeeee;font-family: 'Open Sans',serif}.container{margin-top:50px;margin-bottom: 50px}.card{position: relative;display: -webkit-box;display: -ms-flexbox;display: flex;-webkit-box-orient: vertical;-webkit-box-direction: normal;-ms-flex-direction: column;flex-direction: column;min-width: 0;word-wrap: break-word;background-color: #fff;background-clip: border-box;border: 1px solid rgba(0, 0, 0, 0.1);border-radius: 0.10rem}.card-header:first-child{border-radius: calc(0.37rem - 1px) calc(0.37rem - 1px) 0 0}.card-header{padding: 0.75rem 1.25rem;margin-bottom: 0;background-color: #fff;border-bottom: 1px solid rgba(0, 0, 0, 0.1)}.track{position: relative;background-color: #ddd;height: 7px;display: -webkit-box;display: -ms-flexbox;display: flex;margin-bottom: 60px;margin-top: 50px}.track .step{-webkit-box-flex: 1;-ms-flex-positive: 1;flex-grow: 1;width: 25%;margin-top: -18px;text-align: center;position: relative}.track .step.active:before{background: #FF5722}.track .step::before{height: 7px;position: absolute;content: "";width: 100%;left: 0;top: 18px}.track .step.active .icon{background: #ee5435;color: #fff}.track .icon{display: inline-block;width: 40px;height: 40px;line-height: 40px;position: relative;border-radius: 100%;background: #ddd}.track .step.active .text{font-weight: 400;color: #000}.track .text{display: block;margin-top: 7px}.itemside{position: relative;display: -webkit-box;display: -ms-flexbox;display: flex;width: 100%}.itemside .aside{position: relative;-ms-flex-negative: 0;flex-shrink: 0}.img-sm{width: 80px;height: 80px;padding: 7px}ul.row, ul.row-sm{list-style: none;padding: 0}.itemside .info{padding-left: 15px;padding-right: 7px}.itemside .title{display: block;margin-bottom: 5px;color: #212529}p{margin-top: 0;margin-bottom: 1rem}.btn-warning{color: #ffffff;background-color: #ee5435;border-color: #ee5435;border-radius: 1px}.btn-warning:hover{color: #ffffff;background-color: #ff2b00;border-color: #ff2b00;border-radius: 1px}
+        
+        body, html {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #ff69b4;
+    color: #fff;
+    width: 100%; /* Set the navbar width to 100% */
+}
+
+.brand {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.brand img {
+    margin-right: 10px;
+    height: 30px;
+}
+
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #ff69b4;
+            color: #fff;
+            width: 100%;
+        }
+
+        .brand {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand img {
+            margin-right: 10px;
+            height: 30px;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .link {
+            margin: 0 15px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 50px;
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .card-body row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .col {
+        flex: 1;
+        padding: 10px;
+    }
+
+    .col strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        color: #333;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-top: 20px;
+    }
+
+        .link i {
+            margin-right: 5px;
+        }
+    </style>
+    </head>
+    <body>
+        <div class="navbar">
+            <div class="brand">
+                <img src="/assets/img/logo.png" alt="Logo">
+                <div><strong>SKINVOGUE</strong></div>
+            </div>
+            <div class="navbar-links">
+                <a href="/" class="link"><i class="fas fa-home"></i> Home</a>
+                <a href="#" class="link"><i class="fas fa-shopping-bag"></i> Shop</a>
+                <a href="#" class="link"><i class="fas fa-pen"></i> Blog</a>
+                <a href="#" class="link"><i class="fas fa-heart"></i> Wishlist</a>
+                <a href="#" class="link"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="/cartdetails" class="link"><i class="fas fa-shopping-cart"></i></a>
+                <a href="/userprofile" class="link"><i class="fas fa-user"></i></a>
+                <a href="/logout" class="link"><i class="fas fa-sign-out-alt"></i></a>
+                <a href="/signup" class="link"><i class="fas fa-sign-in-alt"></i></a>
+            </div>
+        </div>
+        </style>
+    </head>
+    <body>
+
+
+
+        <div class="container">
+        <% ordersOfUser.forEach(product=> { %>
+            
+            <article class="card">
+                <header class="card-header"> My Orders / Tracking </header>
+                <% let currentOrderId=null; %>
+                        <div class="card-body">
+                            <% if (product.orderId !==currentOrderId) { %>
+                                <% if (currentOrderId !==null) { %>
+                                    </ul>
+                                    <hr>
+                                    <% } %>
+                                        <h6>Order ID: <%= product._id %>
+                                        </h6>
+
+                                        <article class="card">
+                                            <div style="background-color: aliceblue;" class="card-body row">
+                                                <!-- Existing columns -->
+                                                <div class="col"> <strong>Shipping BY:</strong> <br> BLUEDART, | <i
+                                                        class="fa fa-phone"></i> +1598675986 </div>
+                                                <div class="col"> <strong>Status:</strong> <br>
+                                                    <%= product.orderStatus %>
+                                                </div>
+                                                <div class="col"> <strong>Amount you Pay:</strong> <br> ₹
+                                                    <%= product.totalAmount %>
+                                                </div>
+                                                <div class="col"> <strong>Payment Method:</strong> <br>
+                                                    <%= product.paymentMethod %>
+                                                </div>
+
+
+                                                <div class="col"> <strong>Selected Address:</strong> <br>
+                                                    <p>
+                                                        <%= product.addressId.name %>
+                                                    </p>
+                                                    <p>
+                                                        <%= product.addressId.Address %>
+                                                    </p>
+                                                    <p>
+                                                        <%= product.addressId.pin %>
+                                                    </p>
+                                                    <p>
+                                                        <%= product.addressId.phone %>
+                                                    </p>
+                                                </div>
+                                                <% if (product.orderStatus==='cancelled' ||
+                                                    product.orderStatus==='delivered' ||
+                                                    product.orderStatus==='returned' ) { %>
+                                                    <button
+                                                        style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: not-allowed; display: none;">
+                                                        Cancel Order
+                                                    </button>
+                                                    <% } else { %>
+                                                        <a href="/cancel/<%= product._id %>">
+                                                            <button
+                                                                style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                                                                Cancel Order
+                                                            </button>
+                                                        </a>
+                                                        <% } %>
+
+                                                            <% if (product.orderStatus==='delivered' ) { %>
+                                                                <button
+                                                                    onclick="returnProduct('<%= product._id %>')"
+                                                                    style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                                                                    Return Order
+                                                                </button>
+                                                                <% } else { %>
+                                                                    <button
+                                                                        style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: not-allowed; display: none;">
+                                                                        Return Order
+                                                                    </button>
+                                                                    <% } %>
+                                                                        <div class="col">
+                                                                            <strong>Download Invoice:</strong> <br>
+                                                                            <a href="/downloadinvoice/<%= product.orderId %>"
+                                                                                id="downloadInvoiceBtn">
+                                                                                <button
+                                                                                    style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                                                                                    Download Invoice
+                                                                                </button>
+                                                                            </a>
+                                                                        </div>
+
+
+                                                                        <hr>
+                                                                        <ul class="row">
+                                                                            <% currentOrderId=product.orderId; %>
+                                                                                <% } %>
+                                                                                <% product.products.forEach(prod=> { %>
+                                                                                    <li class="col-md-4">
+                                                                                        <figure class="itemside mb-3">
+                                                                                            <div class="aside">
+                                                                                                <% if (prod.image) {
+                                                                                                    %>
+                                                                                                    <img src="<%= prod.image[0] %>"
+                                                                                                        class="img-sm border">
+                                                                                                    <% } else { %>
+                                                                                                        <img src="<%= prod.image[0]%>"
+                                                                                                            class="img-sm border">
+                                                                                                        <!-- Provide a path to a default image -->
+                                                                                                        <% } %>
+                                                                                            </div>
+
+                                                                                            <figcaption
+                                                                                                class="info align-self-center">
+                                                                                                <p class="title">
+                                                                                                    <%= prod.productName
+                                                                                                        %>
+                                                                                                </p> <span
+                                                                                                    class="text-muted">$
+                                                                                                    <%= prod.price %>
+                                                                                                </span>
+
+
+                                                                                            </figcaption>
+
+                                                                                        </figure>
+                                                                                    </li>
+                                                                                    <% }); %>
+                                                                        </ul>
+                                                                        <hr>
+                                                                        <a href="/" style="background-color: #ff69b4;"
+                                                                            class="btn btn-warning" data-abc="true"> <i
+                                                                                class="fa fa-chevron-left"></i> Back to
+                                                                            Home</a>
+                                            </div>
+                                        </article>
+                        </div>
+                        </article>
+                        <% }); %>
+                        </div>
+                            <script>
+                                function returnProduct(productId) {
+                                    fetch(`/return/${productId}`, { method: "POST", headers: { "Content-Type": "application/json" } })
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            // Handle the response from the server
+                                            if (data.success) {
+                                                // Update the UI or show a confirmation message
+                                                alert('Order returned successfully. Amount refunded to your wallet.');
+                                            } else {
+                                                alert('Failed to return the order. Please try again.');
+                                                console.log(data.error);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                }
+                            </script>
+                            <script>
+
+
+
+                            </script>
+
+
+    </body>
+    </html>
+    

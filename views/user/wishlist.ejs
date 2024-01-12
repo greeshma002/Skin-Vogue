@@ -126,20 +126,19 @@
                                 <strong>Product Name:</strong> <br> <%= product.productName %> 
                             </div>
                             <div class="col"> 
-                                <strong>Price:</strong> <br> <%= product.price %> 
+                                <strong>Price:</strong> <br> ₹ <%= product.price %> 
                             </div>
-                            <div>
-                                <% if (product.productQuantity > 0) { %>
-                                    <%= console.log(product.productQuantity)  %>
-                                  <a href="/cart/<%= product.productId %>" class="btn" id="addToCartBtn" style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; text-decoration: none;">
+                            <div class="d-flex flex-column align-items-center">
+                                <a href="/cart/<%= product.productId %>" class="btn mb-2" id="addToCartBtn" style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; text-decoration: none;">
                                     Add to Cart <i class="fas fa-shopping-cart"></i>
-                                  </a>
-                                <% } else { %>
-                                  <button class="btn" style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: not-allowed; text-decoration: none;" onclick="notifyMe()">
-                                    Notify Me
-                                  </button>
-                                <% } %>
-                              </div>
+                                </a>
+                            
+                                <a href="/removewish/<%= product.productId %>">
+                                    <button class="btn btn-danger">Remove</button>
+                                </a>
+                            </div>
+                            
+                            
                               
                               <script>
                                 function notifyMe() {
@@ -155,6 +154,34 @@
                                   alert(message); // You can replace this with your preferred pop-up library or custom implementation
                                 }
                                </script>
+
+<script>
+    // Function to show a pop-up message
+    function showMessage(message) {
+      alert(message); // You can replace this with your preferred pop-up library or custom implementation
+    }
+  
+    // Function to handle the click event on the "Add to Cart" button
+    document.getElementById('addToCartBtn').addEventListener('click', async function(event) {
+      event.preventDefault();
+  
+      // Make an asynchronous request to the server
+      try {
+        const response = await fetch(event.target.href, { method: 'GET' });
+        const data = await response.json();
+  
+        if (response.ok) {
+          // Redirect to the cart details page on successful response
+          window.location.href = '/cartdetails';
+        } else {
+          // Show the error message in a pop-up on unsuccessful response
+          showMessage(data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
                               
                            
 

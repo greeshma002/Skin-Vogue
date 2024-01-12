@@ -10,6 +10,9 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha512-xyz" crossorigin="anonymous" />
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+ 
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -165,8 +168,8 @@
                               <!-- Price -->
                               <td class="text-center">
                                 <div>
-                                  <text class="h6">$<%= product.price %></text> <br />
-                                  <small class="text-muted text-nowrap"> $<%= product.price %> / per item</small>
+                                  <text class="h6">₹ <%= product.price %></text> <br />
+                                  <small class="text-muted text-nowrap"> ₹<%= product.price %> / per item</small>
                                 </div>
                               </td>
                       
@@ -202,26 +205,53 @@
                 <div class="col-lg-12">
                     <div class="card mb-3 border shadow-0">
                         <div class="card-body">
-                            <form action="/applyCoupon" method="post">
-                                <div class="form-group">
-                                    <label class="form-label">Have coupon?</label>
-                                    <div class="input-group">
-                                      <select class="form-control border" name="selectedCoupon">
-                                        <option value="" selected disabled>Select a coupon</option>
-                                        <% coupons.forEach(coupon => { %>
-                                          <option value="<%= coupon.couponCode %>"><%= coupon.couponCode %></option>
-                                        <% }); %>
-                                      </select>
-                                      <button type="submit" class="btn btn-light border">Apply</button>
-                                    </div>
-                                  </div>
-                            </form>
+                          <form id="couponForm" action="/applyCoupon" method="post">
+                            <div class="form-group">
+                              <label class="form-label">Have coupon?</label>
+                              <div class="input-group">
+                                <select class="form-control border" name="selectedCoupon">
+                                  <option value="" >Select a coupon</option>
+                                  <% 
+                                    function isValidCoupon(coupon, totalPrice) {
+                                      const minValue = coupon.minValue;
+                                      const maxValue = coupon.maxValue;
+                                      const isValid = calculateTotalPrice(cartdata) + totalPrice  >= minValue && calculateTotalPrice(cartdata) + totalPrice  <= maxValue;
+                                     // console.log("Coupon:", coupon, "Total Price:", totalPrice, "Is Valid:", isValid);
+                                       return isValid;
+                                    }
+            
+                                    coupons.filter(coupon => isValidCoupon(coupon, totalPrice)).forEach(coupon => { 
+                                      
+                                  %>
+                                    <option value="<%= coupon.couponCode %>"><%= coupon.couponCode %></option>
+                                  <% }); %> 
+                                </select>
+                                <a href=""><button id="couponApply" type="submit" class="btn btn-light border">Apply</button></a>
+                              </div>
+                            </div>
+                          </form>
+                          
+                          
+                          
                         </div>
                     </div>
+                   
                     <div class="card shadow-0 border">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <p>Total Price: $<span id="totalPrice"><%=calculateTotalPrice(cartdata) + totalPrice %></span>
+                            <div style="display: flex; flex-direction: column;" class="d-flex justify-content-between">
+                             
+
+                                <p>Actual Price: ₹
+                                  <span id="Actualprice"><%=calculateTotalPrice(cartdata) + totalPrice  %></span>
+                                </p>
+                              
+                                <p>Actual Price: ₹
+                                  <span id="discountedPrice"><%=calculateTotalPrice(cartdata) + totalPrice   %></span>
+                                </p>
+
+                               
+                                <p>Total Price: ₹
+                                  <span id="totalPrice"><%=calculateTotalPrice(cartdata) + totalPrice %></span>
                                 </p>
                             </div>
 
@@ -240,6 +270,57 @@
     </div>
     </div>
 </div>
+
+<script>
+    const couponApply = document.getElementById("couponApply")
+    couponApply.addEventListener("click",()=> {
+      console.log("hii");
+      Toastify({
+          text: "Coupon Applied!!!",
+          duration: 600,
+          destination: "https://github.com/apvarun/toastify-js",
+          newWindow: true,
+          close: true,
+          gravity: "top", // top or bottom
+          position: "right", // left, center or right
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: " #228B22  ",
+          },
+          onClick: function(){
+            alert("Toast clicked!");
+          }
+        }).showToast();
+    })
+    </script>
+
+
+
+
+<!-- <script>
+    const couponApply = document.getElementById("couponApply")
+    couponApply.addEventListener("click",()=> {
+      console.log("hii");
+      Toastify({
+          text: "Coupon applied",
+          duration: 600,
+          destination: "https://github.com/apvarun/toastify-js",
+          newWindow: true,
+          close: true,
+          gravity: "top", // top or bottom
+          position: "right", // left, center or right
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: " #green  ",
+          },
+          onClick: function(){
+            alert("Toast clicked!");
+          }
+        }).showToast();
+    })
+    </script> -->
+
+
 
 
 
@@ -260,7 +341,6 @@ const CheckOut=document.getElementById('CheckOut')
             // Get the selected coupon code
             const selectedCoupon = form.querySelector('[name="selectedCoupon"]').value;
 
-            // Perform an asynchronous request to the server to apply the coupon
             fetch('/applyCoupon', {
                 method: 'POST',
                 headers: {
@@ -270,11 +350,11 @@ const CheckOut=document.getElementById('CheckOut')
             })
             .then(response => response.json())
             .then(data => {
-                // Update the total price on the page
+                
                 const totalPriceElement = document.getElementById('totalPrice');
                 const discountedPriceElement = document.getElementById('discountedPrice');
                 CheckOut.href=`/checkout?id=${data.id}`
-                // Use the discounted price if available, otherwise use the original total price
+                
                 const updatedTotalPrice = data.discountedPrice || data.totalPrice;
                 
                 totalPriceElement.textContent = `${updatedTotalPrice}`;
@@ -323,6 +403,11 @@ const CheckOut=document.getElementById('CheckOut')
         .catch(err => alert("an error occured"));
     }
 </script>
+
+
+<!-- Add the SweetAlert script tag to your HTML file -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"

@@ -20,7 +20,8 @@ const walletSchema = new mongoose.Schema({
         required: true,
       },
       type: {
-        type: String, // 'credit' or 'debit'
+        type: String,
+        enum: ['credit', 'debit'],
         required: true,
       },
     },
@@ -32,4 +33,3 @@ const walletSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Wallet', walletSchema);
-

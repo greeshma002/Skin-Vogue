@@ -70,12 +70,7 @@
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
-    <div class="search-bar">
-      <form class="search-form d-flex align-items-center" method="POST" action="#">
-        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-      </form>
-    </div><!-- End Search Bar -->
+    
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
@@ -258,15 +253,10 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-      <li class="nav-item">
-        <a class="nav-link " href="admindashboard">
-          <i class="bi bi-grid"></i>
-          <span>Admin Profile</span>
-        </a>
-      </li>
+      
 
       <li class="nav-item">
-        <a class="nav-link " href="">
+        <a class="nav-link " href="dashboard">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
@@ -497,10 +487,10 @@
                 // Marking the dailyLabels
                 var dailyLabels = '<%= (dailyLabels) %>'.split(',');
                 
-                var dailyCounts = '<%= (dailyCounts) %>'.split(',');
+                var dailyData = '<%= dailyData %>'.split(',');
               
-                console.log('dailyLabels:', dailyLabels);
-                console.log('dailyCounts:', dailyCounts);
+                console.log( "hui" , 'dailyLabels:', dailyLabels);
+                console.log( "huiiii" ,'dailyCounts:', dailyData);
               
                 // Create the Combined Bar Graph
                 var combinedBarChartCtx = document.getElementById('combinedBarChart').getContext('2d');
@@ -510,7 +500,7 @@
                     labels: [...dailyLabels],
                     datasets: [{
                       label: 'Daily Orders',
-                      data: dailyCounts.flat(), // Flatten the 2D array
+                      data: dailyData, // Flatten the 2D array
                       backgroundColor: 'rgba(255, 99, 132, 0.8)',
                     }],
                   },

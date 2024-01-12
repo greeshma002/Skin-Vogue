@@ -1,155 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Product</title>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/addproduct.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/addproduct.css" />
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            background-color: #f2f2f2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: #f2f2f2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
 
-        form {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 70%;
-            max-width: 400px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+      form {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 70%;
+        max-width: 400px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 15px;
-        }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 15px;
+      }
 
-        label {
-            width: 100%;
-            margin-bottom: 8px;
-            color: #333;
-            text-align: left;
-        }
+      label {
+        width: 100%;
+        margin-bottom: 8px;
+        color: #333;
+        text-align: left;
+      }
 
-        input, textarea, button {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+      input,
+      textarea,
+      button {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
 
-        input[type="file"] {
-            border: none;
-            background-color: transparent;
-        }
+      input[type="file"] {
+        border: none;
+        background-color: transparent;
+      }
 
-        button {
-            background-color: #ff69b4; /* Pink color */
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-        }
+      button {
+        background-color: #ff69b4; /* Pink color */
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
 
-        button:hover {
-            background-color: #d1499a; /* Darker pink on hover */
-        }
+      button:hover {
+        background-color: #d1499a; /* Darker pink on hover */
+      }
+
+      body {
+        position: relative;
+      }
+
+      /* user side image previewer */
+
+      #imagePreview img {
+        height: 50px;
+        max-width: 80px;
+      }
+
+      #cropper110Modal {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(53, 52, 52, 0.532);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        display: none;
+      }
+
+      #cropper110Modal img {
+        max-width: 100%;
+      }
+
+      .cropper110-page {
+        margin: 1em auto;
+        max-width: 768px;
+        height: 100%;
+      }
+
+      .cropper110-box {
+        padding: 0.5em;
+        width: calc(100% / 2 - 1em);
+        max-height: 60vh;
+      }
+
+      .cropper110-crop,
+      .cropper110-close {
+        padding: 0.5rem 1rem;
+        background-color: rgb(0, 0, 0);
+        color: #fff;
+        font-weight: bold;
+      }
+
+      .cropper110-close {
+        background-color: red;
+      }
     </style>
-</head>
-<body>
-    <form action="/admin/addProduct" method="post" enctype="multipart/form-data">
-        <h1>Add Product</h1>
+  </head>
+  <body>
+    <!-- cropper modal -->
+    <div id="cropper110Modal">
+      <div id="imageCropBox">
+        <div style="text-align: end">
+          <button class="cropper110-close">close</button>
+        </div>
+        <section class="cropper110-page">
+          <div class="cropper110-box">
+            <div class="cropper110-cropping-box"></div>
+          </div>
 
-        <label for="productName">Product Name:</label>
-        <input type="text" id="productName" name="productName" value="" required>
+          <div>
+            <button class="cropper110-crop mx-3">Crop</button>
+          </div>
+        </section>
+      </div>
+    </div>
+    <!-- /cropper modal/  -->
 
-        <label for="productPrice">Product Price:</label>
-        <input min="1" type="number" id="productPrice" name="productPrice" value="" required>
+    <form
+      action="/admin/addProduct"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <h1>Add Product</h1>
 
-        <label for="category">Product Category:</label>
-        <select  id="category" name="productCategory" required>
-            <% categories.forEach(category => { %>
-                <option value="<%= category.categoryName %>" ><%= category.categoryName %></option>
-            <% }); %>
-        </select>
-        
+      <label for="productName">Product Name:</label>
+      <input
+        type="text"
+        id="productName"
+        name="productName"
+        value=""
+        required
+      />
 
+      <label for="productPrice">Product Price:</label>
+      <input
+        min="1"
+        type="number"
+        id="productPrice"
+        name="productPrice"
+        value=""
+        required
+      />
 
+      <label for="category">Product Category:</label>
+      <select id="category" name="productCategory" required>
+        <% categories.forEach(category => { %>
+        <option value="<%= category.categoryName %>">
+          <%= category.categoryName %>
+        </option>
+        <% }); %>
+      </select>
 
-        <label for="productDescription">Product Description:</label>
-        <input type="text" id="productDescription" name="productDescription" required>
+      <label for="productDescription">Product Description:</label>
+      <input
+        type="text"
+        id="productDescription"
+        name="productDescription"
+        required
+      />
 
-        <label for="productQuantity">Product Quantity:</label>
-        <input min="0" type="number" id="productQuantity" name="productQuantity" value="" required>
+      <label for="productQuantity">Product Quantity:</label>
+      <input
+        min="0"
+        type="number"
+        id="productQuantity"
+        name="productQuantity"
+        value=""
+        required
+      />
 
-        <label for="images">Product Image:</label>
-        <input type="file" name="img" accept="image/*" multiple onchange="previewImages(event)">
-        <div  id="imagePreviewContainer" style="display: flex;"></div>
-        
+      <label for="images">Product Image:</label>
+      <!-- <input type="file" name="img" accept="image/*" multiple onchange="previewImages(event)">
+        <div  id="imagePreviewContainer" style="display: flex;"></div> -->
 
-        <button type="submit">Save Product</button>
+      <label for="fileUploader"></label>
+      <input
+        type="file"
+        id="fileUploader"
+        name="img"
+        data-image-preview="#imagePreview"
+        accept=".jpg,.png,.jpeg"
+        multiple
+      />
+      <div id="imagePreview"></div>
+
+      <button type="submit">Save Product</button>
     </form>
 
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js'></script>
+
     <script>
-        function validateForm() {
-            // Get the input fields
-            var price = document.getElementById('productPrice').value;
-            var quantity = document.getElementById('productQuantity').value;
-    
-            // Regular expression to match only numbers
-            var regex = /^[0-9]+$/;
-    
-            // Check if the price and quantity only contain numbers
-            if (!regex.test(price) || !regex.test(quantity)) {
-                alert('Price and quantity must only contain numbers.');
-                return false;
-            }
-    
-            // If everything is fine, allow the form to be submitted
-            return true;
+      function validateForm() {
+        // Get the input fields
+        var price = document.getElementById("productPrice").value;
+        var quantity = document.getElementById("productQuantity").value;
+
+        // Regular expression to match only numbers
+        var regex = /^[0-9]+$/;
+
+        // Check if the price and quantity only contain numbers
+        if (!regex.test(price) || !regex.test(quantity)) {
+          alert("Price and quantity must only contain numbers.");
+          return false;
         }
+
+        // If everything is fine, allow the form to be submitted
+        return true;
+      }
     </script>
-     <script>
-        function previewImages(event) {
-          const input = event.target;
-      
-          if (input.files) {
-            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-            imagePreviewContainer.innerHTML = ''; // Clear previous previews
-      
-            for (let i = 0; i < input.files.length; i++) {
-              const reader = new FileReader();
-      
-              reader.onload = function (e) {
-                const imagePreview = document.createElement('img');
-                imagePreview.src = e.target.result;
-                imagePreview.alt = `Product Image ${i + 1}`;
-                imagePreview.style.maxWidth = '40%';
-                imagePreview.style.maxHeight = '80px';
-      
-                imagePreviewContainer.appendChild(imagePreview);
-              };
-      
-              reader.readAsDataURL(input.files[i]);
-            }
+    <script>
+      function previewImages(event) {
+        const input = event.target;
+
+        if (input.files) {
+          const imagePreviewContainer = document.getElementById(
+            "imagePreviewContainer"
+          );
+          imagePreviewContainer.innerHTML = ""; // Clear previous previews
+
+          for (let i = 0; i < input.files.length; i++) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              const imagePreview = document.createElement("img");
+              imagePreview.src = e.target.result;
+              imagePreview.alt = `Product Image ${i + 1}`;
+              imagePreview.style.maxWidth = "40%";
+              imagePreview.style.maxHeight = "80px";
+
+              imagePreviewContainer.appendChild(imagePreview);
+            };
+
+            reader.readAsDataURL(input.files[i]);
           }
         }
-      </script>
+      }
+    </script>
+    <script>
+      let fileInputs = document.querySelectorAll("[data-image-preview]");
 
+      let croppingBox = document.querySelector(".cropper110-cropping-box"),
+        crop = document.querySelector(".cropper110-crop"),
+        cropper = "",
+        currentInput = null,
+        imgNames = null,
+        imgSrc = null;
 
-</body>
+      fileInputs.forEach((fileInput) => {
+        fileInput.addEventListener("change", () => {
+          let previewDiv = document.querySelector(
+            fileInput.dataset.imagePreview
+          );
+          previewDiv.innerHTML = "";
+          for (let each of fileInput.files) {
+            let imgSrc = URL.createObjectURL(each);
+            let img = document.createElement("img");
+            img.src = imgSrc;
+            img.dataset.fileName = each.name;
+            img.dataset.input = fileInput.id;
+            img.addEventListener("click", cropImage);
+
+            previewDiv.append(img);
+          }
+        });
+      });
+
+      function cropImage(e) {
+        document.getElementById("cropper110Modal").style.display = "flex";
+
+        let img = document.createElement("img");
+        img.id = "image";
+        img.src = e.target.src;
+        croppingBox.innerHTML = "";
+        croppingBox.appendChild(img);
+        cropper = new Cropper(img);
+
+        imgNames = e.target.dataset.fileName;
+        currentInput = e.target.dataset.input;
+      }
+
+      //crop and save on click
+      crop.addEventListener("click", (e) => {
+        e.preventDefault();
+        // get result to data uri
+
+        let imgSrc = cropper
+          .getCroppedCanvas({
+            width: 300, // input value
+          })
+          .toDataURL();
+
+        if (imgSrc && imgNames !== null) {
+          let fileUploader = document.getElementById(currentInput);
+          fetch(imgSrc)
+            .then((res) => res.blob())
+            .then((blob) => {
+              let file = new File([blob], `${imgNames}-${Date.now()}.png`, {
+                type: "image/jpeg",
+              });
+
+              const dt = new DataTransfer();
+              for (let each of fileUploader.files) {
+                if (each.name !== imgNames) {
+                  dt.items.add(each);
+                } else {
+                  dt.items.add(file);
+                }
+              }
+
+              fileUploader.files = dt.files;
+
+              let previewDiv = document.querySelector(
+                fileUploader.dataset.imagePreview
+              );
+              previewDiv.innerHTML = "";
+              let res = "";
+
+              for (let each of fileUploader.files) {
+                let src = URL.createObjectURL(each);
+                res += `<img src="${src}" data-file-name="${each.name}" data-input="${fileUploader.id}" onclick="cropImage(event)" class="previewImages">`;
+              }
+
+              previewDiv.innerHTML = res;
+            });
+        }
+
+        document.querySelector(".cropper110-close").click();
+      });
+
+      document
+        .querySelector(".cropper110-close")
+        .addEventListener("click", () => {
+          document.getElementById("cropper110Modal").style.display = "none";
+        });
+    </script>
+  </body>
 </html>

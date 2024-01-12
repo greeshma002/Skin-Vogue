@@ -17,6 +17,7 @@ const { sendOTP, generateOTP } = require("../utils/mailing");
 const { addAddress } = require("../models/addressSchema");
 
 const bcrypt = require("bcrypt");
+const { ClientRequest } = require("http");
 
 exports.home = async (req, res) => {
   try {
@@ -276,7 +277,7 @@ exports.postaddAddress = async (req, res) => {
     const username = await collection.findOne({ email });
     const newAddress = new address({
       userId: username._id,
-      name: req.body.name,
+      name: req.body.name.trim(),
       Address: req.body.Address,
       city: req.body.city,
       state: req.body.state,
@@ -389,6 +390,7 @@ exports.deleteAddress = async (req, res) => {
 
 exports.getwishlist = async (req, res) => {
   const email = req.session.user;
+  let err = req.query.err ?? "";
 
   try {
     let wishlist = await Wishlist.findOne({
@@ -400,7 +402,7 @@ exports.getwishlist = async (req, res) => {
       res.render("user/wishlist", { wishlist });
     } else {
       console.log("No wishlist for user");
-      res.render("user/wishlist", { wishlist });
+      res.render("user/wishlist", { wishlist ,err: err, });
     }
   } catch (err) {
     console.log(err);
@@ -413,7 +415,6 @@ exports.postwishlist = async (req, res) => {
     const productId = req.params.productid;
     const email = req.session.user;
 
-  
     if (!email) {
       return res.status(401).send("User not authenticated");
     }
@@ -423,28 +424,23 @@ exports.postwishlist = async (req, res) => {
       return res.status(404).send("Product not found");
     }
 
-  
     const user = await collection.findOne({ email });
     if (!user) {
       return res.status(404).send("User not found");
     }
 
-  
     let wishlist = await Wishlist.findOne({ userId: user._id });
     if (!wishlist) {
       wishlist = await Wishlist.create({ userId: user._id, products: [] });
     }
 
-  
     const productIndex = wishlist.products.findIndex(
       (p) => p.productId.toString() === productId
     );
 
     if (productIndex > -1) {
-     
       return res.redirect("/wishlist");
     } else {
-
       wishlist.products.push({
         productId: productId,
         productName: product.productName,
@@ -457,7 +453,7 @@ exports.postwishlist = async (req, res) => {
 
     return res.redirect("/wishlist");
   } catch (err) {
-    console.log("greeshma" ,err);
+    console.log("greeshma", err);
     res.status(500).send("Something went wrong");
   }
 };
@@ -568,14 +564,22 @@ exports.userwallet = async (req, res) => {
       return res.status(401).send("Unauthorized"); // Or redirect to login page
     }
 
-    const userWallet = await wallet.findOne({ user: userId });
-    const transactions = userWallet ? userWallet.history : [];
+    const latestOrder = await Order.findOne({ userId });
+
+    //console.log( "orderrrrrrrr" ,latestOrder);
+
+    let userWallet = await wallet.findOne({ user: userId });
 
     if (!userWallet) {
-      return res
-        .status(404)
-        .json({ success: false, error: "Wallet not found for the user." });
+      userWallet = await wallet.create({
+        user: userId,
+        balance: 0,
+        history: [],
+      });
     }
+
+    const transactions = userWallet.history;
+    //console.log("transaction:", transactions);
 
     res.render("user/userwallet", { amount: userWallet.balance, transactions });
   } catch (error) {
@@ -611,31 +615,37 @@ exports.postwallet = async (req, res) => {
     }
 
     const orderTotal = req.body.totalPrice;
-    const refundedAmount = req.body.refundedAmount || 0;
+    const refundedAmount = req.body.totalPrice || 0;
+    console.log( "one" ,refundedAmount);
+    console.log( "two" ,orderTotal);
 
     if (userWallet.balance >= orderTotal - refundedAmount) {
-      console.log(userWallet.balance);
-      console.log(orderTotal);
+      console.log("three" ,userWallet.balance);
+      console.log("four" ,orderTotal);
 
-      const newTransaction = {
+      const debitTransaction = {
         amount: orderTotal,
         refunded: refundedAmount,
         type: "debit",
       };
 
-      if (req.body.orderId) {
-        newTransaction.orderId = req.body.orderId;
-      }
+      console.log("five" , debitTransaction);
+
+      // if (req.body.orderId) {
+      //   debitTransaction.orderId = req.body.orderId;
+      // }
 
       userWallet.balance -= orderTotal - refundedAmount;
-      userWallet.history.push(newTransaction);
+      userWallet.history.push(debitTransaction);
 
       if (refundedAmount > 0) {
         const creditTransaction = {
           amount: refundedAmount,
+          refunded: refundedAmount,
           type: "credit",
-          refunded: refundedAmount, // Include refunded amount in credit transaction
         };
+
+        console.log("six" , creditTransaction);
 
         if (req.body.orderId) {
           creditTransaction.orderId = req.body.orderId;
@@ -666,11 +676,9 @@ exports.postwallet = async (req, res) => {
 
 exports.userdetails = async (req, res) => {
   try {
-    const email = req.session.user
+    const email = req.session.user;
     console.log(email);
-    const user = await collection.findOne({ email })
-    
-    
+    const user = await collection.findOne({ email });
 
     // Update user details based on the form data
     if (req.body.editName) {
@@ -763,11 +771,11 @@ function generateInvoice(orderDetails, res) {
   doc
     .fontSize(16)
     .fillColor("#ff69b4")
-    .text("Order Summary:", 50, doc.y + 60);
-  generateOrderTable(doc, orderDetails.products);
-
-  // Total Amount, Payment Method, and Order Status
-  doc.moveDown(); // Add some space
+    .text("Order Summary:", 50, doc.y + 10);
+    
+    // Total Amount, Payment Method, and Order Status
+    doc.moveDown(); // Add some space
+    generateOrderTable(doc, orderDetails.products);
   doc.fillColor("#ff69b4").text(`Total Amount: ${orderDetails.totalAmount}`);
   doc.text(`Payment Method: ${orderDetails.paymentMethod}`);
   doc.text(`Order Status: ${orderDetails.orderStatus}`);
@@ -775,7 +783,7 @@ function generateInvoice(orderDetails, res) {
   // Pipe the document to the response
   doc.pipe(res);
   doc.end();
-  return doc
+  return doc;
 }
 
 function generateOrderTable(doc, products) {
@@ -821,22 +829,18 @@ function generateTableRow(doc, rowData, options = {}) {
 
   rowData.forEach((cell, index) => {
     const xPosition = 50 + index * 150; // Adjust the starting position based on your layout
-    const yPosition = doc.y;
+    const yPosition = doc.y-14;
     const width = 150;
     const height = fontSize + cellPadding * 2;
-
     // Draw cell background if specified
     if (backgroundColor) {
       doc.rect(xPosition, yPosition, width, height).fill(backgroundColor);
     }
-
     // Draw cell content
-    doc
-      .fillColor(color || "black")
-      .text(cell, xPosition, yPosition, {
-        align,
-        width: width - cellPadding * 2,
-      });
+    doc.fillColor(color || "black").text(cell, xPosition, yPosition, {
+      align,
+      width: width+65
+    });
 
     // Draw cell border
     doc.rect(xPosition, yPosition, width, height).stroke();
@@ -858,13 +862,13 @@ exports.invoice = async (req, res) => {
     const orderId = req.params.orderId;
     const orderDetails = await getOrderDetailsById(orderId);
     console.log(JSON.stringify(orderDetails));
-  
+
     if (orderDetails) {
       const invoicePath = generateInvoice(orderDetails, res);
       console.log("Generating invoice for:", orderDetails);
       const fileStream = fs.createReadStream(invoicePath);
       fileStream.pipe(res);
-       fs.unlinkSync(invoicePath);
+      fs.unlinkSync(invoicePath);
     } else {
       res.status(404).send("Order not found");
     }
@@ -872,5 +876,22 @@ exports.invoice = async (req, res) => {
     console.log(error);
   }
   // Assume you have a function to get order details based on the order ID
- 
+};
+
+exports.deletewishlist = async (req, res) => {
+  try {
+    const productid = req.params.productid;
+    console.log(productid);
+
+    await Wishlist.findOneAndUpdate(
+      { userId: req.session.userId },
+      { $pull: { products: { productId: productid } } },
+      { new: true }
+    );
+
+    res.redirect("/wishlist");
+  } catch (error) {
+    console.error(error.stack);
+    res.status(500).send("Internal Server Error");
+  }
 };

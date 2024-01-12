@@ -275,15 +275,10 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-      <li class="nav-item">
-        <a class="nav-link " href="admindashboard">
-          <i class="bi bi-grid"></i>
-          <span>Admin Profile</span>
-        </a>
-      </li>
+    
 
       <li class="nav-item">
-        <a class="nav-link " href="">
+        <a class="nav-link " href="dashboard">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
@@ -357,7 +352,7 @@
             <tr>
               <th scope="col" class="text-center">Product Name</th>
               <th scope="col" class="text-center">Stock Level</th>
-              <th scope="col" class="text-center">Stock Left</th>
+             
             </tr>
           </thead>
           <tbody>
@@ -365,10 +360,12 @@
               <tr>
                 <td class="text-left"><%= product.productName %></td>
                 <td class="text-center"><%= product.productQuantity %></td>
-                <td class="text-center"><%= product.stockLeft %></td>
+               
+
               </tr>
             <% } %>
           </tbody>
+          
         </table>
       </div>
     </div>

@@ -55,10 +55,11 @@
             <label for="categoryName">Category Name:</label>
             <input type="text" id="categoryName" name="categoryName" value="<%= category.categoryName %>" required>
             
-            <span id="categoryNameError" style="color: red;"></span>
-    
+            <span id="categoryNameError" style="color: red;"><%= errorMessage %></span>
+        
             <button type="submit">Save</button>
         </form>
+        
 
         
     

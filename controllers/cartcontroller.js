@@ -12,14 +12,17 @@ const Category = require("../models/CategorySchema");
 const Cart = require("../models/cartSchema");
 const { log } = require("console");
 const Order = require("../models/orderSchema");
-const coupon = require("../models/couponSchema")
-const wallet = require("../models/walletSchema")
+const coupon = require("../models/couponSchema");
+const wallet = require("../models/walletSchema");
 
 //razorpay
 
-const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env
-const Razorpay = require('razorpay')
-let instance = new Razorpay({ key_id: RAZORPAY_ID_KEY, key_secret: RAZORPAY_SECRET_KEY })
+const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+const Razorpay = require("razorpay");
+let instance = new Razorpay({
+  key_id: RAZORPAY_ID_KEY,
+  key_secret: RAZORPAY_SECRET_KEY,
+});
 
 exports.cartcontroller = async (req, res) => {
   try {
@@ -29,7 +32,7 @@ exports.cartcontroller = async (req, res) => {
     console.log(productid);
 
     const productId = await Product.findById({ _id: productid });
-    
+
     const username = await collection.findOne({ email });
 
     const existingCart = await Cart.findOne({ userId: username._id });
@@ -43,7 +46,7 @@ exports.cartcontroller = async (req, res) => {
         const productQuantity = productId.productQuantity;
         console.log(productQuantity);
 
-        const maxQuantity = productQuantity; 
+        const maxQuantity = productQuantity;
         if (existingCart.product[itemIndex].quantity < maxQuantity) {
           existingCart.product[itemIndex].quantity += 1;
         } else {
@@ -96,41 +99,39 @@ function calculateTotalPrice(cartdata) {
 }
 
 exports.cartdetails = async (req, res) => {
-  
-    try {
-      let err = req.query.err ?? "";
-      let totalPrice = 0;
-      const coupons = await coupon.find();
-      const cartdata = await Cart.findOne({ userId: req.session.userId }).lean();
-      if (cartdata) {
-        for (let i = 0; i < cartdata.product.length; i++) {
-          cartdata.product[i].productQuantity = (
-            await Product.findById(cartdata.product[i].productId)
-          ).productQuantity;
-          if (Product.productQuantity > 0) {
-            totalPrice += Product.productPrice * Product.quantity;
-          }
+  try {
+    let err = req.query.err ?? "";
+    let totalPrice = 0;
+    const coupons = await coupon.find();
+    const cartdata = await Cart.findOne({ userId: req.session.userId }).lean();
+    if (cartdata) {
+      for (let i = 0; i < cartdata.product.length; i++) {
+        cartdata.product[i].productQuantity = (
+          await Product.findById(cartdata?.product[i].productId)
+        ).productQuantity;
+        if (Product.productQuantity > 0) {
+          totalPrice += Product.productPrice * Product.quantity;
         }
       }
-      res.render("user/Cart", {
-        cartdata,
-        calculateTotalPrice,
-        totalPrice,
-        coupons,
-        err: err,
-      });
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).send("Internal Server Error");
     }
-  };
+    res.render("user/Cart", {
+      cartdata,
+      calculateTotalPrice,
+      totalPrice,
+      coupons,
+      err: err,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
 // Function to calculate discounted price
 function calculateDiscountedPrice(actualPrice, discountPercentage) {
   const discountAmount = (discountPercentage / 100) * actualPrice;
   return actualPrice - discountAmount;
 }
-
 
 exports.deleteCart = async (req, res) => {
   try {
@@ -190,23 +191,26 @@ exports.updQuantity = async (req, res) => {
 
 exports.checkoutpage = async (req, res) => {
   try {
-    const couponId= req.query?.id;
-    let selectedCoupon 
-    if(couponId){
+    const couponId = req.query?.id;
+    let selectedCoupon;
+    if (couponId) {
       selectedCoupon = await Coupon.findOne({
         _id: couponId,
       });
-
     }
-   console.log(couponId);
+    console.log(couponId);
     const username = await collection.findOne({ email: req.session.user });
     const cartdata = await Cart.findOne({ userId: req.session.userId });
     const userWallet = await wallet.findOne({ user: username._id });
     const products = await Product.find({});
-   
+
     let product;
     let allProducts = [];
     let qtyErr = false;
+    if (!cartdata) {
+      console.log(cartdata?.product);
+      return res.redirect("/cartdetails");
+    }
     cartdata.product.forEach((prod) => {
       products.forEach((ele) => {
         if (prod.productId.equals(ele._id)) {
@@ -217,26 +221,23 @@ exports.checkoutpage = async (req, res) => {
       if (product.productQuantity < prod.quantity) {
         qtyErr = true;
       }
-    })
-    let total=cartdata.product.reduce(
+    });
+    let total = cartdata.product.reduce(
       (total, product) => total + product.price * product.quantity,
       0
-    ); 
-    if(selectedCoupon){
-      
-    const discountPercentage = selectedCoupon.discountPercentage;
-    total -= (total * discountPercentage) / 100;
-  }
-  
-  console.log(selectedCoupon);
+    );
+    if (selectedCoupon) {
+      const discountPercentage = selectedCoupon.discountPercentage;
+      total -= (total * discountPercentage) / 100;
+    }
+
+    console.log(selectedCoupon);
 
     if (qtyErr) {
       return res.redirect("/cartdetails?err=er");
     }
 
-    
     const addresses = await address.find({ userId: username._id });
-    
 
     res.render("user/checkoutpage", {
       addresses,
@@ -246,11 +247,10 @@ exports.checkoutpage = async (req, res) => {
       calculateTotalPrice,
       cartdata,
       allProducts,
-     
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("Internal Server Error checkout");
   }
 };
 
@@ -284,8 +284,6 @@ exports.checkoutdetails = async (req, res) => {
   }
 };
 
-
-
 exports.confirmpage = async (req, res) => {
   try {
     res.render("user/orderconfirmpage");
@@ -297,30 +295,27 @@ exports.confirmpage = async (req, res) => {
 exports.placeOrder = async (req, res) => {
   console.log("here");
 
-
   let paymentOption;
   let addressCheckbox;
 
   try {
-    
     if (req.body.razorpay_order_id) {
       // Online payment
       console.log(req.body.razorpay_order_id);
       const order = await instance.orders.fetch(req.body.razorpay_order_id);
-    //  console.log("order details : ",JSON.stringify(order));
+      //  console.log("order details : ",JSON.stringify(order));
       const total = Number(order.amount);
       console.log(total);
-      console.log("address====",order.notes?.addressId);
+      console.log("address====", order.notes?.addressId);
 
-      
-      if (order.notes.address === '') {
-        return res.send('select address');
+      if (order.notes.address === "") {
+        return res.send("select address");
       }
 
       paymentOption = "online";
-      addressCheckbox=order.notes?.addressId
+      addressCheckbox = order.notes?.addressId;
 
-      orderStatus = 'confirmed';
+      orderStatus = "confirmed";
       paymentId = order.id;
     } else {
       paymentOption = req.body.paymentOption;
@@ -350,18 +345,41 @@ exports.placeOrder = async (req, res) => {
       addressId: addressCheckbox,
     });
 
+    for (const product of products) {
+      const existingProduct = await Product.findById(product.productId);
+
+      if (existingProduct) {
+        if (existingProduct.productQuantity < product.quantity) {
+          console.error(
+            "Insufficient quantity for product:",
+            existingProduct.productName
+          );
+          return res.status(400).send("Insufficient product quantity");
+        }
+
+        existingProduct.productQuantity -= product.quantity;
+
+        await existingProduct.save();
+      } else {
+        console.error("Product not found:", product.productId);
+        return res.status(404).send("Product not found");
+      }
+    }
+
     res.render("user/orderconfirmpage");
   } catch (error) {
-    console.error('Error in placeOrder:', error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error in placeOrder:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
 exports.orderdetailpage = async (req, res) => {
   try {
-    const ordersOfUser = await Order.find({ userId: req.session.userId }).populate('addressId').exec();
+    let ordersOfUser = await Order.find({ userId: req.session.userId })
+      .populate("addressId")
+      .exec();
     let allProducts = [];
-    console.log(ordersOfUser);
+    //console.log(ordersOfUser);
     console.log("=========================");
     for (let order of ordersOfUser) {
       // console.log(order.addressId);
@@ -370,7 +388,13 @@ exports.orderdetailpage = async (req, res) => {
           orderId: order._id,
           productId: product.productId,
           quantity: product.quantity,
-          Address: { name: order.addressId?.name, address: order.addressId?.Address, state: order.addressId?.state, pin: order.addressId?.pin, phone: order.addressId?.phone},
+          Address: {
+            name: order.addressId?.name,
+            address: order.addressId?.Address,
+            state: order.addressId?.state,
+            pin: order.addressId?.pin,
+            phone: order.addressId?.phone,
+          },
           price: product.price,
           productName: product.productName,
           orderStatus: order.orderStatus,
@@ -381,14 +405,43 @@ exports.orderdetailpage = async (req, res) => {
         // console.log(allProducts);
       }
     }
-    allProducts = allProducts.reverse();
-    // console.log(allProducts);
-    res.render("user/orderdetailpage", { allProducts });
+    ordersOfUser = ordersOfUser.reverse();
+    //console.log(allProducts);
+    res.render("user/orderdetailpage", { ordersOfUser });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
   }
 };
+
+exports.uservieworder = async (req, res) => {
+  try {
+    let ordersOfUser = await Order.find({ _id: req.params.id });
+    let allProducts = [];
+    //console.log(ordersOfUser);
+    console.log("=========================");
+    for (let order of ordersOfUser) {
+      for (let product of order.products) {
+        allProducts.push({
+          orderId: order._id,
+          productId: product.productId,
+          quantity: product.quantity,
+          price: product.price,
+          productName: product.productName,
+          orderStatus: order.orderStatus,
+          image: product.image[0],
+        });
+      }
+    }
+    ordersOfUser = ordersOfUser.reverse();
+    //console.log(allProducts);
+    res.render("user/uservieworder", { ordersOfUser, allProducts });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 
 exports.cancelorder = async (req, res) => {
   const orderId = req.params.orderId;
@@ -401,10 +454,46 @@ exports.cancelorder = async (req, res) => {
       { orderStatus: newStatus },
       { new: true }
     );
+
+ 
+    if (!updatedOrder) {
+      return res.status(404).json({ status: "error", message: "Order not found" });
+    }
+
+    
+    for (const product of updatedOrder.products) {
+      const existingProduct = await Product.findById(product.productId);
+
+      if (existingProduct) {
+       
+        existingProduct.productQuantity += product.quantity;
+
+      
+        await existingProduct.save();
+      } else {
+        console.error('Product not found:', product.productId);
+        return res.status(404).json({ status: "error", message: "Product not found" });
+      }
+    }
+
+  
+    if (updatedOrder.paymentMethod == "UPI" || "WALLET") {
+      let userWallet = await wallet.findOne({ user: req.session.userId });
+
+      if (!userWallet) {
+       
+        userWallet = new wallet({ user: userId, balance: 0 });
+        await userWallet.save();
+      }
+
+      userWallet.balance += updatedOrder.totalAmount;
+      await userWallet.save();
+    }
+
     res.redirect("/orderdetail");
     // res.json({ status: 'success', updatedOrder });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ status: "error", message: "Internal Server Error" }); 
+    res.status(500).json({ status: "error", message: "Internal Server Error" });
   }
 };

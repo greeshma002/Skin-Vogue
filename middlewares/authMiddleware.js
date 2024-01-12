@@ -9,8 +9,17 @@ function isAuthenticated(req, res, next) {
 }
 
 async function isBlocked(req, res, next) {
+
     if (!req.session.userDoc.isBlocked) {
-        next();
+        let user=await userModel.findOne({email:req.session.user})
+       
+        if(user.isBlocked){
+            req.session.destroy()
+            return res.redirect('/login');
+        }else{
+
+            next();
+        }
     } else {
         res.redirect('/login');
     }
