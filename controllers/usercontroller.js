@@ -601,6 +601,8 @@ function calculateTotalPrice(cartdata) {
 
 exports.postwallet = async (req, res) => {
   try {
+    // const razorpaywallet = Number(req.body.addAmount)
+    console.log("heee", razorpaywallet);
     const userId = req.session.userId;
 
     if (!userId) {
@@ -614,6 +616,10 @@ exports.postwallet = async (req, res) => {
       await userWallet.save();
     }
 
+    // if (razorpaywallet > 0) {
+    //   userWallet.balance += razorpaywallet;
+    // }
+  
     const orderTotal = req.body.totalPrice;
     const refundedAmount = req.body.totalPrice || 0;
     console.log( "one" ,refundedAmount);
@@ -631,10 +637,7 @@ exports.postwallet = async (req, res) => {
 
       console.log("five" , debitTransaction);
 
-      // if (req.body.orderId) {
-      //   debitTransaction.orderId = req.body.orderId;
-      // }
-
+    
       userWallet.balance -= orderTotal - refundedAmount;
       userWallet.history.push(debitTransaction);
 
@@ -672,6 +675,73 @@ exports.postwallet = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+exports.walletpayment = async (req, res) => {
+  try {
+    const amount = Number(req.body.amount);
+    
+    console.log("hii " , amount);
+    
+    // Razorpay
+    const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+    const Razorpay = require("razorpay");
+    let instance = new Razorpay({
+      key_id: RAZORPAY_ID_KEY,
+      key_secret: RAZORPAY_SECRET_KEY,
+    });
+    let razorpayAmount = amount;
+    instance.orders
+    .create({
+      amount: razorpayAmount  , // Convert amount to paise
+      currency: "INR",
+      receipt: "receipt#1",
+      notes: {
+        paymentMethod: "online",
+      },
+    })
+    .then((amount) => {
+      console.log("razor", amount);
+    
+      return res.send({  amount: razorpayAmount });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.successwallet = async (req, res) => {
+  try {
+    const userId = req.session.userId; // Assuming you have user information in the session
+
+    if (!userId) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    const amountAdded = Number(req.body.addAmount); // Amount added through Razorpay
+    const Wallet = await wallet.findOne({ user: userId });
+    console.log(amountAdded);
+    if (!wallet) {
+      return res.status(404).send("Wallet not found");
+    }
+
+    // Update the wallet balance and add a credit transaction to the history
+    Wallet.balance += amountAdded;
+    Wallet.history.push({
+      date: new Date(),
+      amount: amountAdded,
+      type: 'credit',
+    });
+
+    // Save the updated wallet
+    await Wallet.save();
+
+    return res.status(200).redirect("back");
+  } catch (error) {
+    console.error("Error updating wallet:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 
 
 exports.userdetails = async (req, res) => {

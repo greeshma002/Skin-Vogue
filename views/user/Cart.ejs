@@ -15,7 +15,7 @@
  
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+          font-family: poppins;
             margin: 0;
             padding: 0;
         }
@@ -239,14 +239,15 @@
                     <div class="card shadow-0 border">
                         <div class="card-body">
                             <div style="display: flex; flex-direction: column;" class="d-flex justify-content-between">
+
                              
 
                                 <p>Actual Price: ₹
-                                  <span id="Actualprice"><%=calculateTotalPrice(cartdata) + totalPrice  %></span>
+                                  <span id="Actualprice"><%= calculateTotalPrice(cartdata) + totalPrice  %></span>
                                 </p>
                               
-                                <p>Actual Price: ₹
-                                  <span id="discountedPrice"><%=calculateTotalPrice(cartdata) + totalPrice   %></span>
+                                <p>Discounted Price: 
+                                  <span id="discountedPrice"></span>
                                 </p>
 
                                
@@ -350,7 +351,10 @@ const CheckOut=document.getElementById('CheckOut')
             })
             .then(response => response.json())
             .then(data => {
+              console.log(data);
+              let discount=data.totalPrice-data.discountedPrice
                 
+               
                 const totalPriceElement = document.getElementById('totalPrice');
                 const discountedPriceElement = document.getElementById('discountedPrice');
                 CheckOut.href=`/checkout?id=${data.id}`
@@ -358,7 +362,8 @@ const CheckOut=document.getElementById('CheckOut')
                 const updatedTotalPrice = data.discountedPrice || data.totalPrice;
                 
                 totalPriceElement.textContent = `${updatedTotalPrice}`;
-                discountedPriceElement.value = data.discountedPrice || ''; // Store the discounted price in the hidden input field
+                discountedPriceElement.value = data.discountedPrice || '';
+                discountedPriceElement.innerText='₹ '+discount   
             })
             .catch(error => {
                 console.error('Error applying coupon:', error);

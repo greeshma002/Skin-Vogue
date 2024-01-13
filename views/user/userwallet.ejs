@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="styles.css">
   <title>Wallet Management</title>
-
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
     body {
       background-color: #f8f9fa;
+      font-family: poppins;
     }
 
     .navbar {
@@ -63,63 +65,159 @@
     </div>
   </div>
 
- <!-- Assuming salesReports is passed from the controller -->
-<div class="container mt-5">
+  <!-- Assuming salesReports is passed from the controller -->
   <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="text-center">Wallet Management</h3>
-          </div>
-          <div class="card-body">
-            <div class="text-center mb-3">
-              <h4>Current Balance</h4>
-              <p id="balance">₹<%= amount %></p>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="text-center">Wallet Management</h3>
             </div>
-            <form id="transactionForm">
-              
-            </form>
+            <div class="card-body">
+              <div class="text-center mb-3">
+                <h4>Current Balance</h4>
+                <p id="balance">₹<%= amount %>
+                </p>
+              </div>
+              <form id="transactionForm" action="/successpay" method="post">
+                <div class="form-group">
+                  <label for="addAmount">Add Money:</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">₹</span>
+                    </div>
+                      <input type="number" class="form-control" id="addAmount" name="addAmount"
+                        placeholder="Enter amount">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary" >Add to Wallet</button>
+                </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    const form =  document.getElementById("transactionForm")
+
+   form.addEventListener("submit",(e)=>{
+    e.preventDefault()
+    const amount = document.getElementById('addAmount').value;
   
+  // Fetch the Razorpay order details from your server
+  fetch('/walletrazorpay', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      amount: Number(amount) * 100, 
+    }),
+  })
+  .then(response => response.json())
+  .then(data => {
+   
+    const razorpayAmount = data.amount; 
+
+    const options = {
+      key: "rzp_test_mWxoWL4GDtyb6R",
+      amount: Number(razorpayAmount), 
+      currency: "INR",
+      name: "SKINVOGUE",
+      description: "Online Payment",
+      image: "https://example.com/your_logo",
+      // order_id: orderId,
+      handler: function (response) {
+            // Handle the successful payment here
+            alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+            form.submit()
+          },
+      prefill: {
+        name: "Gaurav Kumar",
+        email: "gaurav.kumar@example.com",
+        contact: "9000090000"
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+        paymentOption: "ONLINE",
+       
+      },
+      theme: {
+        color: "#3399cc"
+      }
+    };
+
+    
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response) {
+                        alert(response.error.code);
+                        alert(response.error.description);
+                        alert(response.error.source);
+                        alert(response.error.step);
+                        alert(response.error.reason);
+                        
+                        alert(response.error.metadata.payment_id);
+                       
+                      });
+   
+    rzp1.open();
+
+  })
+  .catch(error => {
+    console.error('Error fetching Razorpay order details:', error);
+  });
+    })
+    // function initiateRazorpay() {
+    
+    // }
+  </script>
+  
+  
+
+
 
   <div class="row" id="history-table">
     <div class="col-md-8 offset-md-2">
-        <h3 class="text-center mb-4">Transaction History</h3>
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Order ID</th>
-                        <th>Type</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% transactions.forEach(transaction => { %>
-                        <tr>
-                            <td><%= transaction.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></td>
-                            <td style="color: '<%= transaction.type === 'debit' ? 'red' : 'green' %>';">
-                                <%= transaction.type === 'debit' ? '-' : '' %><%= transaction.amount %>
-                            </td>
-                            <td><%= transaction._id %></td>
-                            <td style="color: '<%= transaction.type === 'debit' ? 'red' : 'green' %>';">
-                                <%= transaction.type %>
-                            </td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
+      <h3 class="text-center mb-4">Transaction History</h3>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Order ID</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% transactions.forEach(transaction=> { %>
+              <tr>
+                <td>
+                  <%= transaction.date.toLocaleDateString('en-US', { weekday: 'long' , year: 'numeric' , month: 'long' ,
+                    day: 'numeric' }) %>
+                </td>
+                <td style="color: '<%= transaction.type === 'debit' ? 'red' : 'green' %>';">
+                  <%= transaction.type==='debit' ? '-' : '' %>
+                    <%= transaction.amount %>
+                </td>
+                <td>
+                  <%= transaction._id %>
+                </td>
+                <td style="color: '<%= transaction.type === 'debit' ? 'red' : 'green' %>';">
+                  <%= transaction.type %>
+                </td>
+              </tr>
+              <% }); %>
+          </tbody>
+        </table>
+      </div>
     </div>
-</div>
+  </div>
 
-</div>
+  </div>
 
 
   <!-- Add your styles or link to a stylesheet here -->
@@ -129,4 +227,5 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="script.js"></script>
 </body>
+
 </html>

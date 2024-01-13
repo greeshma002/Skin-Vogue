@@ -379,7 +379,7 @@ exports.orderdetailpage = async (req, res) => {
       .populate("addressId")
       .exec();
     let allProducts = [];
-    //console.log(ordersOfUser);
+  //  console.log(ordersOfUser);
     console.log("=========================");
     for (let order of ordersOfUser) {
       // console.log(order.addressId);
@@ -402,7 +402,7 @@ exports.orderdetailpage = async (req, res) => {
           totalAmount: order.totalAmount,
           paymentMethod: order.paymentMethod,
         });
-        // console.log(allProducts);
+        // console.log("hiiiiiiiiiiiiiiiiiiiiiiiii" ,allProducts);
       }
     }
     ordersOfUser = ordersOfUser.reverse();
@@ -416,12 +416,16 @@ exports.orderdetailpage = async (req, res) => {
 
 exports.uservieworder = async (req, res) => {
   try {
-    let ordersOfUser = await Order.find({ _id: req.params.id });
+    let ordersOfUser = await Order.find({ userId: req.session.userId })
+    .populate("addressId")
+    .exec();
+    // let ordersOfUser = await Order.find({ _id: req.params.id });
     let allProducts = [];
-    //console.log(ordersOfUser);
+   // console.log(ordersOfUser);
     console.log("=========================");
     for (let order of ordersOfUser) {
       for (let product of order.products) {
+       
         allProducts.push({
           orderId: order._id,
           productId: product.productId,
@@ -429,12 +433,19 @@ exports.uservieworder = async (req, res) => {
           price: product.price,
           productName: product.productName,
           orderStatus: order.orderStatus,
+          Address: {
+            name: order.addressId?.name,
+            address: order.addressId.Address,
+            state: order.addressId?.state,
+            pin: order.addressId?.pin,
+            phone: order.addressId?.phone,
+          },
           image: product.image[0],
         });
       }
     }
     ordersOfUser = ordersOfUser.reverse();
-    //console.log(allProducts);
+    console.log("SEEEEE" ,ordersOfUser);
     res.render("user/uservieworder", { ordersOfUser, allProducts });
   } catch (error) {
     console.log(error.message);

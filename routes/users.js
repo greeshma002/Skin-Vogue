@@ -37,7 +37,9 @@ const {
   userdetails,
   invoice,
   deletewishlist,
-  
+  walletpayment,
+  successwallet
+ 
  
 } = require("../controllers/usercontroller");
 const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage ,  addresses,confirmpage, placeOrder,orderdetailpage ,uservieworder, cancelorder, } = require("../controllers/cartcontroller")
@@ -126,6 +128,10 @@ router.get("/search",isAuthenticated,isBlocked,shopsearch)
 router.get("/wallet",isAuthenticated,isBlocked,userwallet)
 
 router.post("/walletpay",isAuthenticated,isBlocked,postwallet)
+
+router.post("/walletrazorpay" , walletpayment)
+
+ router.post("/successpay" , successwallet)
 
 router.post("/return/:orderId",isAuthenticated,isBlocked,orderreturn)
 
