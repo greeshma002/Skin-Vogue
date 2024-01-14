@@ -182,7 +182,7 @@ function sendMailfn(req, res, email) {
   req.session.otp = generateOTP();
   const now = new Date();
   req.session.otpExpiry = now.getTime() + 3 * 60 * 1000;
-  // sendOTP(email, req.session.otp);
+   sendOTP(email, req.session.otp);
   console.log(`${email} got the OTP for ${req.session.otp}`);
 }
 
