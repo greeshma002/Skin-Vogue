@@ -792,7 +792,7 @@ function generateInvoice(orderDetails, res) {
   doc.text(`Payment Method: ${orderDetails.paymentMethod}`);
   doc.text(`Order Status: ${orderDetails.orderStatus}`);
    
-  doc.text("Thank you for shopping with us", { align: 'center' } ,50 , doc.y + 30);
+  // doc.text("Thank you for shopping with us", { align: 'center' } ,50 , doc.y);
 
   // Pipe the document to the response
   doc.pipe(res);

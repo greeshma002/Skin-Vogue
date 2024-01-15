@@ -386,7 +386,8 @@ exports.orderdetailpage = async (req, res) => {
 
 exports.uservieworder = async (req, res) => {
   try {
-    let ordersOfUser = await Order.find({ userId: req.session.userId })
+    const id = req.params.id
+    let ordersOfUser = await Order.find({ _id: id })
       .populate("addressId")
       .exec();
     let allProducts = [];

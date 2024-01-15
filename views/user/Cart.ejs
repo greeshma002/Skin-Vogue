@@ -394,11 +394,13 @@ const CheckOut=document.getElementById('CheckOut')
                
                 const totalPriceElement = document.getElementById('totalPrice');
                 const discountedPriceElement = document.getElementById('discountedPrice');
+                const Actualprice = document.getElementById('Actualprice')
                 CheckOut.href=`/checkout?id=${data.id}`
                 
-                const updatedTotalPrice = data.discountedPrice || data.totalPrice;
+                const updatedTotalPrice = data.discountedPrice || data.totalPrice ;
                 
                 totalPriceElement.textContent = `${updatedTotalPrice}`;
+               
                 discountedPriceElement.value = data.discountedPrice || '';
                 discountedPriceElement.innerText='₹ '+discount   
             })
@@ -437,6 +439,7 @@ const CheckOut=document.getElementById('CheckOut')
         .then(data => {
             if (data.message === "success") {
                 totalPrice.innerText = data.totalPrice;
+                Actualprice.innerText = data.totalPrice
                 quantityTextBox.innerText = newQuantity;
             } else {
                 alert(data.message);
