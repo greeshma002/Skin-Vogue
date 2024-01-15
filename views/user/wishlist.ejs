@@ -129,7 +129,7 @@
                                 <strong>Price:</strong> <br> ₹ <%= product.price %> 
                             </div>
                             <div class="d-flex flex-column align-items-center">
-                                <a href="/cart/<%= product.productId %>" class="btn mb-2" id="addToCartBtn" style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; text-decoration: none;">
+                                <a  href="/cart/<%= product.productId %>" class="btn mb-2" id="addToCartBtn" style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; text-decoration: none;">
                                     Add to Cart <i class="fas fa-shopping-cart"></i>
                                 </a>
                             
@@ -199,6 +199,29 @@
             <a href="/" class="back-to-home-btn" data-abc="true"> <i class="fa fa-home"></i> Back to Home</a>
         </article>
     </div>
+
+    <script>
+        const addToCartBtn = document.getElementById("addToCartBtn")
+        addToCartBtn.addEventListener("click",()=> {
+          console.log("hii");
+          Toastify({
+              text: "Item added to cart!!!",
+              duration: 600,
+              destination: "https://github.com/apvarun/toastify-js",
+              newWindow: true,
+              close: true,
+              gravity: "top", // top or bottom
+              position: "right", // left, center or right
+              stopOnFocus: true, // Prevents dismissing of toast on hover
+              style: {
+                background: " #228B22  ",
+              },
+              onClick: function(){
+                alert("Toast clicked!");
+              }
+            }).showToast();
+        })
+        </script>
 
     
 

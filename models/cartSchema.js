@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const cartItemSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId, // Assuming your user IDs are ObjectIds
-    ref: "collection_1", // Reference to the User model
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "collection_1", 
     required: true,
   },
   product: [
     {
       productId: {
         type: mongoose.Schema.ObjectId,
-        ref: "Product", // Reference to the Product model
+        ref: "Product", 
         required: true,
       },
     

@@ -285,18 +285,15 @@
                         .then(response => response.json())
                         .then(data => {
                           if (data.success) {
-                            // Wallet payment successful, you can proceed with order placement logic
                             console.log("Wallet payment successful");
-                            orderForm.submit(); // Assuming you want to submit the form after wallet payment
+                            orderForm.submit(); 
                           } else {
-                            // Wallet payment failed, handle accordingly
                             console.error("Wallet payment failed");
                             alert(data.message);
                           }
                         })
                         .catch(error => {
                           console.error("Error during wallet payment", error);
-                          // Handle errors, show an error message to the user, etc.
                         });
 
                     } else if (paymentOptionSelect === 'UPI') {

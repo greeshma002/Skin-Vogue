@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 
-//create schema
+
 const userSchema = new mongoose.Schema({
     name:{
         type:String,
@@ -32,8 +32,6 @@ const userSchema = new mongoose.Schema({
         default: false
     }
 })
-
-//create model
 
 const userModel = new mongoose.model("collection_1",userSchema)
 

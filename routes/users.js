@@ -10,7 +10,6 @@ const {
   home,
   loginpost,
   shoppage,
-  blogpage,
   aboutpage,
   logout,
   detail,
@@ -42,8 +41,11 @@ const {
  
  
 } = require("../controllers/usercontroller");
+
 const  { cartcontroller,addtocartController,cartdetails,deleteCart,checkoutdetails,updQuantity,checkoutpage ,  addresses,confirmpage, placeOrder,orderdetailpage ,uservieworder, cancelorder, } = require("../controllers/cartcontroller")
+
 const { isAuthenticated, isBlocked } = require("../middlewares/authMiddleware");
+
 const { applyCoupon } = require("../controllers/couponcontroller");
 
 
@@ -64,8 +66,6 @@ router.post("/signup", signuppost);
 //User pages
 router.get("/shop", isAuthenticated, isBlocked, shoppage);
 
-router.get("/blog", isAuthenticated,isBlocked, blogpage);
-
 router.get("/about",isAuthenticated,isBlocked, aboutpage);
 
 router.get("/logout", logout);
@@ -80,8 +80,6 @@ router.get("/cart/:productid",isAuthenticated,isBlocked,cartcontroller)
 router.get("/cartremove/:productid",isAuthenticated,isBlocked,deleteCart)
 
 router.put("/updateQuantity/:productId",isAuthenticated,isBlocked, updQuantity)
-
-// router.post("/addTocart",addtocartController);
 
 router.get("/userprofile",isAuthenticated, isBlocked,userprofile)
 
@@ -139,8 +137,5 @@ router.post("/applyCoupon",isAuthenticated,isBlocked,applyCoupon)
 
 router.get("/downloadinvoice/:orderId",isAuthenticated,isBlocked,invoice)
 
-
-
-//router.get("/orderhistory",orderhistory)
 
 module.exports = router;

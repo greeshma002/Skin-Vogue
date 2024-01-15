@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 const AddressSchema = new Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId, // Assuming your user IDs are ObjectIds
-    ref: "collection_1", // Reference to the User model
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "collection_1", 
     required: true,
   },
   name: {

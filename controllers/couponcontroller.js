@@ -1,7 +1,6 @@
 const Coupon = require("../models/couponSchema");
 const Cart = require("../models/cartSchema");
-const Swal = require('sweetalert2');
-
+const Swal = require("sweetalert2");
 
 exports.addcoupon = async (req, res) => {
   try {
@@ -22,10 +21,9 @@ exports.addnewcoupon = async (req, res) => {
       maxValue: req.body.maxvalue,
       expirationDate: req.body.expirationDate,
     });
-    console.log(req.body);
 
-    await newCoupon.save(); // Save the new coupon to the database
-    res.redirect("/admin/coupon"); // Redirect to the page with the updated list
+    await newCoupon.save();
+    res.redirect("/admin/coupon");
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -50,13 +48,10 @@ function updateCartWithDiscountedPrice(cart, discountedPrice) {
   return { updatedCart: cart, updatedTotalPrice };
 }
 
-
-
 exports.applyCoupon = async (req, res) => {
   try {
     const selectedCouponCode = req.body.selectedCoupon;
     const cartData = await Cart.findOne({ userId: req.session.userId });
-    
 
     if (!selectedCouponCode) {
       return res.redirect("/cartdetails");
@@ -75,26 +70,21 @@ exports.applyCoupon = async (req, res) => {
     const maxValue = selectedCoupon.maxValue;
 
     const totalPrice = calculateTotalPrice(cartData);
-    
-
-    console.log("Before applying coupon:", totalPrice);
 
     if (totalPrice < minValue || totalPrice > maxValue) {
       return res.status(400).send("Coupon is not applicable for this purchase");
     }
 
-    const discountedPrice = totalPrice - (totalPrice * discountPercentage) / 100;
+    const discountedPrice =
+      totalPrice - (totalPrice * discountPercentage) / 100;
 
-    console.log("After applying coupon:", discountedPrice);
-
-    return res.json({id:selectedCoupon._id, totalPrice, discountedPrice }).send();
+    return res
+      .json({ id: selectedCoupon._id, totalPrice, discountedPrice })
+      .send();
   } catch (error) {
-    console.error(error);
-    console.log(selectedCoupon.id);
-    res.status(500).send('error');
+    res.status(500).send("error");
   }
 };
-
 
 exports.coupondelete = async (req, res) => {
   const couponId = req.params.id;

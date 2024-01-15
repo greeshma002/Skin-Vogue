@@ -212,7 +212,7 @@
                                                     </button>
                                                     <% } else { %>
                                                         <a href="/cancel/<%= product._id %>">
-                                                            <button
+                                                            <button id="cancelOrderBtn"
                                                                 style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
                                                                 Cancel Order
                                                             </button>
@@ -233,7 +233,7 @@
                                                                     <% } %>
                                                                         <div class="col">
                                                                             <strong>Download Invoice:</strong> <br>
-                                                                            <a href="/downloadinvoice/<%= product.orderId %>"
+                                                                            <a href="/downloadinvoice/<%= product._id %>"
                                                                                 id="downloadInvoiceBtn">
                                                                                 <button
                                                                                     style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
@@ -309,11 +309,7 @@
                                         });
                                 }
                             </script>
-                            <script>
-
-
-
-                            </script>
+    
 
 
     </body>

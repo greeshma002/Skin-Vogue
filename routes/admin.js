@@ -34,6 +34,8 @@ const {
 
 
 const {  addcoupon , addnewcoupon , coupondelete} = require("../controllers/couponcontroller")
+
+
 const multer = require("multer");
 const { isAdmin, isLogout } = require("../middlewares/authMiddleware");
 const storage = multer.diskStorage({
@@ -119,11 +121,5 @@ router.post("/categories/add",isAdmin, postaddCategory);
  router.get("/salesrpt",salesreport)
  
 router.get("/stock",stockreport)
-
- 
-
-
-
-
 
 module.exports = router;

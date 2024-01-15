@@ -104,7 +104,7 @@
     <button style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
         Go to Cart
     </button>
-    <a  href="/wishlist/add/<%= product._id  %>"> <button style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+    <a  href="/wishlist/add/<%= product._id  %>"> <button id="addToWishlist" style="background-color: #ff69b4; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
       Add to wishlist
   </button></a>
    
@@ -145,6 +145,29 @@
       console.log("hii");
       Toastify({
           text: "Added to Cart",
+          duration: 600,
+          destination: "https://github.com/apvarun/toastify-js",
+          newWindow: true,
+          close: true,
+          gravity: "top", // top or bottom
+          position: "center", // left, center or right
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: " #228B22  ",
+          },
+          onClick: function(){
+            alert("Toast clicked!");
+          }
+        }).showToast();
+    })
+    </script>
+
+    <script>
+    const addToWishlist = document.getElementById("addToWishlist")
+    addToWishlist.addEventListener("click",()=> {
+      console.log("hii");
+      Toastify({
+          text: "Added to Wishlist",
           duration: 600,
           destination: "https://github.com/apvarun/toastify-js",
           newWindow: true,

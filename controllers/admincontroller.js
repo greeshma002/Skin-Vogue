@@ -8,8 +8,8 @@ const path = require("path");
 const { log } = require("console");
 const Order = require("../models/orderSchema");
 const moment = require("moment");
-const fs = require('fs');
-const PDFDocument = require('pdfkit');
+const fs = require("fs");
+const PDFDocument = require("pdfkit");
 
 exports.login = async (req, res) => {
   try {
@@ -35,14 +35,12 @@ exports.dashboard = async (req, res) => {
       { $unwind: "$productDetails" },
       { $group: { _id: "$productDetails.category", count: { $sum: 1 } } },
     ]);
-    console.log(categoryCounts);
 
     const labels = categoryCounts.map((categoryCount) => categoryCount._id);
     const counts = categoryCounts.map((categoryCount) => categoryCount.count);
-    console.log(labels);
 
     //orders per day implementation
-    const today = moment().startOf("day"); // Get the start of today
+    const today = moment().startOf("day");
     const ordersToday = await Order.countDocuments({
       createdAt: { $gte: today.toDate() },
     });
@@ -104,40 +102,47 @@ exports.dashboard = async (req, res) => {
       { count: 0 }
     );
 
-      // Calculate weekly order counts
-      const startOfWeek = moment().startOf('week');
-      const endOfWeek = moment().endOf('week');
-      const dailyCounts = await Order.aggregate([
-        {
-          $match: {
-            createdAt: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() },
-          },
+    // Calculate weekly order counts
+    const startOfWeek = moment().startOf("week");
+    const endOfWeek = moment().endOf("week");
+    const dailyCounts = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() },
         },
-        {
-          $group: {
-            _id: {
-              dayOfWeek: { $dayOfWeek: '$createdAt' },
-              date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
-            },
-            count: { $sum: 1 },
+      },
+      {
+        $group: {
+          _id: {
+            dayOfWeek: { $dayOfWeek: "$createdAt" },
+            date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           },
+          count: { $sum: 1 },
         },
-      ]);
-      
-      // Extract labels and counts for weekly
-      const dailyLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const dailyData = Array(7).fill(0).map(() =>0); // Initialize a 2D array for weekly counts
-      
-      dailyCounts.forEach((dayCount) => {
-        const dayOfWeekIndex = dailyLabels.indexOf(moment(dayCount._id.date).format('dddd'));
-        dailyData[dayOfWeekIndex] = dayCount.count;
-      });
-      
-      //console.log("haiii", dailyCounts);
-      //console.log("weeklyData", dailyData);
-      
+      },
+    ]);
 
-    console.log(dailyCounts);
+    // Extract labels and counts for weekly
+    const dailyLabels = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const dailyData = Array(7)
+      .fill(0)
+      .map(() => 0);
+
+    dailyCounts.forEach((dayCount) => {
+      const dayOfWeekIndex = dailyLabels.indexOf(
+        moment(dayCount._id.date).format("dddd")
+      );
+      dailyData[dayOfWeekIndex] = dayCount.count;
+    });
+
     res.render("./admin/admindashboard", {
       labels,
       counts,
@@ -149,7 +154,7 @@ exports.dashboard = async (req, res) => {
       highestOrderCategory,
       dailyLabels,
       dailyCounts,
-      dailyData
+      dailyData,
     });
   } catch (error) {
     console.log(error.message);
@@ -171,7 +176,6 @@ exports.userdetails = async (req, res) => {
 exports.users = async (req, res) => {
   try {
     const admin = await collection.find({});
-
     res.render("admin/users", { admin });
   } catch (error) {
     console.log(error.message);
@@ -179,58 +183,78 @@ exports.users = async (req, res) => {
 };
 
 exports.loginpost = (req, res) => {
-  const name = process.env.NAME;
-  const password = process.env.PASSWORD;
+  try {
+    const name = process.env.NAME;
+    const password = process.env.PASSWORD;
 
-  if (name === req.body.email && password == req.body.password) {
-    req.session.admin = req.body.email;
-    console.log("session created:", req.session.admin);
-    res.redirect("/admin/dashboard");
-  } else {
-    const errorMessage = "Invalid username or password :(";
+    if (name === req.body.email && password == req.body.password) {
+      req.session.admin = req.body.email;
+      console.log("session created:", req.session.admin);
+      res.redirect("/admin/dashboard");
+    } else {
+      const errorMessage = "Invalid username or password :(";
+      return res.render("admin/login", { error: errorMessage });
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    const errorMessage = "An unexpected error occurred :(";
     return res.render("admin/login", { error: errorMessage });
   }
 };
 
 exports.blockUser = async (req, res) => {
-  const user = await collection.findById(req.params.userId);
-  if (user.isBlocked) {
-    user.isBlocked = false;
-  } else {
-    user.isBlocked = true;
+  try {
+    const user = await collection.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    user.isBlocked = !user.isBlocked;
+    await user.save();
+    res.redirect("/admin/users");
+  } catch (error) {
+    console.error("Error blocking/unblocking user:", error);
+    res.status(500).send("Internal Server Error");
   }
-  await user.save();
-  res.redirect("/admin/users");
 };
 
 exports.listProducts = async (req, res) => {
-  const products = await Product.find({});
-  console.log("products");
-  res.render("admin/listProducts", { products: products });
+  try {
+    const products = await Product.find({});
+    res.render("admin/listProducts", { products: products });
+  } catch (error) {
+    console.error("Error fetching product list:", error);
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 exports.getAddProduct = async (req, res) => {
-  const productId = req.params.productId;
-  const categories = await Category.find();
-  const product = await Product.findById(productId);
-  res.render("admin/addProduct", { categories, product });
+  try {
+    const productId = req.params.productId;
+    const categories = await Category.find();
+    const product = await Product.findById(productId);
+    res.render("admin/addProduct", { categories, product });
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 exports.postAddProduct = async (req, res) => {
-  const data = {
-    productName: req.body.productName,
-    productDescription: req.body.productDescription,
-    category: req.body.productCategory,
-    productPrice: req.body.productPrice,
-    productQuantity: req.body.productQuantity,
-    images: req.files.map((file) => file.path.substring(6)),
-  };
-
-  await Product.insertMany([data]).then(() => {
-    console.log("inserted", data);
-  });
-
-  res.redirect("/admin/products");
+  try {
+    const data = {
+      productName: req.body.productName,
+      productDescription: req.body.productDescription,
+      category: req.body.productCategory,
+      productPrice: req.body.productPrice,
+      productQuantity: req.body.productQuantity,
+      images: req.files.map((file) => file.path.substring(6)),
+    };
+    await Product.insertMany([data]).then(() => {
+      console.log("inserted", data);
+    });
+    res.redirect("/admin/products");
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 exports.getEditProduct = async (req, res) => {
@@ -238,11 +262,8 @@ exports.getEditProduct = async (req, res) => {
     const productId = req.params.productId;
     const product = await Product.findById(productId);
     const category = await Category.find();
-
-    // console.log("product is :", product);
     res.render("admin/editProduct", { product, category });
   } catch (error) {
-    console.log("error");
     res.send("internal server error");
   }
 };
@@ -258,13 +279,9 @@ exports.postEditProduct = async (req, res) => {
       productQuantity,
       productCategory,
     } = req.body;
-
-    // Check if new images are provided
     let images = req.files
       ? req.files.map((file) => file.path.substring(6))
       : [];
-
-    // If no new images are provided, fetch the existing images of the product
     if (images.length === 0) {
       const existingProduct = await Product.findById(productId);
       if (existingProduct) {
@@ -285,13 +302,11 @@ exports.postEditProduct = async (req, res) => {
       },
       { new: true }
     );
-
     if (!updateProduct) {
       return res.status(404).send("Product not found");
     }
     res.redirect("/admin/products");
   } catch (error) {
-    console.log(error);
     res.send("Internal server error");
   }
 };
@@ -307,21 +322,13 @@ exports.deleteProductImage = async (req, res) => {
     if (!product) {
       return res.status(404).send("Product not found");
     }
-
-    // Check if the index is valid
     if (index < 0 || index >= product.images.length) {
       return res.status(400).send("Invalid image index");
     }
-
-    // Remove the image at the specified index
     product.images.splice(index, 1);
-
-    // Save the updated product
     await product.save();
-
     res.status(200).send("Image deleted successfully");
   } catch (error) {
-    console.error(error);
     res.status(500).send("Internal Server Error");
   }
 };
@@ -343,7 +350,6 @@ exports.deleteProduct = async (req, res) => {
     console.log(`Soft deleted product: ${product}`);
     res.redirect("/admin/products");
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -351,11 +357,8 @@ exports.deleteProduct = async (req, res) => {
 exports.listProduct = async (req, res) => {
   try {
     const id = req.params.id;
-    // console.log("product id ", id);
     const product = await Product.findById({ _id: id });
-    // console.log(product);
     product.listed = !product.listed;
-    // console.log("listed or not", product.listed);
     await product.save();
     res.redirect("/admin/products");
   } catch (error) {
@@ -366,24 +369,23 @@ exports.listProduct = async (req, res) => {
 
 exports.getAllCategories = async (req, res) => {
   try {
-    // console.log("categories");
     const categories = await Category.find();
-
     res.render("admin/category", { categories });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 exports.getaddCategory = async (req, res) => {
-  res.render("admin/addCategory");
+  try {
+    res.render("admin/addCategory");
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 exports.postaddCategory = async (req, res) => {
   const name = req.body.categoryName.toLowerCase();
-  console.log(req.body);
-
   try {
     const existingCategory = await Category.findOne({ categoryName: name });
     if (existingCategory) {
@@ -392,7 +394,6 @@ exports.postaddCategory = async (req, res) => {
     } else {
       const newCategory = await Category.create({ categoryName: name });
       const errorMessage = "category added successfully";
-      // console.log("Category added successfully:", newCategory);
       res.render("admin/addcategory", { message: errorMessage });
     }
   } catch (error) {
@@ -403,25 +404,17 @@ exports.postaddCategory = async (req, res) => {
 
 exports.geteditCategory = async (req, res) => {
   let category;
-
   try {
-    console.log("Enter the edit");
     const categoryId = req.params.id;
     category = await Category.findOne({ _id: categoryId });
     console.log("Category is", category);
-
   } catch (error) {
-    console.error(error);
     const errorMessage = "Error fetching category.";
     return res.render("admin/editCategory", { category: null, errorMessage });
   }
-
   const errorMessage = "";
-
   res.render("admin/editCategory", { category, errorMessage });
 };
-
-
 
 exports.posteditCategory = async (req, res) => {
   try {
@@ -429,43 +422,35 @@ exports.posteditCategory = async (req, res) => {
     const category = await Category.findOne({ _id: categoryId });
     const { categoryName } = req.body;
     const existingCategory = await Category.findOne({
-      categoryName: { $regex: new RegExp(`^${categoryName}$`, 'i') },
-      _id: { $ne: categoryId }, 
+      categoryName: { $regex: new RegExp(`^${categoryName}$`, "i") },
+      _id: { $ne: categoryId },
     });
 
     if (existingCategory && existingCategory._id != categoryId) {
       const errorMessage = "Category name already exists.";
-      // Pass the error message to the template
       return res.render("admin/editCategory", { category, errorMessage });
     }
-
     const updatedCategory = await Category.findByIdAndUpdate(
       categoryId,
       { categoryName },
       { new: true }
     );
-
-    console.log(
-      `Category ${updatedCategory.categoryName} updated successfully.`
-    );
     res.redirect("/admin/categories");
   } catch (error) {
-    console.error(error);
-    // Pass the error message to the template
-    res.render("admin/editCategory", { category, errorMessage: "Internal server error." });
+    res.render("admin/editCategory", {
+      category,
+      errorMessage: "Internal server error.",
+    });
   }
 };
-
 
 exports.deleteCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
     await Category.findByIdAndDelete(categoryId).then(() => {
-      console.log(`Category deleted successfully.`);
       res.redirect("/admin/categories");
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -486,7 +471,6 @@ exports.adminOrder = async (req, res) => {
     orders = orders.reverse();
     res.render("admin/order", { orders });
   } catch (error) {
-    console.log(error.message);
     res.status(500).send("Internal Server Error");
   }
 };
@@ -494,7 +478,6 @@ exports.adminOrderdetail = async (req, res) => {
   try {
     const ordersOfUser = await Order.find({ _id: req.params.id });
     let allProducts = [];
-
     for (let order of ordersOfUser) {
       for (let product of order.products) {
         allProducts.push({
@@ -508,7 +491,6 @@ exports.adminOrderdetail = async (req, res) => {
         });
       }
     }
-
     res.render("admin/vieworder", { allProducts });
   } catch (error) {
     console.log(error.message);
@@ -518,8 +500,6 @@ exports.adminOrderdetail = async (req, res) => {
 exports.orderStatus = async (req, res) => {
   const orderId = req.params.orderId;
   const newStatus = req.body.newStatus;
-  console.log(newStatus);
-
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
@@ -547,9 +527,6 @@ exports.salesreport = async (req, res) => {
         select: "name Address city pin phone",
       })
       .exec();
-
-      console.log(salesReports);
-
     const formattedSalesReports = salesReports.map((order) => ({
       userId: order.userId._id,
       username: order.userId.name,
@@ -567,9 +544,6 @@ exports.salesreport = async (req, res) => {
         phone: order.addressId.phone,
       },
     }));
-
-   // console.log("hiiiiiiiiiiii" ,formattedSalesReports);
-
     res.render("admin/salesreports", {
       success: true,
       salesReports: formattedSalesReports,
@@ -585,9 +559,7 @@ exports.salesreport = async (req, res) => {
 exports.stockreport = async (req, res) => {
   try {
     const products = await Product.find();
-
     const orders = await Order.find();
-
     const stockReport = products.map((product) => {
       const totalQuantitySold = orders.reduce((total, order) => {
         const productInOrder = order.products.find((orderProduct) =>
@@ -597,7 +569,6 @@ exports.stockreport = async (req, res) => {
       }, 0);
 
       const stockLeft = product.productQuantity - totalQuantitySold;
-
       return {
         productId: product._id,
         productName: product.productName,
@@ -605,8 +576,6 @@ exports.stockreport = async (req, res) => {
         stockLeft,
       };
     });
-
-    console.log(stockReport);
     res.render("admin/stockreport", { success: true, stockReport });
   } catch (error) {
     console.error(error);

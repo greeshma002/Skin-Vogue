@@ -10,14 +10,15 @@ const wallet = require("../models/walletSchema");
 const coupon = require("../models/couponSchema");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
-
 const ejs = require("ejs");
+const bcrypt = require("bcrypt");
+const { ClientRequest } = require("http");
 
 const { sendOTP, generateOTP } = require("../utils/mailing");
 const { addAddress } = require("../models/addressSchema");
 
-const bcrypt = require("bcrypt");
-const { ClientRequest } = require("http");
+
+
 
 exports.home = async (req, res) => {
   try {
@@ -79,7 +80,6 @@ exports.loginpost = async (req, res) => {
     }
   } catch (err) {
     res.send("An internal server error occurred.");
-    console.error(err);
   }
 };
 
@@ -159,7 +159,6 @@ exports.signuppost = async (req, res) => {
         }
       }
     }
-
     const data = {
       name: req.body.name.trim(),
       email: req.body.email,
@@ -170,7 +169,6 @@ exports.signuppost = async (req, res) => {
     req.session.email = req.body.email;
 
     await collection.create(data);
-    // res.render("index");
     sendMailfn(req, res, req.body.email);
     res.render("user/otp", { email: req.body.email });
   } catch (error) {
@@ -197,9 +195,7 @@ exports.shoppage = async (req, res) => {
 
     const totalProducts = await Product.countDocuments();
     const maxPage = Math.ceil(totalProducts / limit);
-    // console.log(maxPage);
 
-    // Redirect if the requested page is greater than the maximum page
     if (page > maxPage) {
       return res.redirect(`/shop?page=${maxPage}`);
     }
@@ -213,14 +209,6 @@ exports.shoppage = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.render("error", { errorMessage: "An error occurred" });
-  }
-};
-
-exports.blogpage = async (req, res) => {
-  try {
-    res.render("blog");
-  } catch (error) {
-    console.log(error.message);
   }
 };
 
@@ -256,7 +244,6 @@ exports.userprofile = async (req, res) => {
     const email = req.session.user;
     const username = await collection.findOne({ email });
     const addresses = await address.find({ userId: username._id });
-
     res.render("user/userprofile", { username, addresses });
   } catch (error) {
     console.log(error.message);
@@ -462,8 +449,6 @@ exports.postrazorpay = async (req, res) => {
   try {
     const amount = Number(req.body.amount);
     const addr = req.body.address;
-    console.log("hii");
-    console.log(addr);
     // Razorpay
     const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
     const Razorpay = require("razorpay");
@@ -531,7 +516,6 @@ exports.orderreturn = async (req, res) => {
 
     for (let orderedProduct of order.products) {
       const actualProduct = await Product.findById(orderedProduct.productId);
-      // Increase stock of actualProduct by quantity returned from order.
       actualProduct.quantity += orderedProduct.quantity;
       await actualProduct.save();
     }
@@ -539,7 +523,6 @@ exports.orderreturn = async (req, res) => {
     let userWallet = await wallet.findOne({ user: userId });
 
     if (!userWallet) {
-      // If the user doesn't have a wallet, create a new one
       userWallet = new wallet({ user: userId, balance: 0 });
       await userWallet.save();
     }
@@ -561,12 +544,10 @@ exports.userwallet = async (req, res) => {
     const userId = req.session.userId;
 
     if (!userId) {
-      return res.status(401).send("Unauthorized"); // Or redirect to login page
+      return res.status(401).send("Unauthorized");
     }
 
     const latestOrder = await Order.findOne({ userId });
-
-    //console.log( "orderrrrrrrr" ,latestOrder);
 
     let userWallet = await wallet.findOne({ user: userId });
 
@@ -579,8 +560,6 @@ exports.userwallet = async (req, res) => {
     }
 
     const transactions = userWallet.history;
-    //console.log("transaction:", transactions);
-
     res.render("user/userwallet", { amount: userWallet.balance, transactions });
   } catch (error) {
     console.error(error.message);
@@ -601,8 +580,6 @@ function calculateTotalPrice(cartdata) {
 
 exports.postwallet = async (req, res) => {
   try {
-    // const razorpaywallet = Number(req.body.addAmount)
-    console.log("heee", razorpaywallet);
     const userId = req.session.userId;
 
     if (!userId) {
@@ -616,47 +593,16 @@ exports.postwallet = async (req, res) => {
       await userWallet.save();
     }
 
-    // if (razorpaywallet > 0) {
-    //   userWallet.balance += razorpaywallet;
-    // }
-  
     const orderTotal = req.body.totalPrice;
-    const refundedAmount = req.body.totalPrice || 0;
-    console.log( "one" ,refundedAmount);
-    console.log( "two" ,orderTotal);
 
-    if (userWallet.balance >= orderTotal - refundedAmount) {
-      console.log("three" ,userWallet.balance);
-      console.log("four" ,orderTotal);
+    if (userWallet.balance >= orderTotal) {
+      userWallet.balance -= orderTotal;
 
-      const debitTransaction = {
+      userWallet.history.push({
+        type: 'debit',
         amount: orderTotal,
-        refunded: refundedAmount,
-        type: "debit",
-      };
-
-      console.log("five" , debitTransaction);
-
-    
-      userWallet.balance -= orderTotal - refundedAmount;
-      userWallet.history.push(debitTransaction);
-
-      if (refundedAmount > 0) {
-        const creditTransaction = {
-          amount: refundedAmount,
-          refunded: refundedAmount,
-          type: "credit",
-        };
-
-        console.log("six" , creditTransaction);
-
-        if (req.body.orderId) {
-          creditTransaction.orderId = req.body.orderId;
-        }
-
-        userWallet.balance += refundedAmount;
-        userWallet.history.push(creditTransaction);
-      }
+        timestamp: new Date(),
+      });
 
       await userWallet.save();
 
@@ -675,6 +621,7 @@ exports.postwallet = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
 
 exports.walletpayment = async (req, res) => {
   try {
@@ -724,7 +671,6 @@ exports.successwallet = async (req, res) => {
       return res.status(404).send("Wallet not found");
     }
 
-    // Update the wallet balance and add a credit transaction to the history
     Wallet.balance += amountAdded;
     Wallet.history.push({
       date: new Date(),
@@ -732,7 +678,7 @@ exports.successwallet = async (req, res) => {
       type: 'credit',
     });
 
-    // Save the updated wallet
+   
     await Wallet.save();
 
     return res.status(200).redirect("back");
@@ -742,25 +688,19 @@ exports.successwallet = async (req, res) => {
   }
 };
 
-
-
 exports.userdetails = async (req, res) => {
   try {
     const email = req.session.user;
     console.log(email);
     const user = await collection.findOne({ email });
-
-    // Update user details based on the form data
     if (req.body.editName) {
       user.name = req.body.editName;
     }
 
     user.phone = req.body.editMobile;
-
-    // Save the updated user details
     await user.save();
 
-    res.redirect("/userprofile"); // Redirect to the user details page or any other desired page
+    res.redirect("/userprofile"); 
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -772,7 +712,7 @@ const getOrderDetailsById = async (orderId) => {
     const order = await Order.findById(orderId).populate("addressId").exec();
 
     if (!order) {
-      return null; // Order not found
+      return null; 
     }
 
     const orderDetails = {
@@ -785,26 +725,26 @@ const getOrderDetailsById = async (orderId) => {
         phone: order.addressId?.phone,
       },
       orderStatus: order.orderStatus,
+      orderDate : order.orderDate,
       totalAmount: order.totalAmount,
       paymentMethod: order.paymentMethod,
-      products: order.products, // You may include other product details if needed
-      // Add other fields as needed
+      products: order.products, 
     };
 
     return orderDetails;
   } catch (error) {
     console.log(error.message);
-    throw error; // Handle the error according to your application's requirements
+    throw error; 
   }
 };
 
 function generateInvoice(orderDetails, res) {
   const doc = new PDFDocument();
 
-  // Set font size for the entire document
+
   doc.fontSize(12);
 
-  // Website Name
+  
   doc
     .fontSize(20)
     .font("Helvetica-Bold")
@@ -813,6 +753,8 @@ function generateInvoice(orderDetails, res) {
 
   // Order ID
   doc.fontSize(12).text(`Order ID: ${orderDetails.orderId}`, 50, doc.y);
+  doc.fontSize(12).text(`Order ID: ${orderDetails.orderDate.toISOString().split('T')[0] }`, 50, doc.y);
+
   doc.moveDown(); // Add some space
 
   // Sold by details on the left
@@ -823,7 +765,7 @@ function generateInvoice(orderDetails, res) {
   });
   doc.text("Near Surajkund Road, FARIDABAD - 121009", { indent: 20 });
   doc.text("GST: 06AFRPB7420F1ZN", { indent: 20 });
-  doc.moveDown(); // Add some space
+  doc.moveDown(); 
 
   // User Selected Address on the right
   const addressDetails = [
@@ -835,20 +777,22 @@ function generateInvoice(orderDetails, res) {
   ];
 
   doc.fontSize(10).text(addressDetails, 350, 160, { align: "left" });
-  doc.moveDown(); // Add some space
+  doc.moveDown(); 
 
   // Order Summary Table
   doc
     .fontSize(16)
     .fillColor("#ff69b4")
-    .text("Order Summary:", 50, doc.y + 10);
+    .text("Order Summary:", 50, doc.y + 80);
     
     // Total Amount, Payment Method, and Order Status
-    doc.moveDown(); // Add some space
+    doc.moveDown();
     generateOrderTable(doc, orderDetails.products);
   doc.fillColor("#ff69b4").text(`Total Amount: ${orderDetails.totalAmount}`);
   doc.text(`Payment Method: ${orderDetails.paymentMethod}`);
   doc.text(`Order Status: ${orderDetails.orderStatus}`);
+   
+  doc.text("Thank you for shopping with us", { align: 'center' } ,50 , doc.y + 30);
 
   // Pipe the document to the response
   doc.pipe(res);
@@ -880,13 +824,15 @@ function generateOrderTable(doc, products) {
     });
     doc.moveDown(); // Add some space
   });
+
+
 }
 
 function generateTableRow(doc, rowData, options = {}) {
   const {
     fontSize = 12,
     bold = false,
-    align = "center", // Changed alignment to center
+    align = "center", 
     cellPadding = 10,
     backgroundColor = null,
     color = null,
@@ -898,15 +844,13 @@ function generateTableRow(doc, rowData, options = {}) {
   }
 
   rowData.forEach((cell, index) => {
-    const xPosition = 50 + index * 150; // Adjust the starting position based on your layout
+    const xPosition = 50 + index * 150; 
     const yPosition = doc.y-14;
     const width = 150;
     const height = fontSize + cellPadding * 2;
-    // Draw cell background if specified
     if (backgroundColor) {
       doc.rect(xPosition, yPosition, width, height).fill(backgroundColor);
     }
-    // Draw cell content
     doc.fillColor(color || "black").text(cell, xPosition, yPosition, {
       align,
       width: width+65
@@ -921,11 +865,6 @@ function generateTableRow(doc, rowData, options = {}) {
   // Reset font and fill color to default
   doc.font("Helvetica").fillColor("black");
 }
-
-// Example Usage:
-// Assume orderDetails is obtained using getOrderDetailsById function
-// const orderDetails = getOrderDetailsById('your-order-id');
-// generateInvoice(orderDetails, response);
 
 exports.invoice = async (req, res) => {
   try {
@@ -945,7 +884,6 @@ exports.invoice = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  // Assume you have a function to get order details based on the order ID
 };
 
 exports.deletewishlist = async (req, res) => {

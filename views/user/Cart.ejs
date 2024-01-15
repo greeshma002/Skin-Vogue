@@ -231,6 +231,43 @@
                             </div>
                           </form>
                           
+                          <!-- Include jQuery library if not already included -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    // Disable the select and apply button if a coupon is already applied
+    if ($('select[name="selectedCoupon"]').val() !== "") {
+      disableCouponField();
+    }
+
+    // Event handler for applying the coupon
+    $('#couponForm').submit(function(event) {
+      event.preventDefault(); // Prevent the form from submitting
+
+      // Check if a coupon is selected
+      var selectedCoupon = $('select[name="selectedCoupon"]').val();
+      if (selectedCoupon !== "") {
+        // Disable the select and apply button
+        disableCouponField();
+        
+        // Perform any additional actions you want when a coupon is applied
+        // For example, you can make an AJAX request to apply the coupon on the server
+        // and update the total price display.
+
+        // For now, I'll just log a message
+        console.log("Coupon applied:", selectedCoupon);
+      }
+    });
+
+    // Function to disable the select coupon field and apply button
+    function disableCouponField() {
+      $('select[name="selectedCoupon"]').prop('disabled', true);
+      $('#couponApply').prop('disabled', true);
+    }
+  });
+</script>
+
                           
                           
                         </div>

@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema({
   },
   listed: {
     type: Boolean,
-    default: true, // Set to true by default, assuming products are listed
+    default: true, 
   },
   deleted: {
     type: Boolean,

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const address = require("../models/addressSchema"); // Import the Address schema
+const address = require("../models/addressSchema"); 
 
 const orderSchema = new Schema({
   userId: {
@@ -50,6 +50,10 @@ const orderSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
     required: true,
+  },
+  orderDate: {
+    type: Date,
+    default: Date.now,
   },
 },
 {
