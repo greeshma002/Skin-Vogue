@@ -450,7 +450,7 @@ exports.cancelorder = async (req, res) => {
       }
     }
 
-       if (updatedOrder.paymentMethod === 'UPI' || updatedOrder.paymentMethod === 'WALLET') {
+       if (updatedOrder.paymentMethod === 'UPI' || updatedOrder.paymentMethod === 'WALLET' || updatedOrder.paymentMethod === 'online') {
       const userId = req.session.userId;
 
       let userWallet = await wallet.findOne({ user: userId });
