@@ -385,10 +385,8 @@ exports.getwishlist = async (req, res) => {
     }).populate("products");
 
     if (wishlist) {
-      console.log("Wishlist retrieved:", wishlist);
       res.render("user/wishlist", { wishlist });
     } else {
-      console.log("No wishlist for user");
       res.render("user/wishlist", { wishlist ,err: err, });
     }
   } catch (err) {
@@ -440,7 +438,6 @@ exports.postwishlist = async (req, res) => {
 
     return res.redirect("/wishlist");
   } catch (err) {
-    console.log("greeshma", err);
     res.status(500).send("Something went wrong");
   }
 };
@@ -634,8 +631,6 @@ exports.postwallet = async (req, res) => {
 exports.walletpayment = async (req, res) => {
   try {
     const amount = Number(req.body.amount);
-    
-    console.log("hii " , amount);
     
     // Razorpay
     const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;

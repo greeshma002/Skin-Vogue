@@ -24,37 +24,59 @@
   <!-- responsive style -->
   <link href="/stylesheets/responsive.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+  <link href="/stylesheets/font-awesome.min.css" rel="stylesheet">
+<style>
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #ff69b4;
+    color: #fff;
+}
 
+.brand {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
 
+.brand img {
+    margin-right: 10px;
+    height: 30px;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+}
+
+.link {
+    margin: 0 10px;
+    color: #fff;
+    text-decoration: none;
+}
+</style>
 </head>
 
 <body>
 
   <!-- header section strats -->
-  <header class="header_section innerpage_header">
-    <div class="container-fluid">
-      <nav class="navbar navbar-expand-lg custom_nav-container">
-        <a class="navbar-brand" href="index.html">
-          <span>
-            SKINVOGUE
-          </span>
-        </a>
-        <div class="" id="">
+ 
 
-          <div class="custom_menu-btn">
-            <button onclick="openNav()">
-              <span class="s-1"> </span>
-              <span class="s-2"> </span>
-              <span class="s-3"> </span>
-            </button>
-            <div id="myNav" class="overlay">
-              <div class="overlay-content">
-                <a href="/">Home</a>
-                <a href="/shop">Shop</a>
-                <a href="/blog">Blog</a>
-              </div>
+          <div class="navbar">
+            <div class="brand">
+                <img src="/assets/img/logo.png" alt="Logo">
+                <div><strong>SKINVOGUE</strong></div>
             </div>
-          </div>
+            <div class="navbar-links">
+                <a href="/" class="link">Home</a>
+                <a href="/shop" class="link">Shop</a>
+               
+                
+             
+            </div>
+        </div>
 
         </div>
       </nav>

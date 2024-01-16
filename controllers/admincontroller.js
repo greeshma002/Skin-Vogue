@@ -407,7 +407,6 @@ exports.geteditCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
     category = await Category.findOne({ _id: categoryId });
-    console.log("Category is", category);
   } catch (error) {
     const errorMessage = "Error fetching category.";
     return res.render("admin/editCategory", { category: null, errorMessage });
