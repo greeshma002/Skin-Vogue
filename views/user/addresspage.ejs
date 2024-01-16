@@ -180,7 +180,8 @@ function validateForm() {
 
   // Regular expressions for validation
   var nameRegex = /^[A-Za-z\s]+$/; // Allow alphabetic characters and spaces
-  var addressRegex = /^[A-Za-z0-9\s,.'-]+$/;
+  //var addressRegex = /^[A-Za-z0-9\s,.'-]+$/;
+  var addressRegex = /^[a-zA-Z0-9\/, ]+$/;
   var pinRegex = /^\d{6}$/;
   var textRegex = /^[A-Za-z\s]+$/; // Allow alphabetic characters and spaces
   var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -203,11 +204,11 @@ function validateForm() {
                return false;
   }
 
-  // Validate address
-  if (!textRegex.test(address)) {
-    alert('Invalid address. Please enter only alphabetic characters with spaces.');
-    return false;
-  }
+  // // Validate address
+  // if (!textRegex.test(address)) {
+  //   alert('Invalid address. Please enter only alphabetic characters with spaces.');
+  //   return false;
+  // }
 
   // Validate state and city
   if (!textRegex.test(state) || !textRegex.test(city)) {

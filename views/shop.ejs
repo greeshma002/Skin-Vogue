@@ -408,18 +408,25 @@
 
 
     function filterByCategory() {
- var selectedCategory = document.getElementById("categoryFilter").value.toLowerCase().trim();
+      const selectedCategory = document.getElementById("categoryFilter").value.toLowerCase().trim();
 
- const elements = [...document.getElementById('productView').children];
+      fetch(`/search?q=`, { method: "GET" })
+      .then(res => res.text())
+      .then(data => {
+        productView.innerHTML = data;
 
- elements.forEach(function (element) {
-   let category = element.dataset.category.toLowerCase().trim();
+        const elements = [...document.getElementById('productView').children];
+  
+        elements.forEach(function (element) {
+          let category = element.dataset.category.toLowerCase().trim();
+  
+          if (selectedCategory === "all" || category === selectedCategory) {
+            element.classList.remove("hidden");
+          } else {
+            element.classList.add("hidden");
+          }
+      });
 
-   if (selectedCategory === "all" || category === selectedCategory) {
-     element.classList.remove("hidden");
-   } else {
-     element.classList.add("hidden");
-   }
  });
 }
 

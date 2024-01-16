@@ -203,20 +203,17 @@
                                                         <%= product.addressId.phone %>
                                                     </p>
                                                 </div>
+                                               
                                                 <% if (product.orderStatus==='cancelled' ||
                                                     product.orderStatus==='delivered' ||
                                                     product.orderStatus==='returned' ) { %>
-                                                    <button
-                                                        style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: not-allowed; display: none;">
+                                                        
+                                                    <% } else { %>
+                                                        <button onclick="cancelOrderBtn('<%=product._id%>')"
+                                                        style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px;">
                                                         Cancel Order
                                                     </button>
-                                                    <% } else { %>
-                                                        <a href="/cancel/<%= product._id %>">
-                                                            <button id="cancelOrderBtn"
-                                                                style="background-color: #ff69b4; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                                                                Cancel Order
-                                                            </button>
-                                                        </a>
+                                                        
                                                         <% } %>
 
                                                             <% if (product.orderStatus==='delivered' ) { %>
@@ -295,9 +292,9 @@
                                     fetch(`/return/${productId}`, { method: "POST", headers: { "Content-Type": "application/json" } })
                                         .then(res => res.json())
                                         .then(data => {
-                                            // Handle the response from the server
+                                           
                                             if (data.success) {
-                                                // Update the UI or show a confirmation message
+                                               
                                                 alert('Order returned successfully. Amount refunded to your wallet.');
                                             } else {
                                                 alert('Failed to return the order. Please try again.');
@@ -310,6 +307,26 @@
                                 }
                             </script>
     
+                            <script>
+                                function cancelOrderBtn(productId) {
+                                    fetch(`/cancel/${productId}`, { method: "get", headers: { "Content-Type": "application/json" } })
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            console.log(data);
+                                            if (data.success) {
+                                               console.log('hjhjh');
+                                                 alert('Order cancelled successfully. Amount refunded to your wallet.');
+                                            } else {
+                                                alert('Failed to cancel the order. Please try again.');
+                                                console.log(data.error);
+                                            }
+                                            window.location.reload()
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                }
+                            </script>
 
 
     </body>

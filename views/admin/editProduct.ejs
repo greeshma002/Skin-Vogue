@@ -104,8 +104,9 @@
         <label for="productName">Product Name:</label>
    <input type="text" id="productName" name="productName" value="<%= product.productName %>" onblur="validateLetters(this)" required>
 
-        <label for="productPrice">Product Price:</label>
-        <input min="1" type="number" id="productPrice" name="productPrice" value="<%= product.productPrice %>" required>
+   <label for="productPrice">Product Price:</label>
+   <input min="1" maxlength="10" type="number" id="productPrice" name="productPrice" value="<%= product.productPrice %>" required>
+   
 
         <label for="productCategory">Product Category:</label>
         <select id="category" name="productCategory" required>

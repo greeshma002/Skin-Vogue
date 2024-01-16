@@ -527,7 +527,15 @@ exports.orderreturn = async (req, res) => {
       await userWallet.save();
     }
 
+    const creditTransaction = {
+      date: new Date(),
+      amount: order.totalAmount,
+      type: 'credit',
+    };
+
     userWallet.balance += order.totalAmount;
+    userWallet.history.push(creditTransaction);
+
     await userWallet.save();
 
     res.json({ success: true });
@@ -559,7 +567,7 @@ exports.userwallet = async (req, res) => {
       });
     }
 
-    const transactions = userWallet.history;
+    const transactions = userWallet.history.reverse();
     res.render("user/userwallet", { amount: userWallet.balance, transactions });
   } catch (error) {
     console.error(error.message);

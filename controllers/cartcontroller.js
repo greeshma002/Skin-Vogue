@@ -474,12 +474,12 @@ exports.cancelorder = async (req, res) => {
 
       return res.json({
         success: true,
-        message: 'Order cancelled successfully. Refunded to wallet.',
+        message: "Order cancelled successfully. Refunded to wallet.",
       });
     } else {
       return res.json({
-        success: false,
-        message: 'Order cancelled successfully. No refund for this payment method.',
+        success: true,
+        message: "Order cancelled successfully. No refund for this payment method.",
       });
     }
 

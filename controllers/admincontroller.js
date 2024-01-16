@@ -527,6 +527,7 @@ exports.salesreport = async (req, res) => {
         select: "name Address city pin phone",
       })
       .exec();
+     
     const formattedSalesReports = salesReports.map((order) => ({
       userId: order.userId._id,
       username: order.userId.name,
@@ -544,6 +545,7 @@ exports.salesreport = async (req, res) => {
         phone: order.addressId.phone,
       },
     }));
+    
     res.render("admin/salesreports", {
       success: true,
       salesReports: formattedSalesReports,
