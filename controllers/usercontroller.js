@@ -475,7 +475,7 @@ exports.postrazorpay = async (req, res) => {
 
 exports.shopsearch = async (req, res) => {
   const searchQuery = req.query.q;
-
+    console.log(searchQuery);
   try {
     const results = await Product.find({
       productName: { $regex: new RegExp(`^${searchQuery}`, "i") },
